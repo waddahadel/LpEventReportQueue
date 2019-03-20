@@ -68,7 +68,7 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 
 		self::registerAutoloader();
 		if(!isset($DIC['qu.lerq.api'])) {
-			$api = new \QU\LERQ\Queue\API();
+			$api = new \QU\LERQ\API\API();
 			$DIC['qu.lerq.api'] = $api;
 		}
 	}

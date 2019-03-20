@@ -1,7 +1,7 @@
 <?php
 /* Copyright (c) 1998-2011 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-namespace QU\LERQ\Queue;
+namespace QU\LERQ\API\Service;
 
 use QU\LERQ\Model\ProviderModel;
 use QU\LERQ\Model\RoutinesModel;

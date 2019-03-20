@@ -1,10 +1,11 @@
 <?php
 /* Copyright (c) 1998-2011 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-namespace QU\LERQ\Queue;
+namespace QU\LERQ\API;
 
 use QU\LERQ\API\Filter\FilterObject;
-use QU\LERQ\API\QueueInterface;
+use QU\LERQ\API\Service\Collector;
+use QU\LERQ\API\Service\Registration;
 
 class API implements QueueInterface
 {

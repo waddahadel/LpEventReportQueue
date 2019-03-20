@@ -29,7 +29,7 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 	 */
 	protected function init()
 	{
-		self::registerAutoloader();
+		self::registerAPI();
 		$this->jobs = $this->getCronJobInstances();
 	}
 
@@ -60,6 +60,17 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 			$DIC['autoload.lc.lcautoloader'] = $Autoloader;
 		}
 		$DIC['autoload.lc.lcautoloader']->addNamespace(self::PLUGIN_NS, realpath(dirname(__FILE__)));
+	}
+
+	public static function registerAPI()
+	{
+		global $DIC;
+
+		self::registerAutoloader();
+		if(!isset($DIC['qu.lerq.api'])) {
+			$api = new \QU\LERQ\Queue\API();
+			$DIC['qu.lerq.api'] = $api;
+		}
 	}
 
 	/**
@@ -139,15 +150,15 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 	{
 		switch($a_component)
 		{
-			case "Services/User":
-				switch($a_event)
-				{
-					case "afterCreate": // @Todo can we check if this is triggered by the registration formular?
-						$handler = new \QU\LERQ\Events\LearningProgressEvent();
-						$handler->handle_event($a_params);
-						break;
-				}
-				break;
+//			case "Services/User":
+//				switch($a_event)
+//				{
+//					case "afterCreate": // @Todo can we check if this is triggered by the registration formular?
+//						$handler = new \QU\LERQ\Events\LearningProgressEvent();
+//						$handler->handle_event($a_params);
+//						break;
+//				}
+//				break;
 		}
 
 		return true;

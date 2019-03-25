@@ -19,7 +19,7 @@ ilPluginAdmin like this:
 \ilPluginAdmin::getPluginObject(
     "Services", 
     "Cron", 
-    "crnhk, 
+    "crnhk", 
     "LpEventReportQueue"
 );
 ```

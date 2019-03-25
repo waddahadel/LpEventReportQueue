@@ -72,14 +72,14 @@ class Registration
 				try {
 					// @Todo how do we get the routines overrides object?
 					$routines_path = $path . '/CaptureRoutines/Routines.php'; // @Todo get a better way to find the file!
-					$overrideClass = new $routines_path();
-					if ($overrideClass instanceof DataCaptureRoutinesInterface) {
-						$overrides = $overrideClass->getOverrides();
-						$routines->setCollectUserData($overrides['collectUserData'])
-							->setCollectUDFData($overrides['collectUDFData'])
-							->setCollectMemberData($overrides['collectMemberData'])
-							->setCollectLpPeriod($overrides['collectLpPeriod']);
-					}
+//					$overrideClass = new $routines_path();
+//					if ($overrideClass instanceof DataCaptureRoutinesInterface) {
+//						$overrides = $overrideClass->getOverrides();
+//						$routines->setCollectUserData($overrides['collectUserData'])
+//							->setCollectUDFData($overrides['collectUDFData'])
+//							->setCollectMemberData($overrides['collectMemberData'])
+//							->setCollectLpPeriod($overrides['collectLpPeriod']);
+//					}
 				} catch (\Exception $e) {
 					global $DIC;
 

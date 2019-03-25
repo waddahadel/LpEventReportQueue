@@ -7,7 +7,7 @@ use QU\LERQ\API\Filter\FilterObject;
 use QU\LERQ\API\Service\Collector;
 use QU\LERQ\API\Service\Registration;
 
-class API implements QueueInterface
+class API implements Facade
 {
 	public function registerProvider(string $name, string $namespace, string $path, bool $hasOverrides = false): bool
 	{
@@ -27,9 +27,9 @@ class API implements QueueInterface
 	 * @param FilterObject $filter
 	 * @return \QU\LERQ\Collections\QueueCollection
 	 */
-	public function getCollection(\QU\LERQ\API\Filter\FilterObject $filter): \QU\LERQ\Collections\QueueCollection
+	public function getCollection(\QU\LERQ\API\Filter\FilterObject $filter, bool $no_convert = false): \QU\LERQ\Collections\QueueCollection
 	{
 		$collector = new Collector($filter);
-		return $collector->collect();
+		return $collector->collect($no_convert);
 	}
 }

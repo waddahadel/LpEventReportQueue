@@ -4,6 +4,10 @@
 namespace QU\LERQ\API\Service;
 
 use QU\LERQ\Collections\QueueCollection;
+use QU\LERQ\Model\MemberModel;
+use QU\LERQ\Model\ObjectModel;
+use QU\LERQ\Model\QueueModel;
+use QU\LERQ\Model\UserModel;
 
 /**
  * Class Collector
@@ -30,9 +34,10 @@ class Collector
 	}
 
 	/**
+	 * @param bool $no_convert
 	 * @return QueueCollection
 	 */
-	public function collect(): QueueCollection
+	public function collect(bool $no_convert = false): QueueCollection
 	{
 		$collection = new QueueCollection();
 		$items = [];
@@ -40,9 +45,10 @@ class Collector
 		$query = $this->createSelect();
 		$query .= $this->createWhereByFilter();
 
-		// @Todo change array to object?
-		// @Todo convert json fields to array/object?
 		$this->queryQueue($query, $items);
+		if ($no_convert !== true) {
+			$items = $this->buildModels($items);
+		}
 
 		return $collection->create($items);
 	}
@@ -68,11 +74,11 @@ class Collector
 		$where = '';
 
 		if ($this->filter->getCourseStart() !== false) {
-//			$where .= '`course_start` >= ' . ; // @ToDo how do we save the timestamps?
+			$where .= '`course_start` >= ' . $this->filter->getCourseStart();
 			$where .= ' AND ';
 		}
 		if ($this->filter->getCourseEnd() !== false) {
-//			$where .= '`course_end` >= ' . ; // @ToDo how do we save the timestamps?
+			$where .= '`course_end` >= ' . $this->filter->getCourseEnd();
 			$where .= ' AND ';
 		}
 		if ($this->filter->getProgress() !== '*') {
@@ -91,6 +97,10 @@ class Collector
 		if ($this->filter->getPageLength() !== -1) {
 			$where .= '';
 			$where .= ' LIMIT ' . $this->database->quote($this->filter->getPageLength(), 'integer') . ' ';
+		}
+		if ($this->filter->getEventHappened() !== false) {
+			$where .= '`timestamp` >= ' . $this->filter->getCourseStart();
+			$where .= ' AND ';
 		}
 
 		if (strlen($where) > 0) {
@@ -112,5 +122,88 @@ class Collector
 		while ($row = $this->database->fetchAssoc($res)) {
 			$items[] = $row;
 		}
+	}
+
+	/**
+	 * @param array $items
+	 * @return array
+	 */
+	private function buildModels(array $items)
+	{
+		$models = [];
+		if (empty($items)) {
+			return $models;
+		}
+		foreach ($items as $item) {
+			$qm = new QueueModel();
+			$qm->setId($item['id'])
+				->setTimestamp($item['timestamp'])
+				->setEvent($item['event'])
+				->setEventType($item['event_type'])
+				->setProgress($item['progress'])
+				->setAssignment($item['assignment'])
+				->setCourseStart($item['course_start'])
+				->setCourseEnd($item['course_end']);
+
+			$item_ud = json_decode($item['user_data']);
+			$um = new UserModel();
+			$um->setUsrId($item_ud['user_id'])
+				->setLogin($item_ud['username'])
+				->setFirstname($item_ud['firstname'])
+				->setLastname($item_ud['lastname'])
+				->setTitle($item_ud['title'])
+				->setGender($item_ud['gender'])
+				->setEmail($item_ud['email'])
+				->setInstitution($item_ud['institution'])
+				->setStreet($item_ud['street'])
+				->setCity($item_ud['city'])
+				->setCountry($item_ud['country'])
+				->setPhoneOffice($item_ud['phone_office'])
+				->setHobby($item_ud['hobby'])
+				->setPhoneHome($item_ud['phone_home'])
+				->setPhoneMobile($item_ud['phone_mobile'])
+				->setFax($item_ud['phone_fax'])
+				->setReferralComment($item_ud['referral_comment'])
+				->setMatriculation($item_ud['matriculation'])
+				->setActive($item_ud['active'])
+				->setApprovalDate($item_ud['approval_date'])
+				->setAgreeDate($item_ud['agree_date'])
+				->setAuthMode($item_ud['auth_mode'])
+				->setExtAccount($item_ud['ext_account'])
+				->setBirthday($item_ud['birthday'])
+				->setUdfData(json_decode($item_ud['udf_data']));
+			$qm->setUserData($um);
+			unset($item_ud);
+			unset($um);
+
+			$item_om = json_decode($item['obj_data']);
+			$om = new ObjectModel();
+			$om->setTitle($item_om['title'])
+				->setId($item_om['id'])
+				->setRefId($item_om['ref_id'])
+				->setLink($item_om['link'])
+				->setType($item_om['type'])
+				->setCourseTitle($item_om['course_title'])
+				->setCourseId($item_om['course_id'])
+				->setCourseRefId($item_om['course_ref_id']);
+			$qm->setObjData($om);
+			unset($item_om);
+			unset($om);
+
+			$item_mm = json_decode($item['mem_data']);
+			$mm = new MemberModel();
+			$mm->setMemberRole($item_mm['role'])
+				->setCourseTitle($item_mm['course_title'])
+				->setCourseId($item_mm['course_id'])
+				->setCourseRefId($item_mm['course_ref_id']);
+			$qm->setMemData($mm);
+			unset($item_mm);
+			unset($mm);
+
+			$models[$item['id']] = $qm;
+			unset($qm);
+		}
+
+		return $models;
 	}
 }

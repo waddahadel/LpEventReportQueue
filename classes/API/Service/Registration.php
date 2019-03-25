@@ -3,6 +3,7 @@
 
 namespace QU\LERQ\API\Service;
 
+use QU\LERQ\API\DataCaptureRoutinesInterface;
 use QU\LERQ\Model\ProviderModel;
 use QU\LERQ\Model\RoutinesModel;
 
@@ -60,19 +61,30 @@ class Registration
 	public function create(string $name, string $namespace, string $path, bool $hasOverrides = false)
 	{
 		$provider = new ProviderModel();
-		$provider->setName($name);
-		$provider->setNamespace($namespace);
-		$provider->setPath($path);
-		$provider->setHasOverrides($hasOverrides);
+		$provider->setName($name)
+			->setNamespace($namespace)
+			->setPath($path)
+			->setHasOverrides($hasOverrides);
 
 		$routines = new RoutinesModel();
-		try {
-			// @Todo how do we get the routines overrides object?
-		} catch(\Exception $e) {
-			global $DIC;
+		if ($hasOverrides) {
+			try {
+				// @Todo how do we get the routines overrides object?
+				$routines_path = $path . '/CaptureRoutines/Routines.php'; // @Todo get a better way to find the file!
+				$overrideClass = new $routines_path();
+				if ($overrideClass instanceof DataCaptureRoutinesInterface) {
+					$overrides = $overrideClass->getOverrides();
+					$routines->setCollectUserData($overrides['collectUserData'])
+						->setCollectUDFData($overrides['collectUDFData'])
+						->setCollectMemberData($overrides['collectMemberData'])
+						->setCollectLpPeriod($overrides['collectLpPeriod']);
+				}
+			} catch (\Exception $e) {
+				global $DIC;
 
-			$DIC->logger()->root()->error($e->getMessage());
-			return false;
+				$DIC->logger()->root()->error($e->getMessage());
+				return false;
+			}
 		}
 
 		$provider->setActiveOverrides($routines);
@@ -87,23 +99,23 @@ class Registration
 	{
 		global $DIC;
 
-		$query = 'SELECT * FROM ' . self::DB_PROVIDER_REG . ' ';
+		$query = 'SELECT * FROM `' . self::DB_PROVIDER_REG . '` ';
 		$providers = [];
 
 		$res = $DIC->database->query($query);
 		while ($row = $DIC->database->fetchAssoc($res)) {
 			$provider = new ProviderModel();
-			$provider->setName($row['name']);
-			$provider->setNamespace($row['namespace']);
-			$provider->setPath($row['path']);
-			$provider->setHasOverrides($row['has_overrides']);
+			$provider->setName($row['name'])
+				->setNamespace($row['namespace'])
+				->setPath($row['path'])
+				->setHasOverrides($row['has_overrides']);
 
 			$overrides = json_decode($row['active_overrides'], true);
 			$routines = new RoutinesModel();
-			$routines->setCollectUserData($overrides['collectUserData']);
-			$routines->setCollectUDFData($overrides['collectUDFData']);
-			$routines->setCollectMemberData($overrides['collectMemberData']);
-			$routines->setCollectLpPeriod($overrides['collectLpPeriod']);
+			$routines->setCollectUserData($overrides['collectUserData'])
+				->setCollectUDFData($overrides['collectUDFData'])
+				->setCollectMemberData($overrides['collectMemberData'])
+				->setCollectLpPeriod($overrides['collectLpPeriod']);
 
 			$provider->setActiveOverrides($routines);
 			$providers[] = $provider;
@@ -123,10 +135,11 @@ class Registration
 
 		$res = $DIC->database()->insert(self::DB_PROVIDER_REG,
 			array(
-				'name'             => array('text', $provider->getName()),
-				'namespace'        => array('text', $provider->getNamespace()),
-				'path'             => array('text', $provider->getPath()),
-				'has_overrides'     => array('text', $provider->getHasOverrides()),
+				'id'                => array('integer', $DIC->database()->nextId(self::DB_PROVIDER_REG)),
+				'name'              => array('text', $provider->getName()),
+				'namespace'         => array('text', $provider->getNamespace()),
+				'path'              => array('text', $provider->getPath()),
+				'has_overrides'     => array('integer', $provider->getHasOverrides()),
 				'active_overrides'  => array('text', $provider->getActiveOverrides()),
 			)
 		);

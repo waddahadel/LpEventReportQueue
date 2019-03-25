@@ -3,6 +3,11 @@
 
 namespace QU\LERQ\API\Filter;
 
+/**
+ * Class FilterObject
+ * @package QU\LERQ\API\Filter
+ * @author Ralph Dittrich <dittrich@qualitus.de>
+ */
 class FilterObject
 {
 	/** @var string */
@@ -17,6 +22,8 @@ class FilterObject
 	private $page_length;
 	/** @var string */
 	private $event_type;
+	/** @var string */
+	private $event_happened;
 
 	/**
 	 * @return string|bool
@@ -27,7 +34,7 @@ class FilterObject
 	}
 
 	/**
-	 * @param string $course_start
+	 * @param string $course_start UTC Timestamp
 	 * @return FilterObject
 	 */
 	public function setCourseStart(string $course_start): FilterObject
@@ -45,7 +52,7 @@ class FilterObject
 	}
 
 	/**
-	 * @param string $course_end
+	 * @param string $course_end UTC Timestamp
 	 * @return FilterObject
 	 */
 	public function setCourseEnd(string $course_end): FilterObject
@@ -123,6 +130,24 @@ class FilterObject
 	public function setEventType(string $event_type): FilterObject
 	{
 		$this->event_type = $event_type;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getEventHappened(): string
+	{
+		return (isset($this->event_happened) ? $this->event_happened : false);
+	}
+
+	/**
+	 * @param string $event_happened  UTC Timestamp
+	 * @return FilterObject
+	 */
+	public function setEventHappened(string $event_happened): FilterObject
+	{
+		$this->event_happened = $event_happened;
 		return $this;
 	}
 

@@ -64,8 +64,8 @@ interface Facade
 	 *   Get the CollectionIterator object (a new instance if $getnew is true) | Default: false
 	 *
 	 * @param Filter\FilterObject $filter    Filter object from createFilterObject()
-	 * @param bool $no_convert               If True, the collection holds only array, otherwise
-	 *                                       it holds objects (see \QU\LERQ\Model\QueueModel)
+	 * @param bool $no_convert               If True, the collection holds only arrays, otherwise
+	 *                                       it holds an array of objects (see \QU\LERQ\Model\QueueModel)
 	 * @return \QU\LERQ\Collections\QueueCollection
 	 */
 	public function getCollection(\QU\LERQ\API\Filter\FilterObject $filter, bool $no_convert = false): \QU\LERQ\Collections\QueueCollection;

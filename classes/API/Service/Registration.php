@@ -60,36 +60,39 @@ class Registration
 	 */
 	public function create(string $name, string $namespace, string $path, bool $hasOverrides = false)
 	{
-		$provider = new ProviderModel();
-		$provider->setName($name)
-			->setNamespace($namespace)
-			->setPath($path)
-			->setHasOverrides($hasOverrides);
+		if (!$this->loadByNamespace($namespace)) {
+			$provider = new ProviderModel();
+			$provider->setName($name)
+				->setNamespace($namespace)
+				->setPath($path)
+				->setHasOverrides($hasOverrides);
 
-		$routines = new RoutinesModel();
-		if ($hasOverrides) {
-			try {
-				// @Todo how do we get the routines overrides object?
-				$routines_path = $path . '/CaptureRoutines/Routines.php'; // @Todo get a better way to find the file!
-				$overrideClass = new $routines_path();
-				if ($overrideClass instanceof DataCaptureRoutinesInterface) {
-					$overrides = $overrideClass->getOverrides();
-					$routines->setCollectUserData($overrides['collectUserData'])
-						->setCollectUDFData($overrides['collectUDFData'])
-						->setCollectMemberData($overrides['collectMemberData'])
-						->setCollectLpPeriod($overrides['collectLpPeriod']);
+			$routines = new RoutinesModel();
+			if ($hasOverrides) {
+				try {
+					// @Todo how do we get the routines overrides object?
+					$routines_path = $path . '/CaptureRoutines/Routines.php'; // @Todo get a better way to find the file!
+					$overrideClass = new $routines_path();
+					if ($overrideClass instanceof DataCaptureRoutinesInterface) {
+						$overrides = $overrideClass->getOverrides();
+						$routines->setCollectUserData($overrides['collectUserData'])
+							->setCollectUDFData($overrides['collectUDFData'])
+							->setCollectMemberData($overrides['collectMemberData'])
+							->setCollectLpPeriod($overrides['collectLpPeriod']);
+					}
+				} catch (\Exception $e) {
+					global $DIC;
+
+					$DIC->logger()->root()->error($e->getMessage());
+					return false;
 				}
-			} catch (\Exception $e) {
-				global $DIC;
-
-				$DIC->logger()->root()->error($e->getMessage());
-				return false;
 			}
+
+			$provider->setActiveOverrides($routines);
+
+			return $this->_save($provider);
 		}
-
-		$provider->setActiveOverrides($routines);
-
-		return $this->_save($provider);
+		return true;
 	}
 
 	/**

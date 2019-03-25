@@ -2,7 +2,6 @@
 /* Copyright (c) 1998-2011 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 require_once("./Services/Cron/classes/class.ilCronHookPlugin.php");
-require_once ('Autoload/LCAutoloader.php');
 
 /**
  * Class ilLpEventReportQueuePlugin
@@ -11,7 +10,7 @@ require_once ('Autoload/LCAutoloader.php');
 class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 {
 	const PLUGIN_ID = "lpeventreportqueue";
-	const PLUGIN_NAME = "ilLpEventReportQueue";
+	const PLUGIN_NAME = "LpEventReportQueue";
 	const PLUGIN_SETTINGS = "qu_crnhk_lerq";
 	const PLUGIN_NS = 'QU\LERQ';
 

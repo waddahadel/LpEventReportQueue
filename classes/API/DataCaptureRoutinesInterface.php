@@ -5,6 +5,8 @@ namespace QU\LERQ\API;
 
 interface DataCaptureRoutinesInterface
 {
+	public function getOverrides(): array;
+
 	public function collectUserData();
 
 	public function collectUDFData();

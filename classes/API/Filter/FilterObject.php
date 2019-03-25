@@ -10,10 +10,17 @@ namespace QU\LERQ\API\Filter;
  */
 class FilterObject
 {
+	const TIME_BEFORE = 0;
+	const TIME_AFTER = 1;
+
 	/** @var string */
 	private $course_start;
+	/** @var int */
+	private $course_start_direction;
 	/** @var string */
 	private $course_end;
+	/** @var int */
+	private $course_end_direction;
 	/** @var string */
 	private $progress;
 	/** @var int */
@@ -24,6 +31,20 @@ class FilterObject
 	private $event_type;
 	/** @var string */
 	private $event_happened;
+	/** @var int */
+	private $event_happened_direction;
+	/** @var string */
+	private $assignment;
+	/** @var string */
+	private $event;
+
+	/**
+	 * @return int
+	 */
+	public function getCourseStartDirection(): int
+	{
+		return $this->course_start_direction;
+	}
 
 	/**
 	 * @return string|bool
@@ -37,10 +58,19 @@ class FilterObject
 	 * @param string $course_start UTC Timestamp
 	 * @return FilterObject
 	 */
-	public function setCourseStart(string $course_start): FilterObject
+	public function setCourseStart(string $course_start, int $before_after = self::TIME_AFTER): FilterObject
 	{
 		$this->course_start = $course_start;
+		$this->course_start_direction = $before_after;
 		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getCourseEndDirection(): int
+	{
+		return $this->course_end_direction;
 	}
 
 	/**
@@ -55,9 +85,10 @@ class FilterObject
 	 * @param string $course_end UTC Timestamp
 	 * @return FilterObject
 	 */
-	public function setCourseEnd(string $course_end): FilterObject
+	public function setCourseEnd(string $course_end, int $before_after = self::TIME_BEFORE): FilterObject
 	{
 		$this->course_end = $course_end;
+		$this->course_end_direction = $before_after;
 		return $this;
 	}
 
@@ -134,9 +165,17 @@ class FilterObject
 	}
 
 	/**
-	 * @return string
+	 * @return int
 	 */
-	public function getEventHappened(): string
+	public function getEventHappenedDirection(): int
+	{
+		return $this->event_happened_direction;
+	}
+
+	/**
+	 * @return string|bool
+	 */
+	public function getEventHappened()
 	{
 		return (isset($this->event_happened) ? $this->event_happened : false);
 	}
@@ -145,9 +184,46 @@ class FilterObject
 	 * @param string $event_happened  UTC Timestamp
 	 * @return FilterObject
 	 */
-	public function setEventHappened(string $event_happened): FilterObject
+	public function setEventHappened(string $event_happened, int $before_after = self::TIME_AFTER): FilterObject
 	{
 		$this->event_happened = $event_happened;
+		$this->event_happened_direction = $before_after;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getAssignment(): string
+	{
+		return (isset($this->assignment) ? $this->assignment : '*');
+	}
+
+	/**
+	 * @param string $assignment
+	 * @return FilterObject
+	 */
+	public function setAssignment(string $assignment): FilterObject
+	{
+		$this->assignment = $assignment;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getEvent(): string
+	{
+		return (isset($this->event) ? $this->event : '*');
+	}
+
+	/**
+	 * @param string $event
+	 * @return FilterObject
+	 */
+	public function setEvent(string $event): FilterObject
+	{
+		$this->event = $event;
 		return $this;
 	}
 

@@ -40,9 +40,9 @@ interface Facade
 	 * the page limit, use "->setPageLimit(-1)".
 	 *
 	 * Available methods:
-	 * ->setCourseStart(string $course_start)
+	 * ->setCourseStart(string $course_start, int $before_after)
 	 *   Filter for course | session start time (UTC Timestamp)
-	 * ->setCourseEnd(string $course_end)
+	 * ->setCourseEnd(string $course_end, int $before_after)
 	 *   Filter for course | session end time (UTC Timestamp)
 	 * ->setProgress(string $progress)
 	 *   Filter for learning progress type (this locks eventType filter to 'lp_event')
@@ -52,8 +52,12 @@ interface Facade
 	 *   Set number of maximal entries | Default: 500
 	 * ->setEventType(string $event_type)
 	 *   Filter for specific event type
-	 * ->setEventHappened(string $event_happened)
+	 * ->setEventHappened(string $event_happened, int $before_after)
 	 *   Filter for when the event happened (UTC Timestamp)
+	 * ->setAssignment(string $assignment)
+	 *   Filter for user assignment role (this locks eventType filter to 'member_event')
+	 * ->setEvent(string $event)
+	 *   Filter for Event
 	 *
 	 * @return Filter\FilterObject
 	 */

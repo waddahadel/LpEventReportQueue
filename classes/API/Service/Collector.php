@@ -72,39 +72,76 @@ class Collector
 	private function createWhereByFilter(): string
 	{
 		$where = '';
+		$limit = '';
 
+		/* Time based filter */
 		if ($this->filter->getCourseStart() !== false) {
-			$where .= '`course_start` >= ' . $this->filter->getCourseStart();
+			if ($this->filter->getCourseStartDirection() === $this->filter::TIME_BEFORE) {
+				$where .= '`course_start` <= ' . $this->filter->getCourseStart();
+			} else {
+				$where .= '`course_start` >= ' . $this->filter->getCourseStart();
+			}
 			$where .= ' AND ';
 		}
 		if ($this->filter->getCourseEnd() !== false) {
-			$where .= '`course_end` >= ' . $this->filter->getCourseEnd();
+			if ($this->filter->getCourseEndDirection() === $this->filter::TIME_AFTER) {
+				$where .= '`course_end` >= ' . $this->filter->getCourseEnd();
+			} else {
+				$where .= '`course_end` <= ' . $this->filter->getCourseEnd();
+			}
 			$where .= ' AND ';
 		}
+		if ($this->filter->getEventHappened() !== false) {
+			if ($this->filter->getEventHappenedDirection() === $this->filter::TIME_BEFORE) {
+				$where .= '`timestamp` <= ' . $this->filter->getCourseStart();
+			} else {
+				$where .= '`timestamp` >= ' . $this->filter->getCourseStart();
+			}
+			$where .= ' AND ';
+		}
+
+		/* Event related filter */
 		if ($this->filter->getProgress() !== '*') {
-			$where .= '`event_type` = "lp_event"';
 			$where .= '`progress` = "' . $this->database->quote($this->filter->getProgress(), 'text') . '" ';
 			$where .= ' AND ';
 		}
+		if ($this->filter->getAssignment() !== '*') {
+			$where .= '`assignment` = "' . $this->database->quote($this->filter->getAssignment(), 'text') . '" ';
+			$where .= ' AND ';
+		}
+
+		/* Event type filter */
+		// progress filter is only available for lp events
+		// assignment filter is only available for member events
+		if ($this->filter->getProgress() !== '*') {
+			$where .= '`event_type` = "lp_event" AND ';
+		} else if ($this->filter->getAssignment() !== '*') {
+
+			$where .= '`event_type` = "member_event" AND ';
+		} else if ($this->filter->getEventType() !== '*') {
+
+			$where .= '`event_type` = "member_event" AND ';
+		}
+
+		/* simple filter */
+		if ($this->filter->getEvent() !== '*' && $this->filter->getProgress() == '*') {
+			$where .= '`event_type` = "' . $this->database->quote($this->filter->getEventType(), 'text') . '" ';
+			$where .= ' AND ';
+		}
+
+		/* Paging filter */
 		if ($this->filter->getPageStart() !== 0) {
 			$where .= '`id` >= ' . $this->database->quote($this->filter->getPageStart(), 'integer') . ' ';
 			$where .= ' AND ';
 		}
-		if ($this->filter->getEventType() !== '*' && $this->filter->getProgress() == '*') {
-			$where .= '`event_type` = "' . $this->database->quote($this->filter->getEventType(), 'text') . '" ';
-			$where .= ' AND ';
-		}
+
 		if ($this->filter->getPageLength() !== -1) {
-			$where .= '';
-			$where .= ' LIMIT ' . $this->database->quote($this->filter->getPageLength(), 'integer') . ' ';
-		}
-		if ($this->filter->getEventHappened() !== false) {
-			$where .= '`timestamp` >= ' . $this->filter->getCourseStart();
-			$where .= ' AND ';
+			$limit .= ' LIMIT ' . $this->database->quote($this->filter->getPageLength(), 'integer') . ' ';
 		}
 
 		if (strlen($where) > 0) {
-			$where = ' WHERE ' . $where;
+			$where = ' WHERE ' . $where . ' TRUE ' . $limit;
+
 		}
 
 		return $where;

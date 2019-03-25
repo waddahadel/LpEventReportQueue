@@ -22,6 +22,16 @@ interface Facade
 	public function registerProvider(string $name, string $namespace, string $path, bool $hasOverrides = false): bool;
 
 	/**
+	 * NOT IMPLEMENTED YET @Todo
+	 */
+//	public function updateProvider(string $name, string $namespace, string $path, bool $hasOverrides = false): bool;
+
+	/**
+	 * NOT IMPLEMENTED YET @Todo
+	 */
+//	public function unregisterProvider(string $name, string $namespace, string $path, bool $hasOverrides = false): bool;
+
+	/**
 	 * Create a new Filter object
 	 *
 	 * All setter methods of the filter object are chainable.

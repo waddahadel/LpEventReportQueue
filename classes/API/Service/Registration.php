@@ -70,16 +70,17 @@ class Registration
 			$routines = new RoutinesModel();
 			if ($hasOverrides) {
 				try {
-					// @Todo how do we get the routines overrides object?
 					$routines_path = $path . '/CaptureRoutines/Routines.php'; // @Todo get a better way to find the file!
-//					$overrideClass = new $routines_path();
-//					if ($overrideClass instanceof DataCaptureRoutinesInterface) {
-//						$overrides = $overrideClass->getOverrides();
-//						$routines->setCollectUserData($overrides['collectUserData'])
-//							->setCollectUDFData($overrides['collectUDFData'])
-//							->setCollectMemberData($overrides['collectMemberData'])
-//							->setCollectLpPeriod($overrides['collectLpPeriod']);
-//					}
+					require_once $routines_path;
+					$class = $namespace . '\Routines';
+					$overrideClass = new $class();
+					if ($overrideClass instanceof DataCaptureRoutinesInterface) {
+						$overrides = $overrideClass->getOverrides();
+						$routines->setCollectUserData($overrides['collectUserData'])
+							->setCollectUDFData($overrides['collectUDFData'])
+							->setCollectMemberData($overrides['collectMemberData'])
+							->setCollectLpPeriod($overrides['collectLpPeriod']);
+					}
 				} catch (\Exception $e) {
 					global $DIC;
 
@@ -95,6 +96,9 @@ class Registration
 		return true;
 	}
 
+//	public function update() {} // @Todo
+//	public function remove() {} // @Todo
+
 	/**
 	 * @return array
 	 */
@@ -105,8 +109,8 @@ class Registration
 		$query = 'SELECT * FROM `' . self::DB_PROVIDER_REG . '` ';
 		$providers = [];
 
-		$res = $DIC->database->query($query);
-		while ($row = $DIC->database->fetchAssoc($res)) {
+		$res = $DIC->database()->query($query);
+		while ($row = $DIC->database()->fetchAssoc($res)) {
 			$provider = new ProviderModel();
 			$provider->setName($row['name'])
 				->setNamespace($row['namespace'])
@@ -144,6 +148,7 @@ class Registration
 				'path'              => array('text', $provider->getPath()),
 				'has_overrides'     => array('integer', $provider->getHasOverrides()),
 				'active_overrides'  => array('text', $provider->getActiveOverrides()),
+				'created_at'        => array('timestamp', date('Y-m-d H:i:s')),
 			)
 		);
 

@@ -17,7 +17,7 @@ class RoutinesModel
 	/**
 	 * @return bool
 	 */
-	public function isCollectUserData(): bool
+	public function getCollectUserData(): bool
 	{
 		return $this->collectUserData;
 	}
@@ -35,7 +35,7 @@ class RoutinesModel
 	/**
 	 * @return bool
 	 */
-	public function isCollectUDFData(): bool
+	public function getCollectUDFData(): bool
 	{
 		return $this->collectUDFData;
 	}
@@ -53,7 +53,7 @@ class RoutinesModel
 	/**
 	 * @return bool
 	 */
-	public function isCollectMemberData(): bool
+	public function getCollectMemberData(): bool
 	{
 		return $this->collectMemberData;
 	}
@@ -71,7 +71,7 @@ class RoutinesModel
 	/**
 	 * @return bool
 	 */
-	public function isCollectLpPeriod(): bool
+	public function getCollectLpPeriod(): bool
 	{
 		return $this->collectLpPeriod;
 	}

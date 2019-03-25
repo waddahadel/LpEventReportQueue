@@ -73,7 +73,7 @@ class ProviderModel
 	/**
 	 * @return bool
 	 */
-	public function isHasOverrides(): bool
+	public function getHasOverrides(): bool
 	{
 		return $this->hasOverrides;
 	}

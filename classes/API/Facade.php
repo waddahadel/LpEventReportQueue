@@ -8,7 +8,7 @@ namespace QU\LERQ\API;
  * @package QU\LERQ\API
  * @author Ralph Dittrich <dittrich@qualitus.de>
  */
-interface QueueInterface
+interface Facade
 {
 	/**
 	 * Register a provider plugin
@@ -31,9 +31,9 @@ interface QueueInterface
 	 *
 	 * Available methods:
 	 * ->setCourseStart(string $course_start)
-	 *   Filter for course | session start time
+	 *   Filter for course | session start time (UTC Timestamp)
 	 * ->setCourseEnd(string $course_end)
-	 *   Filter for course | session end time
+	 *   Filter for course | session end time (UTC Timestamp)
 	 * ->setProgress(string $progress)
 	 *   Filter for learning progress type (this locks eventType filter to 'lp_event')
 	 * ->setPageStart(int $page_start)
@@ -42,6 +42,8 @@ interface QueueInterface
 	 *   Set number of maximal entries | Default: 500
 	 * ->setEventType(string $event_type)
 	 *   Filter for specific event type
+	 * ->setEventHappened(string $event_happened)
+	 *   Filter for when the event happened (UTC Timestamp)
 	 *
 	 * @return Filter\FilterObject
 	 */
@@ -61,8 +63,10 @@ interface QueueInterface
 	 * ->getIterator(bool $getnew)
 	 *   Get the CollectionIterator object (a new instance if $getnew is true) | Default: false
 	 *
-	 * @param Filter\FilterObject $filter
+	 * @param Filter\FilterObject $filter    Filter object from createFilterObject()
+	 * @param bool $no_convert               If True, the collection holds only array, otherwise
+	 *                                       it holds objects (see \QU\LERQ\Model\QueueModel)
 	 * @return \QU\LERQ\Collections\QueueCollection
 	 */
-	public function getCollection(\QU\LERQ\API\Filter\FilterObject $filter): \QU\LERQ\Collections\QueueCollection;
+	public function getCollection(\QU\LERQ\API\Filter\FilterObject $filter, bool $no_convert = false): \QU\LERQ\Collections\QueueCollection;
 }

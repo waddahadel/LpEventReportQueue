@@ -26,10 +26,12 @@ class ProviderModel
 
 	/**
 	 * @param string $name
+	 * @return ProviderModel
 	 */
-	public function setName(string $name)
+	public function setName(string $name): ProviderModel
 	{
 		$this->name = $name;
+		return $this;
 	}
 
 	/**
@@ -42,10 +44,12 @@ class ProviderModel
 
 	/**
 	 * @param string $namespace
+	 * @return ProviderModel
 	 */
-	public function setNamespace(string $namespace)
+	public function setNamespace(string $namespace): ProviderModel
 	{
 		$this->namespace = $namespace;
+		return $this;
 	}
 
 	/**
@@ -58,26 +62,30 @@ class ProviderModel
 
 	/**
 	 * @param string $path
+	 * @return ProviderModel
 	 */
-	public function setPath(string $path)
+	public function setPath(string $path): ProviderModel
 	{
 		$this->path = $path;
+		return $this;
 	}
 
 	/**
 	 * @return bool
 	 */
-	public function getHasOverrides(): bool
+	public function isHasOverrides(): bool
 	{
 		return $this->hasOverrides;
 	}
 
 	/**
 	 * @param bool $hasOverrides
+	 * @return ProviderModel
 	 */
-	public function setHasOverrides(bool $hasOverrides)
+	public function setHasOverrides(bool $hasOverrides): ProviderModel
 	{
 		$this->hasOverrides = $hasOverrides;
+		return $this;
 	}
 
 	/**
@@ -90,10 +98,12 @@ class ProviderModel
 
 	/**
 	 * @param RoutinesModel $activeOverrides
+	 * @return ProviderModel
 	 */
-	public function setActiveOverrides(RoutinesModel $activeOverrides)
+	public function setActiveOverrides(RoutinesModel $activeOverrides): ProviderModel
 	{
 		$this->activeOverrides = $activeOverrides;
+		return $this;
 	}
 
 }

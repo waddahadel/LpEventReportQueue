@@ -17,65 +17,73 @@ class RoutinesModel
 	/**
 	 * @return bool
 	 */
-	public function getCollectUserData(): bool
+	public function isCollectUserData(): bool
 	{
-		return ($this->collectUserData == true);
+		return $this->collectUserData;
 	}
 
 	/**
 	 * @param bool $collectUserData
+	 * @return RoutinesModel
 	 */
-	public function setCollectUserData(bool $collectUserData)
+	public function setCollectUserData(bool $collectUserData): RoutinesModel
 	{
 		$this->collectUserData = $collectUserData;
+		return $this;
 	}
 
 	/**
 	 * @return bool
 	 */
-	public function getCollectUDFData(): bool
+	public function isCollectUDFData(): bool
 	{
-		return ($this->collectUDFData == true);
+		return $this->collectUDFData;
 	}
 
 	/**
 	 * @param bool $collectUDFData
+	 * @return RoutinesModel
 	 */
-	public function setCollectUDFData(bool $collectUDFData)
+	public function setCollectUDFData(bool $collectUDFData): RoutinesModel
 	{
 		$this->collectUDFData = $collectUDFData;
+		return $this;
 	}
 
 	/**
 	 * @return bool
 	 */
-	public function getCollectMemberData(): bool
+	public function isCollectMemberData(): bool
 	{
-		return ($this->collectMemberData == true);
+		return $this->collectMemberData;
 	}
 
 	/**
 	 * @param bool $collectMemberData
+	 * @return RoutinesModel
 	 */
-	public function setCollectMemberData(bool $collectMemberData)
+	public function setCollectMemberData(bool $collectMemberData): RoutinesModel
 	{
 		$this->collectMemberData = $collectMemberData;
+		return $this;
 	}
 
 	/**
 	 * @return bool
 	 */
-	public function getCollectLpPeriod(): bool
+	public function isCollectLpPeriod(): bool
 	{
-		return ($this->collectLpPeriod == true);
+		return $this->collectLpPeriod;
 	}
 
 	/**
 	 * @param bool $collectLpPeriod
+	 * @return RoutinesModel
 	 */
-	public function setCollectLpPeriod(bool $collectLpPeriod)
+	public function setCollectLpPeriod(bool $collectLpPeriod): RoutinesModel
 	{
 		$this->collectLpPeriod = $collectLpPeriod;
+		return $this;
 	}
 
 	/**

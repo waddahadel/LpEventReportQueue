@@ -1,0 +1,11 @@
+<?php xml version = "1.0" encoding = "UTF-8"?>
+<plugin id="lpeventreportqueue">
+    <events>
+        <event type="listen" id="Modules/Course" />
+        <event type="listen" id="Modules/Excercise" />
+        <event type="listen" id="Modules/StudyProgramme" />
+        <event type="listen" id="Services/Object" />
+        <event type="listen" id="Services/Tracking" />
+        <event type="listen" id="Services/User" />
+    </events>
+</plugin>

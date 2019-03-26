@@ -149,10 +149,132 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 	{
 		switch($a_component)
 		{
+			case "Modules/Course":
+				$this->debuglog($a_component, $a_event, $a_params);
+				/*
+				 * $a_event: addParticipant
+				 * $a_params: ['obj_id', 'usr_id', 'role_id']
+				 */
+				/*
+				 * $a_event: deleteParticipant
+				 * $a_params: ['objid', 'usr_id']
+				 */
+				/*
+				 * $a_event: addSubscriber
+				 * $a_params: [] // @Todo
+				 */
+				/*
+				 * $a_event: addToWaitingList
+				 * $a_params: ['obj_id', 'usr_id']
+				 */
+				/*
+				 * $a_event: create
+				 * $a_params: ['object'(ilObjCourse), 'obj_id', 'appointments'(array)]
+				 */
+				/*
+				 * $a_event: delete
+				 * $a_params: ['object'(ilObjCourse), 'obj_id', 'appointments'(array)]
+				 */
+				/*
+				 * $a_event: update
+				 * $a_params: ['object'(ilObjCourse), 'obj_id', 'appointments'(array)]
+				 */
+				/*
+				 * $a_event: removeFromWaitingList
+				 * $a_params: ['obj_id', 'usr_id']
+				 */
+				break;
+			case "Modules/Excercise":
+				$this->debuglog($a_component, $a_event, $a_params);
+				/*
+				 * $a_event: createAssignment
+				 * $a_params: [] // @Todo
+				 */
+				/*
+				 * $a_event: delete
+				 * $a_params: [] // @Todo
+				 */
+				/*
+				 * $a_event: deleteAssignment
+				 * $a_params: [] // @Todo
+				 */
+				/*
+				 * $a_event: updateAssignment
+				 * $a_params: [] // @Todo
+				 */
+				break;
+			case "Modules/StudyProgramme":
+				$this->debuglog($a_component, $a_event, $a_params);
+				/*
+				 * $a_event: userAssigned
+				 * $a_params: [] // @Todo
+				 */
+				/*
+				 * $a_event: userDeassigned
+				 * $a_params: [] // @Todo
+				 */
+				/*
+				 * $a_event: userSuccessful
+				 * $a_params: [] // @Todo
+				 */
+				break;
+			case "Services/Object":
+				$this->debuglog($a_component, $a_event, $a_params);
+				/*
+				 * $a_event: create
+				 * $a_params: ['obj_id', 'obj_type']
+				 */
+				/*
+				 * $a_event: delete
+				 * $a_params: ['obj_id', 'ref_id', 'type', 'old_parent_ref_id']
+				 */
+				/*
+				 * $a_event: toTrash
+				 * $a_params: ['obj_id', 'ref_id', 'old_parent_ref_id']
+				 */
+				/*
+				 * $a_event: undelete
+				 * $a_params: ['obj_id', 'ref_id']
+				 */
+				/*
+				 * $a_event: update
+				 * $a_params: ['obj_id', 'obj_type', 'ref_id']
+				 */
+				/*
+				 * $a_event: putObjectInTree
+				 * $a_params: ['object'(ilObjCourse), 'obj_type', 'obj_id', 'parent_ref_id']
+				 */
+				/*
+				 * $a_event: beforeDeletion
+				 * $a_params: ['object'(any object)]
+				 */
+				break;
+			case "Services/Tracking":
+				$this->debuglog($a_component, $a_event, $a_params);
+				/*
+				 * $a_event: updateStatus
+				 * $a_params: ['obj_id', 'usr_id', 'status', 'percentage']
+				 */
+				break;
+			case "Services/User":
+				$this->debuglog($a_component, $a_event, $a_params);
+				/*
+				 * $a_event: afterCreate
+				 * $a_params: [] // @Todo
+				 */
+				/*
+				 * $a_event: afterUpdate
+				 * $a_params: [] // @Todo
+				 */
+				/*
+				 * $a_event: deleteUser
+				 * $a_params: [] // @Todo
+				 */
+				break;
 //			case "Services/User":
 //				switch($a_event)
 //				{
-//					case "afterCreate": // @Todo can we check if this is triggered by the registration formular?
+//					case "afterCreate":
 //						$handler = new \QU\LERQ\Events\LearningProgressEvent();
 //						$handler->handle_event($a_params);
 //						break;
@@ -161,6 +283,17 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 		}
 
 		return true;
+	}
+
+	private function debuglog($a_component, $a_event, $a_params)
+	{
+		global $DIC;
+		$dumper = new \QU\LERQ\Helper\TVarDumper();
+		$DIC->logger()->root()->debug(implode(' -> ', [
+			var_export($a_component, true),
+			var_export($a_event, true),
+			$dumper::dump($a_params, 2),
+		]));
 	}
 
 }

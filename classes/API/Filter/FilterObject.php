@@ -10,7 +10,9 @@ namespace QU\LERQ\API\Filter;
  */
 class FilterObject
 {
+	// <=
 	const TIME_BEFORE = 0;
+	// >=
 	const TIME_AFTER = 1;
 
 	/** @var string */

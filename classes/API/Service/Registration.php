@@ -115,7 +115,7 @@ class Registration
 			$provider->setName($row['name'])
 				->setNamespace($row['namespace'])
 				->setPath($row['path'])
-				->setHasOverrides($row['has_overrides']);
+				->setHasOverrides(($row['has_overrides'] == true));
 
 			$overrides = json_decode($row['active_overrides'], true);
 			$routines = new RoutinesModel();
@@ -125,7 +125,7 @@ class Registration
 				->setCollectLpPeriod($overrides['collectLpPeriod']);
 
 			$provider->setActiveOverrides($routines);
-			$providers[] = $provider;
+			$providers[$provider->getName()] = $provider;
 			$provider = null;
 		}
 

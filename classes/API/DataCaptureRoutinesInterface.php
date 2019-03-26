@@ -9,9 +9,11 @@ interface DataCaptureRoutinesInterface
 
 	public function collectUserData();
 
-	public function collectUDFData();
+	public function collectUDFData(): array;
 
 	public function collectMemberData();
 
-	public function collectLpPeriod();
+	public function collectLpPeriod(): array;
+
+	public function collectObjectData();
 }

@@ -61,7 +61,7 @@ class Collector
 		$select = 'SELECT ';
 		$select .= '`id`, `timestamp`, `event`, `event_type`, `progress`, `assignment`, ';
 		$select .= '`course_start`, `course_end`, `user_data`, `obj_data`, `mem_data` ';
-		$select .= 'FROM `lp_event_report_queue` ';
+		$select .= 'FROM `lerq_queue` ';
 
 		return $select;
 	}

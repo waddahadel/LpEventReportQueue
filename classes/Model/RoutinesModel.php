@@ -19,7 +19,7 @@ class RoutinesModel
 	 */
 	public function getCollectUserData(): bool
 	{
-		return $this->collectUserData;
+		return (isset($this->collectUserData) ? $this->collectUserData : false);
 	}
 
 	/**
@@ -37,7 +37,7 @@ class RoutinesModel
 	 */
 	public function getCollectUDFData(): bool
 	{
-		return $this->collectUDFData;
+		return (isset($this->collectUDFData) ? $this->collectUDFData : false);
 	}
 
 	/**
@@ -55,7 +55,7 @@ class RoutinesModel
 	 */
 	public function getCollectMemberData(): bool
 	{
-		return $this->collectMemberData;
+		return (isset($this->collectMemberData) ? $this->collectMemberData : false);
 	}
 
 	/**
@@ -73,7 +73,7 @@ class RoutinesModel
 	 */
 	public function getCollectLpPeriod(): bool
 	{
-		return $this->collectLpPeriod;
+		return (isset($this->collectLpPeriod) ? $this->collectLpPeriod : $this->collectLpPeriod);
 	}
 
 	/**

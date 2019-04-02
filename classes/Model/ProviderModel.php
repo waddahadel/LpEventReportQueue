@@ -75,7 +75,7 @@ class ProviderModel
 	 */
 	public function getHasOverrides(): bool
 	{
-		return $this->hasOverrides;
+		return (isset($this->hasOverrides) ? $this->hasOverrides : false);
 	}
 
 	/**
@@ -93,7 +93,7 @@ class ProviderModel
 	 */
 	public function getActiveOverrides(): RoutinesModel
 	{
-		return $this->activeOverrides;
+		return (isset($this->activeOverrides) ? $this->activeOverrides : new RoutinesModel());
 	}
 
 	/**

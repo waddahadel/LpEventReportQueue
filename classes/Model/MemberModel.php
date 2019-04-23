@@ -24,14 +24,14 @@ class MemberModel
 	 */
 	public function getMemberRole(): string
 	{
-		return $this->member_role;
+		return (isset($this->member_role) ? $this->member_role : '');
 	}
 
 	/**
 	 * @param string $member_role
 	 * @return MemberModel
 	 */
-	public function setMemberRole(string $member_role): MemberModel
+	public function setMemberRole($member_role): MemberModel
 	{
 		$this->member_role = $member_role;
 		return $this;
@@ -42,14 +42,14 @@ class MemberModel
 	 */
 	public function getCourseTitle(): string
 	{
-		return $this->course_title;
+		return (isset($this->course_title) ? $this->course_title : '');
 	}
 
 	/**
 	 * @param string $course_title
 	 * @return MemberModel
 	 */
-	public function setCourseTitle(string $course_title): MemberModel
+	public function setCourseTitle($course_title): MemberModel
 	{
 		$this->course_title = $course_title;
 		return $this;
@@ -60,14 +60,14 @@ class MemberModel
 	 */
 	public function getCourseId(): int
 	{
-		return $this->course_id;
+		return (isset($this->course_id) ? $this->course_id : -1);
 	}
 
 	/**
 	 * @param int $course_id
 	 * @return MemberModel
 	 */
-	public function setCourseId(int $course_id): MemberModel
+	public function setCourseId($course_id): MemberModel
 	{
 		$this->course_id = $course_id;
 		return $this;
@@ -78,14 +78,14 @@ class MemberModel
 	 */
 	public function getCourseRefId(): int
 	{
-		return $this->course_ref_id;
+		return (isset($this->course_ref_id) ? $this->course_ref_id : -1);
 	}
 
 	/**
 	 * @param int $course_ref_id
 	 * @return MemberModel
 	 */
-	public function setCourseRefId(int $course_ref_id): MemberModel
+	public function setCourseRefId($course_ref_id): MemberModel
 	{
 		$this->course_ref_id = $course_ref_id;
 		return $this;

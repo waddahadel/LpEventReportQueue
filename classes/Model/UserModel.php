@@ -68,14 +68,14 @@ class UserModel
 	 */
 	public function getUsrId(): int
 	{
-		return $this->usr_id;
+		return (isset($this->usr_id) ? $this->usr_id : -1);
 	}
 
 	/**
 	 * @param int $usr_id
 	 * @return UserModel
 	 */
-	public function setUsrId(int $usr_id): UserModel
+	public function setUsrId($usr_id): UserModel
 	{
 		$this->usr_id = $usr_id;
 		return $this;
@@ -86,14 +86,14 @@ class UserModel
 	 */
 	public function getLogin(): string
 	{
-		return $this->login;
+		return (isset($this->login) ? $this->login : '');
 	}
 
 	/**
 	 * @param string $login
 	 * @return UserModel
 	 */
-	public function setLogin(string $login): UserModel
+	public function setLogin($login): UserModel
 	{
 		$this->login = $login;
 		return $this;
@@ -104,14 +104,14 @@ class UserModel
 	 */
 	public function getFirstname(): string
 	{
-		return $this->firstname;
+		return (isset($this->firstname) ? $this->firstname : '');
 	}
 
 	/**
 	 * @param string $firstname
 	 * @return UserModel
 	 */
-	public function setFirstname(string $firstname): UserModel
+	public function setFirstname($firstname): UserModel
 	{
 		$this->firstname = $firstname;
 		return $this;
@@ -122,14 +122,14 @@ class UserModel
 	 */
 	public function getLastname(): string
 	{
-		return $this->lastname;
+		return (isset($this->lastname) ? $this->lastname : '');
 	}
 
 	/**
 	 * @param string $lastname
 	 * @return UserModel
 	 */
-	public function setLastname(string $lastname): UserModel
+	public function setLastname($lastname): UserModel
 	{
 		$this->lastname = $lastname;
 		return $this;
@@ -140,14 +140,14 @@ class UserModel
 	 */
 	public function getTitle(): string
 	{
-		return $this->title;
+		return (isset($this->title) ? $this->title : '');
 	}
 
 	/**
 	 * @param string $title
 	 * @return UserModel
 	 */
-	public function setTitle(string $title): UserModel
+	public function setTitle($title): UserModel
 	{
 		$this->title = $title;
 		return $this;
@@ -158,14 +158,14 @@ class UserModel
 	 */
 	public function getGender(): string
 	{
-		return $this->gender;
+		return (isset($this->gender) ? $this->gender : '');
 	}
 
 	/**
 	 * @param string $gender
 	 * @return UserModel
 	 */
-	public function setGender(string $gender): UserModel
+	public function setGender($gender): UserModel
 	{
 		$this->gender = $gender;
 		return $this;
@@ -176,14 +176,14 @@ class UserModel
 	 */
 	public function getEmail(): string
 	{
-		return $this->email;
+		return (isset($this->email) ? $this->email : '');
 	}
 
 	/**
 	 * @param string $email
 	 * @return UserModel
 	 */
-	public function setEmail(string $email): UserModel
+	public function setEmail($email): UserModel
 	{
 		$this->email = $email;
 		return $this;
@@ -194,14 +194,14 @@ class UserModel
 	 */
 	public function getInstitution(): string
 	{
-		return $this->institution;
+		return (isset($this->institution) ? $this->institution : '');
 	}
 
 	/**
 	 * @param string $institution
 	 * @return UserModel
 	 */
-	public function setInstitution(string $institution): UserModel
+	public function setInstitution($institution): UserModel
 	{
 		$this->institution = $institution;
 		return $this;
@@ -212,14 +212,14 @@ class UserModel
 	 */
 	public function getStreet(): string
 	{
-		return $this->street;
+		return (isset($this->street) ? $this->street : '');
 	}
 
 	/**
 	 * @param string $street
 	 * @return UserModel
 	 */
-	public function setStreet(string $street): UserModel
+	public function setStreet($street): UserModel
 	{
 		$this->street = $street;
 		return $this;
@@ -230,14 +230,14 @@ class UserModel
 	 */
 	public function getCity(): string
 	{
-		return $this->city;
+		return (isset($this->city) ? $this->city : '');
 	}
 
 	/**
 	 * @param string $city
 	 * @return UserModel
 	 */
-	public function setCity(string $city): UserModel
+	public function setCity($city): UserModel
 	{
 		$this->city = $city;
 		return $this;
@@ -248,14 +248,14 @@ class UserModel
 	 */
 	public function getCountry(): string
 	{
-		return $this->country;
+		return (isset($this->country) ? $this->country : '');
 	}
 
 	/**
 	 * @param string $country
 	 * @return UserModel
 	 */
-	public function setCountry(string $country): UserModel
+	public function setCountry($country): UserModel
 	{
 		$this->country = $country;
 		return $this;
@@ -266,14 +266,14 @@ class UserModel
 	 */
 	public function getPhoneOffice(): string
 	{
-		return $this->phone_office;
+		return (isset($this->phone_office) ? $this->phone_office : '');
 	}
 
 	/**
 	 * @param string $phone_office
 	 * @return UserModel
 	 */
-	public function setPhoneOffice(string $phone_office): UserModel
+	public function setPhoneOffice($phone_office): UserModel
 	{
 		$this->phone_office = $phone_office;
 		return $this;
@@ -284,14 +284,14 @@ class UserModel
 	 */
 	public function getHobby(): string
 	{
-		return $this->hobby;
+		return (isset($this->hobby) ? $this->hobby : '');
 	}
 
 	/**
 	 * @param string $hobby
 	 * @return UserModel
 	 */
-	public function setHobby(string $hobby): UserModel
+	public function setHobby($hobby): UserModel
 	{
 		$this->hobby = $hobby;
 		return $this;
@@ -302,14 +302,14 @@ class UserModel
 	 */
 	public function getDepartment(): string
 	{
-		return $this->department;
+		return (isset($this->department) ? $this->department : '');
 	}
 
 	/**
 	 * @param string $department
 	 * @return UserModel
 	 */
-	public function setDepartment(string $department): UserModel
+	public function setDepartment($department): UserModel
 	{
 		$this->department = $department;
 		return $this;
@@ -320,14 +320,14 @@ class UserModel
 	 */
 	public function getPhoneHome(): string
 	{
-		return $this->phone_home;
+		return (isset($this->phone_home) ? $this->phone_home : '');
 	}
 
 	/**
 	 * @param string $phone_home
 	 * @return UserModel
 	 */
-	public function setPhoneHome(string $phone_home): UserModel
+	public function setPhoneHome($phone_home): UserModel
 	{
 		$this->phone_home = $phone_home;
 		return $this;
@@ -338,14 +338,14 @@ class UserModel
 	 */
 	public function getPhoneMobile(): string
 	{
-		return $this->phone_mobile;
+		return (isset($this->phone_mobile) ? $this->phone_mobile : '');
 	}
 
 	/**
 	 * @param string $phone_mobile
 	 * @return UserModel
 	 */
-	public function setPhoneMobile(string $phone_mobile): UserModel
+	public function setPhoneMobile($phone_mobile): UserModel
 	{
 		$this->phone_mobile = $phone_mobile;
 		return $this;
@@ -356,14 +356,14 @@ class UserModel
 	 */
 	public function getFax(): string
 	{
-		return $this->fax;
+		return (isset($this->fax) ? $this->fax : '');
 	}
 
 	/**
 	 * @param string $fax
 	 * @return UserModel
 	 */
-	public function setFax(string $fax): UserModel
+	public function setFax($fax): UserModel
 	{
 		$this->fax = $fax;
 		return $this;
@@ -374,14 +374,14 @@ class UserModel
 	 */
 	public function getReferralComment(): string
 	{
-		return $this->referral_comment;
+		return (isset($this->referral_comment) ? $this->referral_comment : '');
 	}
 
 	/**
 	 * @param string $referral_comment
 	 * @return UserModel
 	 */
-	public function setReferralComment(string $referral_comment): UserModel
+	public function setReferralComment($referral_comment): UserModel
 	{
 		$this->referral_comment = $referral_comment;
 		return $this;
@@ -392,14 +392,14 @@ class UserModel
 	 */
 	public function getMatriculation(): string
 	{
-		return $this->matriculation;
+		return (isset($this->matriculation) ? $this->matriculation : '');
 	}
 
 	/**
 	 * @param string $matriculation
 	 * @return UserModel
 	 */
-	public function setMatriculation(string $matriculation): UserModel
+	public function setMatriculation($matriculation): UserModel
 	{
 		$this->matriculation = $matriculation;
 		return $this;
@@ -410,14 +410,14 @@ class UserModel
 	 */
 	public function getActive(): int
 	{
-		return $this->active;
+		return (isset($this->active) ? $this->active : -1);
 	}
 
 	/**
 	 * @param int $active
 	 * @return UserModel
 	 */
-	public function setActive(int $active): UserModel
+	public function setActive($active): UserModel
 	{
 		$this->active = $active;
 		return $this;
@@ -428,14 +428,14 @@ class UserModel
 	 */
 	public function getApprovalDate(): string
 	{
-		return $this->approval_date;
+		return (isset($this->approval_date) ? $this->approval_date : '');
 	}
 
 	/**
 	 * @param string $approval_date
 	 * @return UserModel
 	 */
-	public function setApprovalDate(string $approval_date): UserModel
+	public function setApprovalDate($approval_date): UserModel
 	{
 		$this->approval_date = $approval_date;
 		return $this;
@@ -446,14 +446,14 @@ class UserModel
 	 */
 	public function getAgreeDate(): string
 	{
-		return $this->agree_date;
+		return (isset($this->agree_date) ? $this->agree_date : '');
 	}
 
 	/**
 	 * @param string $agree_date
 	 * @return UserModel
 	 */
-	public function setAgreeDate(string $agree_date): UserModel
+	public function setAgreeDate($agree_date): UserModel
 	{
 		$this->agree_date = $agree_date;
 		return $this;
@@ -464,14 +464,14 @@ class UserModel
 	 */
 	public function getAuthMode(): string
 	{
-		return $this->auth_mode;
+		return (isset($this->auth_mode) ? $this->auth_mode : '');
 	}
 
 	/**
 	 * @param string $auth_mode
 	 * @return UserModel
 	 */
-	public function setAuthMode(string $auth_mode): UserModel
+	public function setAuthMode($auth_mode): UserModel
 	{
 		$this->auth_mode = $auth_mode;
 		return $this;
@@ -482,14 +482,14 @@ class UserModel
 	 */
 	public function getExtAccount(): string
 	{
-		return $this->ext_account;
+		return (isset($this->ext_account) ? $this->ext_account : '');
 	}
 
 	/**
 	 * @param string $ext_account
 	 * @return UserModel
 	 */
-	public function setExtAccount(string $ext_account): UserModel
+	public function setExtAccount($ext_account): UserModel
 	{
 		$this->ext_account = $ext_account;
 		return $this;
@@ -500,14 +500,14 @@ class UserModel
 	 */
 	public function getBirthday(): string
 	{
-		return $this->birthday;
+		return (isset($this->birthday) ? $this->birthday : '');
 	}
 
 	/**
 	 * @param string $birthday
 	 * @return UserModel
 	 */
-	public function setBirthday(string $birthday): UserModel
+	public function setBirthday($birthday): UserModel
 	{
 		$this->birthday = $birthday;
 		return $this;
@@ -518,14 +518,14 @@ class UserModel
 	 */
 	public function getUdfData(): array
 	{
-		return $this->udf_data;
+		return (isset($this->udf_data) ? $this->udf_data : []);
 	}
 
 	/**
 	 * @param array $udf_data
 	 * @return UserModel
 	 */
-	public function setUdfData(array $udf_data): UserModel
+	public function setUdfData($udf_data): UserModel
 	{
 		$this->udf_data = $udf_data;
 		return $this;

@@ -34,14 +34,14 @@ class ObjectModel
 	 */
 	public function getTitle(): string
 	{
-		return $this->title;
+		return (isset($this->title) ? $this->title : '');
 	}
 
 	/**
 	 * @param string $title
 	 * @return ObjectModel
 	 */
-	public function setTitle(string $title): ObjectModel
+	public function setTitle($title): ObjectModel
 	{
 		$this->title = $title;
 		return $this;
@@ -52,14 +52,14 @@ class ObjectModel
 	 */
 	public function getId(): int
 	{
-		return $this->id;
+		return (isset($this->id) ? $this->id : -1);
 	}
 
 	/**
 	 * @param int $id
 	 * @return ObjectModel
 	 */
-	public function setId(int $id): ObjectModel
+	public function setId($id): ObjectModel
 	{
 		$this->id = $id;
 		return $this;
@@ -70,14 +70,14 @@ class ObjectModel
 	 */
 	public function getRefId(): int
 	{
-		return $this->ref_id;
+		return (isset($this->ref_id) ? $this->ref_id : -1);
 	}
 
 	/**
 	 * @param int $ref_id
 	 * @return ObjectModel
 	 */
-	public function setRefId(int $ref_id): ObjectModel
+	public function setRefId($ref_id): ObjectModel
 	{
 		$this->ref_id = $ref_id;
 		return $this;
@@ -88,14 +88,14 @@ class ObjectModel
 	 */
 	public function getLink(): string
 	{
-		return $this->link;
+		return (isset($this->link) ? $this->link : '');
 	}
 
 	/**
 	 * @param string $link
 	 * @return ObjectModel
 	 */
-	public function setLink(string $link): ObjectModel
+	public function setLink($link): ObjectModel
 	{
 		$this->link = $link;
 		return $this;
@@ -106,14 +106,14 @@ class ObjectModel
 	 */
 	public function getType(): string
 	{
-		return $this->type;
+		return (isset($this->type) ? $this->type : '');
 	}
 
 	/**
 	 * @param string $type
 	 * @return ObjectModel
 	 */
-	public function setType(string $type): ObjectModel
+	public function setType($type): ObjectModel
 	{
 		$this->type = $type;
 		return $this;
@@ -124,14 +124,14 @@ class ObjectModel
 	 */
 	public function getTypeHr(): string
 	{
-		return $this->type_hr;
+		return (isset($this->type_hr) ? $this->type_hr : '');
 	}
 
 	/**
 	 * @param string $type_hr
 	 * @return ObjectModel
 	 */
-	public function setTypeHr(string $type_hr): ObjectModel
+	public function setTypeHr($type_hr): ObjectModel
 	{
 		$this->type_hr = $type_hr;
 		return $this;
@@ -142,14 +142,14 @@ class ObjectModel
 	 */
 	public function getCourseTitle(): string
 	{
-		return $this->course_title;
+		return (isset($this->course_title) ? $this->course_title : '');
 	}
 
 	/**
 	 * @param string $course_title
 	 * @return ObjectModel
 	 */
-	public function setCourseTitle(string $course_title): ObjectModel
+	public function setCourseTitle($course_title): ObjectModel
 	{
 		$this->course_title = $course_title;
 		return $this;
@@ -160,14 +160,14 @@ class ObjectModel
 	 */
 	public function getCourseId(): int
 	{
-		return $this->course_id;
+		return (isset($this->course_id) ? $this->course_id : -1);
 	}
 
 	/**
 	 * @param int $course_id
 	 * @return ObjectModel
 	 */
-	public function setCourseId(int $course_id): ObjectModel
+	public function setCourseId($course_id): ObjectModel
 	{
 		$this->course_id = $course_id;
 		return $this;
@@ -178,14 +178,14 @@ class ObjectModel
 	 */
 	public function getCourseRefId(): int
 	{
-		return $this->course_ref_id;
+		return (isset($this->course_ref_id) ? $this->course_ref_id : -1);
 	}
 
 	/**
 	 * @param int $course_ref_id
 	 * @return ObjectModel
 	 */
-	public function setCourseRefId(int $course_ref_id): ObjectModel
+	public function setCourseRefId($course_ref_id): ObjectModel
 	{
 		$this->course_ref_id = $course_ref_id;
 		return $this;

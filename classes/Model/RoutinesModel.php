@@ -13,6 +13,8 @@ class RoutinesModel
 	private $collectMemberData;
 	/** @var bool */
 	private $collectLpPeriod;
+	/** @var bool */
+	private $collectObjectData;
 
 	/**
 	 * @return bool
@@ -73,7 +75,7 @@ class RoutinesModel
 	 */
 	public function getCollectLpPeriod(): bool
 	{
-		return (isset($this->collectLpPeriod) ? $this->collectLpPeriod : $this->collectLpPeriod);
+		return (isset($this->collectLpPeriod) ? $this->collectLpPeriod : false);
 	}
 
 	/**
@@ -87,6 +89,24 @@ class RoutinesModel
 	}
 
 	/**
+	 * @return bool
+	 */
+	public function getCollectObjectData(): bool
+	{
+		return (isset($this->collectObjectData) ? $this->collectObjectData : false);
+	}
+
+	/**
+	 * @param bool $collectObjectData
+	 * @return RoutinesModel
+	 */
+	public function setCollectObjectData(bool $collectObjectData): RoutinesModel
+	{
+		$this->collectObjectData = $collectObjectData;
+		return $this;
+	}
+
+	/**
 	 * @return string
 	 */
 	public function __toString()
@@ -96,6 +116,7 @@ class RoutinesModel
 			'collectUDFData' => $this->getCollectUDFData(),
 			'collectMemberData' => $this->getCollectMemberData(),
 			'collectLpPeriod' => $this->getCollectLpPeriod(),
+			'getCollectObjectData' => $this->getCollectObjectData(),
 		]);
 	}
 

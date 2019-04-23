@@ -33,14 +33,14 @@ class QueueModel
 	 */
 	public function getId(): int
 	{
-		return $this->id;
+		return (isset($this->id) ? $this->id : -1);
 	}
 
 	/**
 	 * @param int $id
 	 * @return QueueModel
 	 */
-	public function setId(int $id): QueueModel
+	public function setId($id): QueueModel
 	{
 		$this->id = $id;
 		return $this;
@@ -51,14 +51,14 @@ class QueueModel
 	 */
 	public function getTimestamp(): string
 	{
-		return $this->timestamp;
+		return (isset($this->timestamp) ? $this->timestamp : '');
 	}
 
 	/**
 	 * @param string $timestamp
 	 * @return QueueModel
 	 */
-	public function setTimestamp(string $timestamp): QueueModel
+	public function setTimestamp($timestamp): QueueModel
 	{
 		$this->timestamp = $timestamp;
 		return $this;
@@ -69,14 +69,14 @@ class QueueModel
 	 */
 	public function getEvent(): string
 	{
-		return $this->event;
+		return (isset($this->event) ? $this->event : '');
 	}
 
 	/**
 	 * @param string $event
 	 * @return QueueModel
 	 */
-	public function setEvent(string $event): QueueModel
+	public function setEvent($event): QueueModel
 	{
 		$this->event = $event;
 		return $this;
@@ -87,14 +87,14 @@ class QueueModel
 	 */
 	public function getEventType(): string
 	{
-		return $this->event_type;
+		return (isset($this->event_type) ? $this->event_type : '');
 	}
 
 	/**
 	 * @param string $event_type
 	 * @return QueueModel
 	 */
-	public function setEventType(string $event_type): QueueModel
+	public function setEventType($event_type): QueueModel
 	{
 		$this->event_type = $event_type;
 		return $this;
@@ -105,14 +105,14 @@ class QueueModel
 	 */
 	public function getProgress(): string
 	{
-		return $this->progress;
+		return (isset($this->progress) ? $this->progress : '');
 	}
 
 	/**
 	 * @param string $progress
 	 * @return QueueModel
 	 */
-	public function setProgress(string $progress): QueueModel
+	public function setProgress($progress): QueueModel
 	{
 		$this->progress = $progress;
 		return $this;
@@ -123,14 +123,14 @@ class QueueModel
 	 */
 	public function getAssignment(): string
 	{
-		return $this->assignment;
+		return (isset($this->assignment) ? $this->assignment : '');
 	}
 
 	/**
 	 * @param string $assignment
 	 * @return QueueModel
 	 */
-	public function setAssignment(string $assignment): QueueModel
+	public function setAssignment($assignment): QueueModel
 	{
 		$this->assignment = $assignment;
 		return $this;
@@ -141,14 +141,14 @@ class QueueModel
 	 */
 	public function getCourseStart(): string
 	{
-		return $this->course_start;
+		return (isset($this->course_start) ? $this->course_start : '');
 	}
 
 	/**
 	 * @param string $course_start
 	 * @return QueueModel
 	 */
-	public function setCourseStart(string $course_start): QueueModel
+	public function setCourseStart($course_start): QueueModel
 	{
 		$this->course_start = $course_start;
 		return $this;
@@ -159,14 +159,14 @@ class QueueModel
 	 */
 	public function getCourseEnd(): string
 	{
-		return $this->course_end;
+		return (isset($this->course_end) ? $this->course_end : '');
 	}
 
 	/**
 	 * @param string $course_end
 	 * @return QueueModel
 	 */
-	public function setCourseEnd(string $course_end): QueueModel
+	public function setCourseEnd($course_end): QueueModel
 	{
 		$this->course_end = $course_end;
 		return $this;

@@ -255,6 +255,12 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 				 * $a_event: updateStatus
 				 * $a_params: ['obj_id', 'usr_id', 'status', 'percentage']
 				 */
+				switch ($a_event) {
+					case 'updateStatus':
+						$handler = new \QU\LERQ\Events\LearningProgressEvent();
+						$handler->handle_event($a_event, $a_params);
+						break;
+				}
 				break;
 			case "Services/User":
 				$this->debuglog($a_component, $a_event, $a_params);

@@ -170,7 +170,7 @@ class Collector
 		$models = [];
 		if (empty($items)) {
 			return $models;
-		}
+		} // @todo check if model data is given
 		foreach ($items as $item) {
 			$qm = new QueueModel();
 			$qm->setId($item['id'])
@@ -182,7 +182,7 @@ class Collector
 				->setCourseStart($item['course_start'])
 				->setCourseEnd($item['course_end']);
 
-			$item_ud = json_decode($item['user_data']);
+			$item_ud = json_decode($item['user_data'], true);
 			$um = new UserModel();
 			$um->setUsrId($item_ud['user_id'])
 				->setLogin($item_ud['username'])
@@ -208,12 +208,12 @@ class Collector
 				->setAuthMode($item_ud['auth_mode'])
 				->setExtAccount($item_ud['ext_account'])
 				->setBirthday($item_ud['birthday'])
-				->setUdfData(json_decode($item_ud['udf_data']));
+				->setUdfData(json_decode($item_ud['udf_data'], true));
 			$qm->setUserData($um);
 			unset($item_ud);
 			unset($um);
 
-			$item_om = json_decode($item['obj_data']);
+			$item_om = json_decode($item['obj_data'], true);
 			$om = new ObjectModel();
 			$om->setTitle($item_om['title'])
 				->setId($item_om['id'])
@@ -227,7 +227,7 @@ class Collector
 			unset($item_om);
 			unset($om);
 
-			$item_mm = json_decode($item['mem_data']);
+			$item_mm = json_decode($item['mem_data'], true);
 			$mm = new MemberModel();
 			$mm->setMemberRole($item_mm['role'])
 				->setCourseTitle($item_mm['course_title'])

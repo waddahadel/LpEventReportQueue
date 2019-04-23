@@ -5,5 +5,5 @@ namespace QU\LERQ\Events;
 
 interface EventInterface
 {
-	public function handle_event(array $a_params): bool;
+	public function handle_event(string $a_event, array $a_params): bool;
 }

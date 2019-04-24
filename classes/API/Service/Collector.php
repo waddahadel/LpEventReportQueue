@@ -102,12 +102,10 @@ class Collector
 
 		/* Event related filter */
 		if ($this->filter->getProgress() !== '*') {
-			$where .= '`progress` = "' . $this->database->quote($this->filter->getProgress(), 'text') . '" ';
-			$where .= ' AND ';
+			$where .= '`progress` = ' . $this->database->quote($this->filter->getProgress(), 'text') .' AND ';
 		}
 		if ($this->filter->getAssignment() !== '*') {
-			$where .= '`assignment` = "' . $this->database->quote($this->filter->getAssignment(), 'text') . '" ';
-			$where .= ' AND ';
+			$where .= '`assignment` = ' . $this->database->quote($this->filter->getAssignment(), 'text') . ' AND ';
 		}
 
 		/* Event type filter */
@@ -125,14 +123,12 @@ class Collector
 
 		/* simple filter */
 		if ($this->filter->getEvent() !== '*' && $this->filter->getProgress() == '*') {
-			$where .= '`event_type` = "' . $this->database->quote($this->filter->getEventType(), 'text') . '" ';
-			$where .= ' AND ';
+			$where .= '`event_type` = ' . $this->database->quote($this->filter->getEventType(), 'text') . ' AND ';
 		}
 
 		/* Paging filter */
 		if ($this->filter->getPageStart() !== 0) {
-			$where .= '`id` >= ' . $this->database->quote($this->filter->getPageStart(), 'integer') . ' ';
-			$where .= ' AND ';
+			$where .= '`id` >= ' . $this->database->quote($this->filter->getPageStart(), 'integer') . ' AND ';
 		}
 
 		if ($this->filter->getPageLength() !== -1) {

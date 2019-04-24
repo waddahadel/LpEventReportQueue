@@ -73,6 +73,7 @@ class Collector
 	{
 		$where = '';
 		$limit = '';
+		$order = '';
 
 		/* Time based filter */
 		if ($this->filter->getCourseStart() !== false) {
@@ -128,15 +129,24 @@ class Collector
 
 		/* Paging filter */
 		if ($this->filter->getPageStart() !== 0) {
-			$where .= '`id` >= ' . $this->database->quote($this->filter->getPageStart(), 'integer') . ' AND ';
+			if ($this->filter->isNegativePager()) {
+				$where .= '`id` <= ' . $this->database->quote($this->filter->getPageStart(), 'integer') . ' ';
+			} else {
+				$where .= '`id` >= ' . $this->database->quote($this->filter->getPageStart(), 'integer') . ' ';
+			}
+			$where .= ' AND ';
 		}
 
 		if ($this->filter->getPageLength() !== -1) {
 			$limit .= ' LIMIT ' . $this->database->quote($this->filter->getPageLength(), 'integer') . ' ';
 		}
 
+		if ($this->filter->isNegativePager()) {
+			$order .= ' ORDER BY `id` DESC ';
+		}
+
 		if (strlen($where) > 0) {
-			$where = ' WHERE ' . $where . ' TRUE ' . $limit;
+			$where = ' WHERE ' . $where . ' TRUE ' . $limit . $order;
 
 		}
 

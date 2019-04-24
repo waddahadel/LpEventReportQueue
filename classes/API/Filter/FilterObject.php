@@ -8,7 +8,7 @@ namespace QU\LERQ\API\Filter;
  * @package QU\LERQ\API\Filter
  * @author Ralph Dittrich <dittrich@qualitus.de>
  */
-class FilterObject
+class FilterObject // @todo check filter rules
 {
 	// <=
 	const TIME_BEFORE = 0;
@@ -39,6 +39,8 @@ class FilterObject
 	private $assignment;
 	/** @var string */
 	private $event;
+	/** @var bool */
+	private $negative_pager;
 
 	/**
 	 * @return int
@@ -226,6 +228,24 @@ class FilterObject
 	public function setEvent(string $event): FilterObject
 	{
 		$this->event = $event;
+		return $this;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isNegativePager(): bool
+	{
+		return (isset($this->negative_pager) ? $this->negative_pager : false);
+	}
+
+	/**
+	 * @param bool $negative_pager
+	 * @return FilterObject
+	 */
+	public function setNegativePager(bool $negative_pager): FilterObject
+	{
+		$this->negative_pager = $negative_pager;
 		return $this;
 	}
 

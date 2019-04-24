@@ -50,6 +50,8 @@ interface Facade
 	 *   Set id to start with
 	 * ->setPageLength(int $page_length)
 	 *   Set number of maximal entries | Default: 500
+	 * ->setNegativePager(bool $negative_pager)
+	 *   Set to TRUE to get a previous page | Default: FALSE
 	 * ->setEventType(string $event_type)
 	 *   Filter for specific event type
 	 * ->setEventHappened(string $event_happened, int $before_after)

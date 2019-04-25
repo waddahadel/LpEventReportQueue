@@ -7,8 +7,16 @@ use QU\LERQ\API\Filter\FilterObject;
 use QU\LERQ\API\Service\Collector;
 use QU\LERQ\API\Service\Registration;
 
+/**
+ * Class API
+ * @package QU\LERQ\API
+ * @author Ralph Dittrich <dittrich@qualitus.de>
+ */
 class API implements Facade
 {
+	/**
+	 * @inheritDoc
+	 */
 	public function registerProvider(string $name, string $namespace, string $path, bool $hasOverrides = false): bool
 	{
 		$registration = new Registration();
@@ -16,7 +24,25 @@ class API implements Facade
 	}
 
 	/**
-	 * @return FilterObject
+	 * @inheritDoc
+	 */
+	public function updateProvider(string $name, string $namespace, string $path, bool $hasOverrides = null): bool
+	{
+		$registration = new Registration();
+		return $registration->update($name, $namespace, $path, $hasOverrides);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function unregisterProvider(string $name, string $namespace): bool
+	{
+		$registration = new Registration();
+		return $registration->remove($name, $namespace);
+	}
+
+	/**
+	 * @inheritDoc
 	 */
 	public function createFilterObject(): \QU\LERQ\API\Filter\FilterObject
 	{
@@ -24,8 +50,7 @@ class API implements Facade
 	}
 
 	/**
-	 * @param FilterObject $filter
-	 * @return \QU\LERQ\Collections\QueueCollection
+	 * @inheritDoc
 	 */
 	public function getCollection(\QU\LERQ\API\Filter\FilterObject $filter, bool $no_convert = false): \QU\LERQ\Collections\QueueCollection
 	{
@@ -33,6 +58,9 @@ class API implements Facade
 		return $collector->collect($no_convert);
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getCollectionScheme()
 	{
 		/**

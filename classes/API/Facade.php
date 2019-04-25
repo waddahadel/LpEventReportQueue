@@ -13,6 +13,9 @@ interface Facade
 	/**
 	 * Register a provider plugin
 	 *
+	 * This SHOULD be called in the plugins afterActivation() function
+	 * This MUST be called if the provider has capture overrides
+	 *
 	 * @param string $name			Plugin Name
 	 * @param string $namespace		Plugin Namespace
 	 * @param string $path			Plugin root path (realpath)
@@ -22,14 +25,30 @@ interface Facade
 	public function registerProvider(string $name, string $namespace, string $path, bool $hasOverrides = false): bool;
 
 	/**
-	 * NOT IMPLEMENTED YET @Todo
+	 * Update a provider plugins registration
+	 *
+	 * Only $path and $hasOverrides are updatable.
+	 * If you need to change $name or $namespace, you MUST use the
+	 * unregisterProvider() and then again the registerProvider() function.
+	 *
+	 * @param string $name
+	 * @param string $namespace
+	 * @param string $path
+	 * @param bool $hasOverrides
+	 * @return bool
 	 */
-//	public function updateProvider(string $name, string $namespace, string $path, bool $hasOverrides = false): bool;
+	public function updateProvider(string $name, string $namespace, string $path, bool $hasOverrides = null): bool;
 
 	/**
-	 * NOT IMPLEMENTED YET @Todo
+	 * Unregister a provider plugin
+	 *
+	 * This SHOULD be called in the plugins beforeUninstall() function
+	 *
+	 * @param string $name
+	 * @param string $namespace
+	 * @return bool
 	 */
-//	public function unregisterProvider(string $name, string $namespace, string $path, bool $hasOverrides = false): bool;
+	public function unregisterProvider(string $name, string $namespace): bool;
 
 	/**
 	 * Create a new Filter object

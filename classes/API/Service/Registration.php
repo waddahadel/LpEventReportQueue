@@ -7,6 +7,11 @@ use QU\LERQ\API\DataCaptureRoutinesInterface;
 use QU\LERQ\Model\ProviderModel;
 use QU\LERQ\Model\RoutinesModel;
 
+/**
+ * Class Registration
+ * @package QU\LERQ\API\Service
+ * @author Ralph Dittrich <dittrich@qualitus.de>
+ */
 class Registration
 {
 	const DB_PROVIDER_REG = 'lerq_provider_register';
@@ -76,10 +81,12 @@ class Registration
 					$overrideClass = new $class();
 					if ($overrideClass instanceof DataCaptureRoutinesInterface) {
 						$overrides = $overrideClass->getOverrides();
+						// @Todo change setters below to prevent errors if provider does not support newest overrides (isset() ? :)
 						$routines->setCollectUserData($overrides['collectUserData'])
 							->setCollectUDFData($overrides['collectUDFData'])
 							->setCollectMemberData($overrides['collectMemberData'])
-							->setCollectLpPeriod($overrides['collectLpPeriod']);
+							->setCollectLpPeriod($overrides['collectLpPeriod'])
+							->setCollectObjectData($overrides['collectObjectData']);
 					}
 				} catch (\Exception $e) {
 					global $DIC;
@@ -96,13 +103,49 @@ class Registration
 		return true;
 	}
 
-//	public function update() {} // @Todo
-//	public function remove() {} // @Todo
+	/**
+	 * @param string $name
+	 * @param string $namespace
+	 * @param string $path
+	 * @param bool|null $hasOverrides
+	 * @return bool
+	 */
+	public function update(string $name, string $namespace, string $path, bool $hasOverrides = null)
+	{
+		if (($provider = $this->loadByNamespace($namespace)) !== false) {
+
+			if ($provider->getName() === $name) {
+
+				$provider->setPath($path);
+				$provider->setHasOverrides((isset($hasOverrides) ? $hasOverrides : $provider->getHasOverrides()));
+
+				return $this->_save($provider, true);
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * @param string $name
+	 * @param string $namespace
+	 * @return bool
+	 */
+	public function remove(string $name, string $namespace)
+	{
+		if (($provider = $this->loadByNamespace($namespace)) !== false) {
+
+			if ($provider->getName() === $name) {
+				return $this->_delete($provider);
+			}
+		}
+		return false;
+	}
+
 
 	/**
 	 * @return array
 	 */
-	public function _load(): array
+	private function _load(): array
 	{
 		global $DIC;
 
@@ -136,21 +179,49 @@ class Registration
 	 * @param ProviderModel $provider
 	 * @return bool
 	 */
-	public function _save(ProviderModel $provider): bool
+	private function _save(ProviderModel $provider, bool $update = false): bool
 	{
 		global $DIC;
 
-		$res = $DIC->database()->insert(self::DB_PROVIDER_REG,
-			array(
-				'id'                => array('integer', $DIC->database()->nextId(self::DB_PROVIDER_REG)),
-				'name'              => array('text', $provider->getName()),
-				'namespace'         => array('text', $provider->getNamespace()),
-				'path'              => array('text', $provider->getPath()),
-				'has_overrides'     => array('integer', $provider->getHasOverrides()),
-				'active_overrides'  => array('text', $provider->getActiveOverrides()),
-				'created_at'        => array('timestamp', date('Y-m-d H:i:s')),
-			)
-		);
+		if ($update) {
+			$res = $DIC->database()->update(self::DB_PROVIDER_REG,
+				[
+					'path' => array('text', $provider->getPath()),
+					'has_overrides' => array('integer', $provider->getHasOverrides()),
+				],
+				[
+					'name' => array('text', $provider->getName()),
+					'namespace' => array('text', $provider->getNamespace()),
+				]);
+		} else {
+			$res = $DIC->database()->insert(self::DB_PROVIDER_REG,
+				array(
+					'id' => array('integer', $DIC->database()->nextId(self::DB_PROVIDER_REG)),
+					'name' => array('text', $provider->getName()),
+					'namespace' => array('text', $provider->getNamespace()),
+					'path' => array('text', $provider->getPath()),
+					'has_overrides' => array('integer', $provider->getHasOverrides()),
+					'active_overrides' => array('text', $provider->getActiveOverrides()),
+					'created_at' => array('timestamp', date('Y-m-d H:i:s')),
+				)
+			);
+		}
+
+		return ($res === false);
+	}
+
+	/**
+	 * @param ProviderModel $provider
+	 * @return bool
+	 */
+	private function _delete(ProviderModel $provider): bool
+	{
+		global $DIC;
+
+		$query = 'DELETE FROM ' . self::DB_PROVIDER_REG .
+			' WHERE namespace = ' . $DIC->database()->quote($provider->getNamespace(), 'text') . ';';
+
+		$res = $DIC->database()->manipulate($query);
 
 		return ($res === false);
 	}

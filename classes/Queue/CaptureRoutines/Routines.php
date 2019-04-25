@@ -160,11 +160,8 @@ class Routines implements DataCaptureRoutinesInterface
 
 			if ($course !== false) {
 				/** @var \ilObjCourse $course */
-				$start = $course->getCourseStart();
-				$end = $course->getCourseEnd();
-
-				$data['course_start'] = date('c', strtotime($start));
-				$data['course_end'] = date('c', strtotime($end));
+				$data['course_start'] = $course->getCourseStart();
+				$data['course_end'] = $course->getCourseEnd();
 			}
 		}
 		return $data;

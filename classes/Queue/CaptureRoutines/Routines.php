@@ -158,7 +158,7 @@ class Routines implements DataCaptureRoutinesInterface
 				}
 			}
 
-			if ($course !== false) {
+			if ($course_id !== false) {
 				/** @var \ilObjCourse $course */
 				$data['course_start'] = $course->getCourseStart();
 				$data['course_end'] = $course->getCourseEnd();

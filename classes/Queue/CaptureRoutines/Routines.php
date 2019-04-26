@@ -151,10 +151,10 @@ class Routines implements DataCaptureRoutinesInterface
 			// check if object is type course
 			if ($ilObj->getType() === 'crs') {
 				$course = $ilObj;
-			} else {
+			} elseif($ilObj->getRefId() > 0) {
 				$parent = $this->findParentCourse($ilObj->getRefId());
 				if ($parent !== 0) {
-					$course = \ilObjectFactory::getInstanceByRefId($parent)->getId();
+					$course = \ilObjectFactory::getInstanceByRefId($parent);
 				}
 			}
 

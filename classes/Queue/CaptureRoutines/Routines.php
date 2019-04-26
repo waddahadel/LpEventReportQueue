@@ -141,30 +141,27 @@ class Routines implements DataCaptureRoutinesInterface
 		$data = [];
 		if ($event->getObjId() !== -1) {
 			/** @var \ilObject $ilObj */
-			$ilObj = new \ilObject(
-				($event->getRefId() !== -1 ? $event->getRefId() : $event->getObjId()),
-				($event->getRefId() !== -1 ? true : false)
-			);
-			$course_id = false;
+			if($event->getRefId() !== -1){
+				$ilObj = \ilObjectFactory::getInstanceByRefId($event->getRefId());
+			}else{
+				$ilObj = \ilObjectFactory::getInstanceByObjId($event->getObjId());
+			}
+
+			$course = false;
 			// check if object is type course
 			if ($ilObj->getType() === 'crs') {
-				/** @var \ilObject $course */
-				$course_id = $ilObj->getRefId();
-			} else {
+				$course = $ilObj;
+			} elseif($ilObj->getRefId() > 0) {
 				$parent = $this->findParentCourse($ilObj->getRefId());
 				if ($parent !== 0) {
-					$course_id = $parent;
+					$course = \ilObjectFactory::getInstanceByRefId($parent);
 				}
 			}
 
 			if ($course !== false) {
 				/** @var \ilObjCourse $course */
-				$course = new \ilObjCourse($course_id, true);
-				$start = $course->getActivationStart();
-				$end = $course->getActivationEnd();
-
-				$data['course_start'] = date('c', strtotime($start));
-				$data['course_end'] = date('c', strtotime($end));
+				$data['course_start'] = $course->getCourseStart();
+				$data['course_end'] = $course->getCourseEnd();
 			}
 		}
 		return $data;

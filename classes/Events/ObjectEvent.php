@@ -32,7 +32,8 @@ class ObjectEvent extends AbstractEvent implements EventInterface
 		$processor = new Processor();
 		$event = new EventModel();
 
-		$event->setObjId($a_params['obj_id']);
+		$event->setObjId($a_params['obj_id'])
+			->setEventName($a_event);
 		if (isset($a_params['ref_id'])) {
 			$event->setRefId($a_params['ref_id']);
 		}

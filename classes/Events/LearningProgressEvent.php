@@ -36,7 +36,8 @@ class LearningProgressEvent extends AbstractEvent implements EventInterface
 		$event->setObjId($a_params['obj_id'])
 			->setUsrId($a_params['usr_id'])
 			->setLpStatus($a_params['status'])
-			->setLpPercentage($a_params['percentage']);
+			->setLpPercentage($a_params['percentage'])
+			->setEventName($a_event);
 
 		$data = $processor->capture($event);
 		$data['timestamp'] = date('c');

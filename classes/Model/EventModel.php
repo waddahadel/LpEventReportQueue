@@ -27,6 +27,8 @@ class EventModel
 	private $lp_status;
 	/** @var int */
 	private $lp_percentage;
+	/** @var string */
+	private $event_name;
 
 	/**
 	 * @return int
@@ -187,6 +189,24 @@ class EventModel
 	public function setLpPercentage(int $lp_percentage): EventModel
 	{
 		$this->lp_percentage = $lp_percentage;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getEventName(): string
+	{
+		return (isset($this->event_name) ? $this->event_name : '');
+	}
+
+	/**
+	 * @param string $event_name
+	 * @return EventModel
+	 */
+	public function setEventName(string $event_name): EventModel
+	{
+		$this->event_name = $event_name;
 		return $this;
 	}
 

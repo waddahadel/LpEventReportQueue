@@ -28,7 +28,8 @@ class MemberEvent extends AbstractEvent implements EventInterface
 		$event = new EventModel();
 
 		$event->setObjId($a_params['obj_id'])
-			->setUsrId($a_params['usr_id']);
+			->setUsrId($a_params['usr_id'])
+			->setEventName($a_event);
 		if (isset($a_params['role_id'])) {
 			$event->setRoleId($a_params['role_id']);
 		}

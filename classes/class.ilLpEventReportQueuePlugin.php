@@ -136,6 +136,14 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 
 	protected function beforeUninstall() {
 		// Do something
+		global $DIC;
+
+		$db = $DIC->database();
+		$db->dropSequence('lerq_queue');
+		$db->dropTable('lerq_queue');
+		$db->dropSequence('lerq_provider_register');
+		$db->dropTable('lerq_provider_register');
+
 		return true;
 	}
 

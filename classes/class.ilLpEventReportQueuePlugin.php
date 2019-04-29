@@ -191,20 +191,20 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 				break;
 			case "Modules/Excercise":
 				$this->debuglog($a_component, $a_event, $a_params);
-				switch ($a_event) {
-					case 'createAssignment':
-						$handler = new \QU\LERQ\Events\MemberEvent();
-						$handler->handle_event($a_event, $a_params);
-						break;
-					case 'deleteAssignment':
-						$handler = new \QU\LERQ\Events\MemberEvent();
-						$handler->handle_event($a_event, $a_params);
-						break;
-					case 'updateAssignment':
-						$handler = new \QU\LERQ\Events\MemberEvent();
-						$handler->handle_event($a_event, $a_params);
-						break;
-				}
+//				switch ($a_event) {
+//					case 'createAssignment':
+//						$handler = new \QU\LERQ\Events\MemberEvent();
+//						$handler->handle_event($a_event, $a_params);
+//						break;
+//					case 'deleteAssignment':
+//						$handler = new \QU\LERQ\Events\MemberEvent();
+//						$handler->handle_event($a_event, $a_params);
+//						break;
+//					case 'updateAssignment':
+//						$handler = new \QU\LERQ\Events\MemberEvent();
+//						$handler->handle_event($a_event, $a_params);
+//						break;
+//				}
 				/*
 				 * $a_event: createAssignment
 				 * $a_params: [] // @Todo
@@ -224,16 +224,16 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 				break;
 			case "Modules/StudyProgramme":
 				$this->debuglog($a_component, $a_event, $a_params);
-				switch ($a_event) {
-					case 'userAssigned':
-						$handler = new \QU\LERQ\Events\MemberEvent();
-						$handler->handle_event($a_event, $a_params);
-						break;
-					case 'userDeassigned':
-						$handler = new \QU\LERQ\Events\MemberEvent();
-						$handler->handle_event($a_event, $a_params);
-						break;
-				}
+//				switch ($a_event) {
+//					case 'userAssigned':
+//						$handler = new \QU\LERQ\Events\MemberEvent();
+//						$handler->handle_event($a_event, $a_params);
+//						break;
+//					case 'userDeassigned':
+//						$handler = new \QU\LERQ\Events\MemberEvent();
+//						$handler->handle_event($a_event, $a_params);
+//						break;
+//				}
 				/*
 				 * $a_event: userAssigned
 				 * $a_params: [] // @Todo
@@ -249,26 +249,48 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 				break;
 			case "Services/Object":
 				$this->debuglog($a_component, $a_event, $a_params);
-				/*
-				 * $a_event: create
-				 * $a_params: ['obj_id', 'obj_type']
-				 */
-				/*
-				 * $a_event: delete
-				 * $a_params: ['obj_id', 'ref_id', 'type', 'old_parent_ref_id']
-				 */
-				/*
-				 * $a_event: toTrash
-				 * $a_params: ['obj_id', 'ref_id', 'old_parent_ref_id']
-				 */
-				/*
-				 * $a_event: undelete
-				 * $a_params: ['obj_id', 'ref_id']
-				 */
-				/*
-				 * $a_event: update
-				 * $a_params: ['obj_id', 'obj_type', 'ref_id']
-				 */
+				switch ($a_event) {
+					/*
+					 * $a_event: create
+					 * $a_params: ['obj_id', 'obj_type']
+					 */
+					case 'create':
+						$handler = new \QU\LERQ\Events\ObjectEvent();
+						$handler->handle_event($a_event, $a_params);
+						break;
+					/*
+					 * $a_event: delete
+					 * $a_params: ['obj_id', 'ref_id', 'type', 'old_parent_ref_id']
+					 */
+					case 'delete':
+						$handler = new \QU\LERQ\Events\ObjectEvent();
+						$handler->handle_event($a_event, $a_params);
+						break;
+					/*
+					 * $a_event: update
+					 * $a_params: ['obj_id', 'obj_type', 'ref_id']
+					 */
+					case 'update':
+						$handler = new \QU\LERQ\Events\ObjectEvent();
+						$handler->handle_event($a_event, $a_params);
+						break;
+					/*
+					 * $a_event: toTrash
+					 * $a_params: ['obj_id', 'ref_id', 'old_parent_ref_id']
+					 */
+					case 'toTrash':
+						$handler = new \QU\LERQ\Events\ObjectEvent();
+						$handler->handle_event($a_event, $a_params);
+						break;
+					/*
+					 * $a_event: undelete
+					 * $a_params: ['obj_id', 'ref_id']
+					 */
+					case 'undelete':
+						$handler = new \QU\LERQ\Events\ObjectEvent();
+						$handler->handle_event($a_event, $a_params);
+						break;
+				}
 				/*
 				 * $a_event: putObjectInTree
 				 * $a_params: ['object'(ilObjCourse), 'obj_type', 'obj_id', 'parent_ref_id']

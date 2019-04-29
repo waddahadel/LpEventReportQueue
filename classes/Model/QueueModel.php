@@ -47,11 +47,15 @@ class QueueModel
 	}
 
 	/**
-	 * @return string
+	 * @param bool $iso		Get as ISO 8601 timestamp
+	 * @return string|int|null
 	 */
-	public function getTimestamp(): string
+	public function getTimestamp($iso = true)
 	{
-		return (isset($this->timestamp) ? $this->timestamp : '');
+		if ($iso) {
+			return (isset($this->timestamp) ? date('c', $this->timestamp) : '');
+		}
+		return (isset($this->timestamp) ? $this->timestamp : NULL);
 	}
 
 	/**
@@ -137,11 +141,15 @@ class QueueModel
 	}
 
 	/**
-	 * @return string
+	 * @param bool $iso		Get as ISO 8601 timestamp
+	 * @return string|int|null
 	 */
-	public function getCourseStart(): string
+	public function getCourseStart($iso = true)
 	{
-		return (isset($this->course_start) ? $this->course_start : '');
+		if ($iso) {
+			return (isset($this->course_start) ? date('c', $this->course_start) : '');
+		}
+		return (isset($this->course_start) ? $this->course_start : NULL);
 	}
 
 	/**
@@ -155,11 +163,15 @@ class QueueModel
 	}
 
 	/**
-	 * @return string
+	 * @param bool $iso		Get as ISO 8601 timestamp
+	 * @return string|int|null
 	 */
-	public function getCourseEnd(): string
+	public function getCourseEnd($iso = true)
 	{
-		return (isset($this->course_end) ? $this->course_end : '');
+		if ($iso) {
+			return (isset($this->course_end) ? date('c', $this->course_end) : '');
+		}
+		return (isset($this->course_end) ? $this->course_end : NULL);
 	}
 
 	/**

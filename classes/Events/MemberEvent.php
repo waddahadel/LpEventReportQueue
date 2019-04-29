@@ -35,7 +35,7 @@ class MemberEvent extends AbstractEvent implements EventInterface
 		}
 
 		$data = $processor->capture($event);
-		$data['timestamp'] = date('c');
+		$data['timestamp'] = time();
 		$data['event'] = $a_event;
 		$data['progress'] = NULL;
 		$data['assignment'] = (isset($a_params['role_id']) ? $this->mapAssignment($a_params['role_id']) : NULL);

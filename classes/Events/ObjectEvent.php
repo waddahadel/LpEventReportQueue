@@ -49,7 +49,7 @@ class ObjectEvent extends AbstractEvent implements EventInterface
 		}
 
 		$data = $processor->capture($event);
-		$data['timestamp'] = date('c');
+		$data['timestamp'] = time();
 		$data['event'] = $a_event;
 		$data['progress'] = NULL;
 		$data['assignment'] = NULL;

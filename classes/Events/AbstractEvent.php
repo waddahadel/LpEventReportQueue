@@ -74,8 +74,8 @@ abstract class AbstractEvent implements EventInterface
 
 			if (array_key_exists('lpperiod', $data) && !empty($data['lpperiod'])) {
 				$lpp = $data['lpperiod'];
-				$queue->setCourseStart($lpp['course_start']);
-				$queue->setCourseEnd($lpp['course_end']);
+				$queue->setCourseStart(strtotime($lpp['course_start']));
+				$queue->setCourseEnd(strtotime($lpp['course_end']));
 			}
 
 			$user = new UserModel();
@@ -153,13 +153,13 @@ abstract class AbstractEvent implements EventInterface
 
 		$types = [
 			'integer',
-			'timestamp',
+			'integer',
 			'text',
 			'text',
 			'text',
 			'text',
-			'timestamp',
-			'timestamp',
+			'integer',
+			'integer',
 			'text',
 			'text',
 			'text',
@@ -167,13 +167,13 @@ abstract class AbstractEvent implements EventInterface
 
 		$values = [
 			$this->database->nextId(self::DB_TABLE),
-			$queueModel->getTimestamp(),
+			$queueModel->getTimestamp(false),
 			$queueModel->getEvent(),
 			$queueModel->getEventType(),
 			$queueModel->getProgress(),
 			$queueModel->getAssignment(),
-			$queueModel->getCourseStart(),
-			$queueModel->getCourseEnd(),
+			$queueModel->getCourseStart(false),
+			$queueModel->getCourseEnd(false),
 			$queueModel->getUserData()->__toString(),
 			$queueModel->getObjData()->__toString(),
 			$queueModel->getMemData()->__toString(),

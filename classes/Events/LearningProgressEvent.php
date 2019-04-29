@@ -40,7 +40,7 @@ class LearningProgressEvent extends AbstractEvent implements EventInterface
 			->setEventName($a_event);
 
 		$data = $processor->capture($event);
-		$data['timestamp'] = date('c');
+		$data['timestamp'] = time();
 		$data['event'] = $a_event;
 		$data['progress'] = $this->mapLpStatus($a_params['status']);
 		$data['assignment'] = NULL;

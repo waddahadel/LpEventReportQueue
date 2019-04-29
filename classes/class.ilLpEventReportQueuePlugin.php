@@ -150,19 +150,24 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 		switch($a_component)
 		{
 			case "Modules/Course":
-				$this->debuglog($a_component, $a_event, $a_params);
-				/*
-				 * $a_event: addParticipant
-				 * $a_params: ['obj_id', 'usr_id', 'role_id']
-				 */
-				/*
-				 * $a_event: deleteParticipant
-				 * $a_params: ['objid', 'usr_id']
-				 */
-				/*
-				 * $a_event: addSubscriber
-				 * $a_params: [] // @Todo
-				 */
+				switch ($a_event) {
+					/*
+					 * $a_event: addParticipant
+					 * $a_params: ['obj_id', 'usr_id', 'role_id']
+					 */
+					case 'addParticipant':
+						$handler = new \QU\LERQ\Events\MemberEvent();
+						$handler->handle_event($a_event, $a_params);
+						break;
+					/*
+					 * $a_event: deleteParticipant
+					 * $a_params: ['objid', 'usr_id']
+					 */
+					case 'deleteParticipant':
+						$handler = new \QU\LERQ\Events\MemberEvent();
+						$handler->handle_event($a_event, $a_params);
+						break;
+				}
 				/*
 				 * $a_event: addToWaitingList
 				 * $a_params: ['obj_id', 'usr_id']
@@ -186,6 +191,20 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 				break;
 			case "Modules/Excercise":
 				$this->debuglog($a_component, $a_event, $a_params);
+				switch ($a_event) {
+					case 'createAssignment':
+						$handler = new \QU\LERQ\Events\MemberEvent();
+						$handler->handle_event($a_event, $a_params);
+						break;
+					case 'deleteAssignment':
+						$handler = new \QU\LERQ\Events\MemberEvent();
+						$handler->handle_event($a_event, $a_params);
+						break;
+					case 'updateAssignment':
+						$handler = new \QU\LERQ\Events\MemberEvent();
+						$handler->handle_event($a_event, $a_params);
+						break;
+				}
 				/*
 				 * $a_event: createAssignment
 				 * $a_params: [] // @Todo
@@ -205,6 +224,16 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 				break;
 			case "Modules/StudyProgramme":
 				$this->debuglog($a_component, $a_event, $a_params);
+				switch ($a_event) {
+					case 'userAssigned':
+						$handler = new \QU\LERQ\Events\MemberEvent();
+						$handler->handle_event($a_event, $a_params);
+						break;
+					case 'userDeassigned':
+						$handler = new \QU\LERQ\Events\MemberEvent();
+						$handler->handle_event($a_event, $a_params);
+						break;
+				}
 				/*
 				 * $a_event: userAssigned
 				 * $a_params: [] // @Todo
@@ -250,7 +279,6 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 				 */
 				break;
 			case "Services/Tracking":
-				$this->debuglog($a_component, $a_event, $a_params);
 				/*
 				 * $a_event: updateStatus
 				 * $a_params: ['obj_id', 'usr_id', 'status', 'percentage']
@@ -277,15 +305,6 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 				 * $a_params: [] // @Todo
 				 */
 				break;
-//			case "Services/User":
-//				switch($a_event)
-//				{
-//					case "afterCreate":
-//						$handler = new \QU\LERQ\Events\LearningProgressEvent();
-//						$handler->handle_event($a_params);
-//						break;
-//				}
-//				break;
 		}
 
 		return true;

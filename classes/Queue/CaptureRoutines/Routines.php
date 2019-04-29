@@ -97,10 +97,12 @@ class Routines implements DataCaptureRoutinesInterface
 		$data = [];
 		if ($event->getObjId() !== -1 && $event->getUsrId() !== -1) {
 			/** @var \ilObject $ilObj */
-			$ilObj = new \ilObject(
-				($event->getRefId() !== -1 ? $event->getRefId() : $event->getObjId()),
-				($event->getRefId() !== -1 ? true : false)
-			);
+			if($event->getRefId() !== -1){
+				$ilObj = \ilObjectFactory::getInstanceByRefId($event->getRefId());
+			} else {
+				$ilObj = \ilObjectFactory::getInstanceByObjId($event->getObjId());
+			}
+
 			// check if object is type course
 			if ($ilObj->getType() === 'crs') {
 				$crs_title = $ilObj->getTitle();
@@ -143,7 +145,7 @@ class Routines implements DataCaptureRoutinesInterface
 			/** @var \ilObject $ilObj */
 			if($event->getRefId() !== -1){
 				$ilObj = \ilObjectFactory::getInstanceByRefId($event->getRefId());
-			}else{
+			} else {
 				$ilObj = \ilObjectFactory::getInstanceByObjId($event->getObjId());
 			}
 
@@ -151,14 +153,14 @@ class Routines implements DataCaptureRoutinesInterface
 			// check if object is type course
 			if ($ilObj->getType() === 'crs') {
 				$course = $ilObj;
-			} elseif($ilObj->getRefId() > 0) {
+			} elseif ($ilObj->getRefId() > 0) {
 				$parent = $this->findParentCourse($ilObj->getRefId());
 				if ($parent !== 0) {
 					$course = \ilObjectFactory::getInstanceByRefId($parent);
 				}
 			}
 
-			if ($course_id !== false) {
+			if ($course !== false) {
 				/** @var \ilObjCourse $course */
 				$data['course_start'] = $course->getCourseStart();
 				$data['course_end'] = $course->getCourseEnd();
@@ -175,11 +177,11 @@ class Routines implements DataCaptureRoutinesInterface
 		$data = [];
 		if ($event->getObjId() !== -1) {
 			/** @var \ilObject $ilObj */
-			$ilObj = new \ilObject(
-				($event->getRefId() !== -1 ? $event->getRefId() : $event->getObjId()),
-				($event->getRefId() !== -1 ? true : false)
-			);
-			$course_id = false;
+			if($event->getRefId() !== -1){
+				$ilObj = \ilObjectFactory::getInstanceByRefId($event->getRefId());
+			} else {
+				$ilObj = \ilObjectFactory::getInstanceByObjId($event->getObjId());
+			}
 			// check if object is type course
 			if ($ilObj->getType() === 'crs') {
 				/** @var \ilObject $course */

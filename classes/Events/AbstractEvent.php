@@ -3,7 +3,6 @@
 
 namespace QU\LERQ\Events;
 
-use League\Flysystem\Exception;
 use QU\LERQ\Model\MemberModel;
 use QU\LERQ\Model\ObjectModel;
 use QU\LERQ\Model\QueueModel;
@@ -71,7 +70,7 @@ abstract class AbstractEvent implements EventInterface
 				->setEvent($data['event'])
 				->setEventType($this->mapEventToType($data['event']))
 				->setProgress($data['progress'])
-				->setAssignment($data['assignment']); // @Todo what was "assignement" meant to be?
+				->setAssignment($data['assignment']);
 
 			if (array_key_exists('lpperiod', $data) && !empty($data['lpperiod'])) {
 				$lpp = $data['lpperiod'];

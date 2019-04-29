@@ -71,6 +71,7 @@ class Collector
 	 */
 	private function createWhereByFilter(): string
 	{
+		$db = $this->database;
 		$where = '';
 		$limit = '';
 		$order = '';
@@ -78,71 +79,90 @@ class Collector
 		/* Time based filter */
 		if ($this->filter->getCourseStart() !== false) {
 			if ($this->filter->getCourseStartDirection() === $this->filter::TIME_BEFORE) {
-				$where .= '`course_start` <= ' . $this->filter->getCourseStart();
+				$where .= '' . $db->quoteIdentifier('course_start') . ' <= ' .
+					$db->quote($this->filter->getCourseStart(), 'timestamp');
 			} else {
-				$where .= '`course_start` >= ' . $this->filter->getCourseStart();
+				$where .= '' . $db->quoteIdentifier('course_start') . ' >= ' .
+					$db->quote($this->filter->getCourseStart(), 'timestamp');
 			}
 			$where .= ' AND ';
 		}
 		if ($this->filter->getCourseEnd() !== false) {
 			if ($this->filter->getCourseEndDirection() === $this->filter::TIME_AFTER) {
-				$where .= '`course_end` >= ' . $this->filter->getCourseEnd();
+				$where .= '' . $db->quoteIdentifier('course_end') . ' >= ' .
+					$db->quote($this->filter->getCourseEnd(), 'timestamp');
 			} else {
-				$where .= '`course_end` <= ' . $this->filter->getCourseEnd();
+				$where .= '' . $db->quoteIdentifier('course_end') . ' <= ' .
+					$db->quote($this->filter->getCourseEnd(), 'timestamp');
 			}
 			$where .= ' AND ';
 		}
 		if ($this->filter->getEventHappened() !== false) {
 			if ($this->filter->getEventHappenedDirection() === $this->filter::TIME_BEFORE) {
-				$where .= '`timestamp` <= ' . $this->filter->getCourseStart();
+				$where .= '' . $db->quoteIdentifier('timestamp') . ' <= ' .
+					$db->quote($this->filter->getCourseStart(), 'timestamp');
 			} else {
-				$where .= '`timestamp` >= ' . $this->filter->getCourseStart();
+				$where .= '' . $db->quoteIdentifier('timestamp') . ' >= ' .
+					$db->quote($this->filter->getCourseStart(), 'timestamp');
 			}
 			$where .= ' AND ';
 		}
 
 		/* Event related filter */
 		if ($this->filter->getProgress() !== '*') {
-			$where .= '`progress` = ' . $this->database->quote($this->filter->getProgress(), 'text') .' AND ';
+			$where .= '' . $db->quoteIdentifier('progress') . ' = ' .
+				$db->quote($this->filter->getProgress(), 'text') . ' ';
+			$where .= ' AND ';
 		}
 		if ($this->filter->getAssignment() !== '*') {
-			$where .= '`assignment` = ' . $this->database->quote($this->filter->getAssignment(), 'text') . ' AND ';
+			$where .= '' . $db->quoteIdentifier('assignment') . ' = ' .
+				$db->quote($this->filter->getAssignment(), 'text') . ' ';
+			$where .= ' AND ';
 		}
 
 		/* Event type filter */
 		// progress filter is only available for lp events
 		// assignment filter is only available for member events
 		if ($this->filter->getProgress() !== '*') {
-			$where .= '`event_type` = "lp_event" AND ';
+			$where .= '' . $db->quoteIdentifier('event_type') . ' = ' .
+				$db->quote("lp_event", 'text') . ' AND ';
 		} else if ($this->filter->getAssignment() !== '*') {
 
-			$where .= '`event_type` = "member_event" AND ';
+			$where .= '' . $db->quoteIdentifier('event_type') . ' = ' .
+				$db->quote("member_event", 'text') . ' AND ';
 		} else if ($this->filter->getEventType() !== '*') {
 
-			$where .= '`event_type` = "member_event" AND ';
+			$where .= '' . $db->quoteIdentifier('event_type') . ' = ' .
+				$db->quote("member_event", 'text') . ' AND ';
 		}
 
 		/* simple filter */
 		if ($this->filter->getEvent() !== '*' && $this->filter->getProgress() == '*') {
-			$where .= '`event_type` = ' . $this->database->quote($this->filter->getEventType(), 'text') . ' AND ';
+			$where .= '' . $db->quoteIdentifier('event_type') . ' = ' .
+				$db->quote($this->filter->getEventType(), 'text') . ' ';
+			$where .= ' AND ';
 		}
 
 		/* Paging filter */
 		if ($this->filter->getPageStart() !== 0) {
 			if ($this->filter->isNegativePager()) {
-				$where .= '`id` <= ' . $this->database->quote($this->filter->getPageStart(), 'integer') . ' ';
+				$where .= '' . $db->quoteIdentifier('id') . ' < ' .
+					$db->quote($this->filter->getPageStart(), 'integer') . ' ';
 			} else {
-				$where .= '`id` >= ' . $this->database->quote($this->filter->getPageStart(), 'integer') . ' ';
+				$where .= '' . $db->quoteIdentifier('id') . ' >= ' .
+					$db->quote($this->filter->getPageStart(), 'integer') . ' ';
 			}
 			$where .= ' AND ';
 		}
 
 		if ($this->filter->getPageLength() !== -1) {
-			$limit .= ' LIMIT ' . $this->database->quote($this->filter->getPageLength(), 'integer') . ' ';
+			$limit .= ' LIMIT ' . $db->quote($this->filter->getPageLength(), 'integer') . ' ';
 		}
 
 		if ($this->filter->isNegativePager()) {
-			$order .= ' ORDER BY `id` DESC ';
+			$order .= ' ORDER BY ' . $db->quoteIdentifier('id') . ' DESC ';
+		} else {
+			$order .= ' ORDER BY ' . $db->quoteIdentifier('id') . ' ASC ';
 		}
 
 		if (strlen($where) > 0) {

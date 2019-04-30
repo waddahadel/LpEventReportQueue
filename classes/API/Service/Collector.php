@@ -183,7 +183,7 @@ class Collector
 			$where = ' WHERE ' . $where . ' TRUE ' . $order . $limit;
 
 		} else {
-			$where = ' WHERE ' . $order . $limit;
+			$where = $order . $limit;
 		}
 
 		return $where;

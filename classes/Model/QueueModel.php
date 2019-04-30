@@ -50,7 +50,7 @@ class QueueModel
 	 * @param bool $iso		Get as ISO 8601 timestamp
 	 * @return string|int|null
 	 */
-	public function getTimestamp($iso = true)
+	public function getTimestamp($iso = false)
 	{
 		if ($iso) {
 			return (isset($this->timestamp) ? date('c', $this->timestamp) : '');
@@ -144,7 +144,7 @@ class QueueModel
 	 * @param bool $iso		Get as ISO 8601 timestamp
 	 * @return string|int|null
 	 */
-	public function getCourseStart($iso = true)
+	public function getCourseStart($iso = false)
 	{
 		if ($iso) {
 			return (isset($this->course_start) ? date('c', $this->course_start) : '');
@@ -166,7 +166,7 @@ class QueueModel
 	 * @param bool $iso		Get as ISO 8601 timestamp
 	 * @return string|int|null
 	 */
-	public function getCourseEnd($iso = true)
+	public function getCourseEnd($iso = false)
 	{
 		if ($iso) {
 			return (isset($this->course_end) ? date('c', $this->course_end) : '');

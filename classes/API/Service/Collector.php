@@ -147,13 +147,13 @@ class Collector
 		} else if ($this->filter->getEventType() !== '*') {
 
 			$where .= '' . $db->quoteIdentifier('event_type') . ' = ' .
-				$db->quote("member_event", 'text') . ' AND ';
+				$db->quote($this->filter->getEventType(), 'text') . ' AND ';
 		}
 
 		/* simple filter */
-		if ($this->filter->getEvent() !== '*' && $this->filter->getProgress() == '*') {
-			$where .= '' . $db->quoteIdentifier('event_type') . ' = ' .
-				$db->quote($this->filter->getEventType(), 'text') . ' ';
+		if ($this->filter->getEvent() !== '*') {
+			$where .= '' . $db->quoteIdentifier('event') . ' = ' .
+				$db->quote($this->filter->getEvent(), 'text') . ' ';
 			$where .= ' AND ';
 		}
 

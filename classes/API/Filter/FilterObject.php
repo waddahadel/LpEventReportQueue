@@ -33,6 +33,10 @@ class FilterObject // @todo check filter rules
 	private $event_type;
 	/** @var string */
 	private $event_happened;
+	/** @var string */
+	private $event_happened_start;
+	/** @var string */
+	private $event_happened_end;
 	/** @var int */
 	private $event_happened_direction;
 	/** @var string */
@@ -192,6 +196,42 @@ class FilterObject // @todo check filter rules
 	{
 		$this->event_happened = $event_happened;
 		$this->event_happened_direction = $before_after;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getEventHappenedStart(): string
+	{
+		return (isset($this->event_happened_start) ? $this->event_happened_start : false);
+	}
+
+	/**
+	 * @param string $event_happened_start
+	 * @return FilterObject
+	 */
+	public function setEventHappenedStart(string $event_happened_start): FilterObject
+	{
+		$this->event_happened_start = $event_happened_start;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getEventHappenedEnd(): string
+	{
+		return (isset($this->event_happened_end) ? $this->event_happened_end : false);
+	}
+
+	/**
+	 * @param string $event_happened_end
+	 * @return FilterObject
+	 */
+	public function setEventHappenedEnd(string $event_happened_end): FilterObject
+	{
+		$this->event_happened_end = $event_happened_end;
 		return $this;
 	}
 

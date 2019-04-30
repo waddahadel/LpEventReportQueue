@@ -97,15 +97,29 @@ class Collector
 			}
 			$where .= ' AND ';
 		}
-		if ($this->filter->getEventHappened() !== false) {
+		if (!$this->filter->getEventHappenedStart() || !$this->filter->getEventHappenedEnd()) {
+			if ($this->filter->getEventHappened() !== false) {
+				if ($this->filter->getEventHappenedDirection() === $this->filter::TIME_BEFORE) {
+					$where .= '' . $db->quoteIdentifier('timestamp') . ' <= ' .
+						$db->quote($this->filter->getEventHappened(), 'timestamp');
+				} else {
+					$where .= '' . $db->quoteIdentifier('timestamp') . ' >= ' .
+						$db->quote($this->filter->getEventHappened(), 'timestamp');
+				}
+				$where .= ' AND ';
+			}
+		} else {
 			if ($this->filter->getEventHappenedDirection() === $this->filter::TIME_BEFORE) {
 				$where .= '' . $db->quoteIdentifier('timestamp') . ' <= ' .
-					$db->quote($this->filter->getCourseStart(), 'timestamp');
+					$db->quote($this->filter->getEventHappenedStart(), 'timestamp');
+				$where .= '' . $db->quoteIdentifier('timestamp') . ' >= ' .
+					$db->quote($this->filter->getEventHappenedEnd(), 'timestamp');
 			} else {
 				$where .= '' . $db->quoteIdentifier('timestamp') . ' >= ' .
-					$db->quote($this->filter->getCourseStart(), 'timestamp');
+					$db->quote($this->filter->getEventHappenedStart(), 'timestamp');
+				$where .= '' . $db->quoteIdentifier('timestamp') . ' <= ' .
+					$db->quote($this->filter->getEventHappenedEnd(), 'timestamp');
 			}
-			$where .= ' AND ';
 		}
 
 		/* Event related filter */

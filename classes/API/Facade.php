@@ -75,6 +75,11 @@ interface Facade
 	 *   Filter for specific event type
 	 * ->setEventHappened(string $event_happened, int $before_after)
 	 *   Filter for when the event happened (UTC Timestamp)
+	 *   Will be ignored if "setEventHappenedStart" and "setEventHappenedEnd" are used.
+	 * ->setEventHappenedStart(string $event_happened_start)
+	 *   Filter for when the event happened | Event start time (UTC Timestamp)
+	 * ->setEventHappenedEnd(string $event_happened_end)
+	 *   Filter for when the event happened | Event end time (UTC Timestamp)
 	 * ->setAssignment(string $assignment)
 	 *   Filter for user assignment role (this locks eventType filter to 'member_event')
 	 * ->setEvent(string $event)

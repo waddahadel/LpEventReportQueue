@@ -149,7 +149,7 @@ class Collector
 				$where .= '' . $db->quoteIdentifier('id') . ' < ' .
 					$db->quote($this->filter->getPageStart(), 'integer') . ' ';
 			} else {
-				$where .= '' . $db->quoteIdentifier('id') . ' >= ' .
+				$where .= '' . $db->quoteIdentifier('id') . ' > ' .
 					$db->quote($this->filter->getPageStart(), 'integer') . ' ';
 			}
 			$where .= ' AND ';
@@ -166,8 +166,10 @@ class Collector
 		}
 
 		if (strlen($where) > 0) {
-			$where = ' WHERE ' . $where . ' TRUE ' . $limit . $order;
+			$where = ' WHERE ' . $where . ' TRUE ' . $order . $limit;
 
+		} else {
+			$where = ' WHERE ' . $order . $limit;
 		}
 
 		return $where;

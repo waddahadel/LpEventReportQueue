@@ -33,6 +33,9 @@ class MemberEvent extends AbstractEvent implements EventInterface
 		if (isset($a_params['role_id'])) {
 			$event->setRoleId($a_params['role_id']);
 		}
+		if (isset($a_params['ref_id'])) {
+			$event->setRefId($a_params['ref_id']);
+		}
 
 		$data = $processor->capture($event);
 		$data['timestamp'] = time();

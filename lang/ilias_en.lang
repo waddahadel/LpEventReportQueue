@@ -1,0 +1,11 @@
+<!-- language file start -->
+queue_initialization#:#Initial Queue Collection
+queue_initialization_info#:#Initial collection of queue entries to generate a status-quo.
+queue_initialization_confirm_started#:#Initial Queue Collection started.
+start_initialization_by_click_first#:#The initial queue collection was not started yet.
+start_initialization_by_click#:#The initial queue collection was not processed succesful.
+start_initialization_by_click_info#:#Click "%s" to start the initial queue collection process.
+show_initialization_status#:#The initial queue collection process was already executed.
+show_initialization_status_info#:#State of the process: %s
+start_initialization#:#Start
+queue_reset_confirm#:#Queue was cleared

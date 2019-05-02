@@ -40,6 +40,8 @@ abstract class AbstractEvent implements EventInterface
 	protected function mapEventToType(string $a_event)
 	{
 		$map = [
+			"init_event_lp" => 'lp_event',
+			"init_event_mem" => 'member_event',
 //			"" => "lp_event",
 			"updateStatus" => "lp_event",
 //			"" => "member_event",

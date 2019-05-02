@@ -73,9 +73,12 @@ abstract class AbstractEvent implements EventInterface
 				->setAssignment($data['assignment']);
 
 			if (array_key_exists('lpperiod', $data) && !empty($data['lpperiod'])) {
+				/**
+				 * @var \ilDateTime[] $lpp
+				 */
 				$lpp = $data['lpperiod'];
-				$queue->setCourseStart(strtotime($lpp['course_start']));
-				$queue->setCourseEnd(strtotime($lpp['course_end']));
+				$queue->setCourseStart($lpp['course_start']->getUnixTime());
+				$queue->setCourseEnd($lpp['course_end']->getUnixTime());
 			}
 
 			$user = new UserModel();

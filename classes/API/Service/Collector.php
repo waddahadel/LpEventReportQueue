@@ -97,7 +97,7 @@ class Collector
 			}
 			$where .= ' AND ';
 		}
-		if (!$this->filter->getEventHappenedStart() || !$this->filter->getEventHappenedEnd()) {
+		if (!$this->filter->getEventHappenedStart() && !$this->filter->getEventHappenedEnd()) {
 			if ($this->filter->getEventHappened() !== false) {
 				if ($this->filter->getEventHappenedDirection() === $this->filter::TIME_BEFORE) {
 					$where .= '' . $db->quoteIdentifier('timestamp') . ' <= ' .
@@ -108,18 +108,14 @@ class Collector
 				}
 				$where .= ' AND ';
 			}
-		} else {
-			if ($this->filter->getEventHappenedDirection() === $this->filter::TIME_BEFORE) {
-				$where .= '' . $db->quoteIdentifier('timestamp') . ' <= ' .
-					$db->quote($this->filter->getEventHappenedStart(), 'timestamp');
-				$where .= '' . $db->quoteIdentifier('timestamp') . ' >= ' .
-					$db->quote($this->filter->getEventHappenedEnd(), 'timestamp');
-			} else {
-				$where .= '' . $db->quoteIdentifier('timestamp') . ' >= ' .
-					$db->quote($this->filter->getEventHappenedStart(), 'timestamp');
-				$where .= '' . $db->quoteIdentifier('timestamp') . ' <= ' .
-					$db->quote($this->filter->getEventHappenedEnd(), 'timestamp');
-			}
+		}
+		if($this->filter->getEventHappenedStart()){
+			$where .= '' . $db->quoteIdentifier('timestamp') . ' <= ' .
+				$db->quote($this->filter->getEventHappenedStart(), 'timestamp') . ' AND ';
+		}
+		if($this->filter->getEventHappenedEnd()) {
+			$where .= '' . $db->quoteIdentifier('timestamp') . ' >= ' .
+				$db->quote($this->filter->getEventHappenedEnd(), 'timestamp') . ' AND ';
 		}
 
 		/* Event related filter */

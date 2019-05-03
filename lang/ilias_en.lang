@@ -1,4 +1,6 @@
 <!-- language file start -->
+configuration#:#Configuration
+save#:#Save
 queue_initialization#:#Initial Queue Collection
 queue_initialization_info#:#Initial collection of queue entries to generate a status-quo.
 queue_initialization_confirm_started#:#Initial Queue Collection started.
@@ -9,3 +11,37 @@ show_initialization_status#:#The initial queue collection process was already ex
 show_initialization_status_info#:#State of the process: %s
 start_initialization#:#Start
 queue_reset_confirm#:#Queue was cleared
+user_data#:#User data
+user_fields#:#Track user data
+user_id#:#User ID
+login#:#Login
+firstname#:#Firstname
+lastname#:#Lastname
+title#:#Title
+gender#:#Gender
+email#:#E-Mail
+institution#:#Institution
+street#:#Street
+city#:#City
+country#:#Country
+phone_office#:#Phone (Office)
+hobby#:#Hobby
+department#:#Department
+phone_home#:#Phone (Home)
+phone_mobile#:#Phone (Mobile)
+fax#:#Fax
+referral_comment#:#Referral comment
+matriculation#:#Matriculation
+active#:#Activ-Status
+approval_date#:#Approved on
+agree_date#:#Agreed on
+auth_mode#:#Auth mode
+ext_account#:#External Account-ID
+birthday#:#Birthday
+import_id#:#Import ID
+udf_fields#:#UDF Fields
+object_data#:#Object data
+obj_select#:#Track objects
+obj_all#:#All objects
+obj_only_course#:#Only courses
+saving_invoked#:#Successful saved

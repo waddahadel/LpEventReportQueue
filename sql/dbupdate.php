@@ -133,7 +133,7 @@ if($ilDB->tableExists('lerq_queue')) {
     $ilDB->addTableColumn('lerq_queue', 'timestamp', [
 		'type'     => 'integer',
 		'length'   => 4,
-		'notnull' => true,
+		'notnull'  => true,
     ]);
     $ilDB->addTableColumn('lerq_queue', 'course_start', [
 		'type'     => 'integer',
@@ -171,5 +171,28 @@ if($ilDB->tableExists('lerq_queue')) {
 		}
     }
 	/* Migration Step 2 End */
+}
+?>
+<#3>
+<?php
+if (!$ilDB->tableExists('lerq_settings')) {
+	$ilDB->createTable('lerq_settings', [
+		'keyword' => [
+			'type'    => 'text',
+			'length'   => 255,
+			'notnull' => true,
+		],
+		'value' => [
+			'type'    => 'text',
+			'notnull' => false,
+		],
+		'type' => [
+			'type'    => 'text',
+			'notnull' => true,
+		],
+	]);
+
+	$ilDB->addPrimaryKey('lerq_settings', array('keyword'));
+	$ilDB->createSequence('lerq_settings');
 }
 ?>

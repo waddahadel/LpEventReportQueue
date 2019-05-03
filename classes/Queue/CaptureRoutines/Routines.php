@@ -50,6 +50,7 @@ class Routines implements DataCaptureRoutinesInterface
 			$data['country'] = $user->getCountry();
 			$data['phone_office'] = $user->getPhoneOffice();
 			$data['hobby'] = $user->getHobby();
+			$data['department'] = $user->getDepartment();
 			$data['phone_home'] = $user->getPhoneHome();
 			$data['phone_mobile'] = $user->getPhoneMobile();
 			$data['phone_fax'] = $user->getFax();

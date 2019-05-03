@@ -6,6 +6,7 @@ namespace QU\LERQ\Events;
 use QU\LERQ\Model\MemberModel;
 use QU\LERQ\Model\ObjectModel;
 use QU\LERQ\Model\QueueModel;
+use QU\LERQ\Model\SettingsModel;
 use QU\LERQ\Model\UserModel;
 
 /**
@@ -37,6 +38,130 @@ abstract class AbstractEvent implements EventInterface
 		$this->database = $DIC->database();
 	}
 
+	protected function save(array $data)
+	{
+		try {
+			$queue = new QueueModel();
+			$settings = new SettingsModel();
+
+			$queue->setTimestamp($data['timestamp'])
+				->setEvent($data['event'])
+				->setEventType($this->mapEventToType($data['event']))
+				->setProgress($data['progress'])
+				->setAssignment($data['assignment']);
+
+			if (array_key_exists('lpperiod', $data) && !empty($data['lpperiod'])) {
+				/**
+				 * @var \ilDateTime[] $lpp
+				 */
+				$lpp = $data['lpperiod'];
+				$queue->setCourseStart($lpp['course_start']->getUnixTime());
+				$queue->setCourseEnd($lpp['course_end']->getUnixTime());
+			}
+
+			$user = new UserModel();
+			if ($settings->getItem('user_fields')) {
+				if (array_key_exists('userdata', $data) && !empty($data['userdata'])) {
+					$ud = $data['userdata'];
+					if ($settings->getItem('user_id'))
+						$user->setUsrId($ud['user_id']);
+					if ($settings->getItem('login'))
+						$user->setLogin($ud['username']);
+					if ($settings->getItem('firstname'))
+						$user->setFirstname($ud['firstname']);
+					if ($settings->getItem('lastname'))
+						$user->setLastname($ud['lastname']);
+					if ($settings->getItem('title'))
+						$user->setTitle($ud['title']);
+					if ($settings->getItem('gender'))
+						$user->setGender($ud['gender']);
+					if ($settings->getItem('email'))
+						$user->setEmail($ud['email']);
+					if ($settings->getItem('institution'))
+						$user->setInstitution($ud['institution']);
+					if ($settings->getItem('street'))
+						$user->setStreet($ud['street']);
+					if ($settings->getItem('city'))
+						$user->setCity($ud['city']);
+					if ($settings->getItem('country'))
+						$user->setCountry($ud['country']);
+					if ($settings->getItem('phone_office'))
+						$user->setPhoneOffice($ud['phone_office']);
+					if ($settings->getItem('hobby'))
+						$user->setHobby($ud['hobby']);
+					if ($settings->getItem('department'))
+						$user->setDepartment($ud['department']);
+					if ($settings->getItem('phone_home'))
+						$user->setPhoneHome($ud['phone_home']);
+					if ($settings->getItem('phone_mobile'))
+						$user->setPhoneMobile($ud['phone_mobile']);
+					if ($settings->getItem('phone_fax'))
+						$user->setFax($ud['phone_fax']);
+					if ($settings->getItem('referral_comment'))
+						$user->setReferralComment($ud['referral_comment']);
+					if ($settings->getItem('matriculation'))
+						$user->setMatriculation($ud['matriculation']);
+					if ($settings->getItem('active'))
+						$user->setActive($ud['active']);
+					if ($settings->getItem('approval_date'))
+						$user->setApprovalDate($ud['approval_date']);
+					if ($settings->getItem('agree_date'))
+						$user->setAgreeDate($ud['agree_date']);
+					if ($settings->getItem('auth_mode'))
+						$user->setAuthMode($ud['auth_mode']);
+					if ($settings->getItem('ext_account'))
+						$user->setExtAccount($ud['ext_account']);
+					if ($settings->getItem('birthday'))
+						$user->setBirthday($ud['birthday']);
+					if ($settings->getItem('import_id'))
+						$user->setImportId($ud['import_id']);
+					if (array_key_exists('udfdata', $data) && !empty($data['udfdata'])) {
+						if ($settings->getItem('udf_fields')) {
+							$user->setUdfData($data['udfdata']);
+						}
+					}
+				}
+			}
+			$queue->setUserData($user);
+
+			$object = new ObjectModel();
+			if (array_key_exists('objectdata', $data) && !empty($data['objectdata'])) {
+				if (
+					$settings->getItem('obj_select') === '*' ||
+					$settings->getItem('obj_select') == $data['objectdata']['type']
+				) {
+					$od = $data['objectdata'];
+					$object->setTitle($od['title'])
+						->setId($od['id'])
+						->setRefId($od['ref_id'])
+						->setLink($od['link'])
+						->setType($od['type'])
+						->setCourseTitle($od['course_title'])
+						->setCourseId($od['course_id'])
+						->setCourseRefId($od['course_ref_id']);
+				}
+			}
+			$queue->setObjData($object);
+
+			$member = new MemberModel();
+			if (array_key_exists('memberdata', $data) && !empty($data['memberdata'])) {
+				$md = $data['memberdata'];
+				$member->setMemberRole($md['role'])
+					->setCourseTitle($md['course_title'])
+					->setCourseId($md['course_id'])
+					->setCourseRefId($md['course_ref_id']);
+			}
+			$queue->setMemData($member);
+
+			$this->_saveEventData($queue);
+			return true;
+
+		} catch (\Exception $e) {
+			// @Todo Exception
+			return false;
+		}
+	}
+
 	protected function mapEventToType(string $a_event)
 	{
 		$map = [
@@ -61,93 +186,6 @@ abstract class AbstractEvent implements EventInterface
 			"putObjectInTree" => "object_event",
 		];
 		return $map[$a_event];
-	}
-
-	protected function save(array $data)
-	{
-		try {
-			$queue = new QueueModel();
-
-			$queue->setTimestamp($data['timestamp'])
-				->setEvent($data['event'])
-				->setEventType($this->mapEventToType($data['event']))
-				->setProgress($data['progress'])
-				->setAssignment($data['assignment']);
-
-			if (array_key_exists('lpperiod', $data) && !empty($data['lpperiod'])) {
-				/**
-				 * @var \ilDateTime[] $lpp
-				 */
-				$lpp = $data['lpperiod'];
-				$queue->setCourseStart($lpp['course_start']->getUnixTime());
-				$queue->setCourseEnd($lpp['course_end']->getUnixTime());
-			}
-
-			$user = new UserModel();
-			if (array_key_exists('userdata', $data) && !empty($data['userdata'])) {
-				$ud = $data['userdata'];
-				$user->setUsrId($ud['user_id'])
-					->setLogin($ud['username'])
-					->setFirstname($ud['firstname'])
-					->setLastname($ud['lastname'])
-					->setTitle($ud['title'])
-					->setGender($ud['gender'])
-					->setEmail($ud['email'])
-					->setInstitution($ud['institution'])
-					->setStreet($ud['street'])
-					->setCity($ud['city'])
-					->setCountry($ud['country'])
-					->setPhoneOffice($ud['phone_office'])
-					->setHobby($ud['hobby'])
-					->setPhoneHome($ud['phone_home'])
-					->setPhoneMobile($ud['phone_mobile'])
-					->setFax($ud['phone_fax'])
-					->setReferralComment($ud['referral_comment'])
-					->setMatriculation($ud['matriculation'])
-					->setActive($ud['active'])
-					->setApprovalDate($ud['approval_date'])
-					->setAgreeDate($ud['agree_date'])
-					->setAuthMode($ud['auth_mode'])
-					->setExtAccount($ud['ext_account'])
-					->setBirthday($ud['birthday'])
-					->setImportId($ud['import_id']);
-				if (array_key_exists('udfdata', $data) && !empty($data['udfdata'])) {
-					$user->setUdfData($data['udfdata']);
-				}
-			}
-			$queue->setUserData($user);
-
-			$object = new ObjectModel();
-			if (array_key_exists('objectdata', $data) && !empty($data['objectdata'])) {
-				$od = $data['objectdata'];
-				$object->setTitle($od['title'])
-					->setId($od['id'])
-					->setRefId($od['ref_id'])
-					->setLink($od['link'])
-					->setType($od['type'])
-					->setCourseTitle($od['course_title'])
-					->setCourseId($od['course_id'])
-					->setCourseRefId($od['course_ref_id']);
-			}
-			$queue->setObjData($object);
-
-			$member = new MemberModel();
-			if (array_key_exists('memberdata', $data) && !empty($data['memberdata'])) {
-				$md = $data['memberdata'];
-				$member->setMemberRole($md['role'])
-					->setCourseTitle($md['course_title'])
-					->setCourseId($md['course_id'])
-					->setCourseRefId($md['course_ref_id']);
-			}
-			$queue->setMemData($member);
-
-			$this->_saveEventData($queue);
-			return true;
-
-		} catch (\Exception $e) {
-			// @Todo Exception
-			return false;
-		}
 	}
 
 	private function _saveEventData(QueueModel $queueModel)

@@ -1,4 +1,6 @@
 <!-- language file start -->
+configuration#:#Konfiguration
+save#:#Speichern
 queue_initialization#:#Initiale Queue Befüllung
 queue_initialization_info#:#Initiale Befüllung der Queue um einen Status-Quo herzustellen.
 queue_initialization_confirm_started#:#Initiale Queue Befüllung wurde gestartet.
@@ -9,3 +11,37 @@ show_initialization_status#:#Die initiale Befüllung wurde bereits ausgeführt.
 show_initialization_status_info#:#Status der initialen Befüllung: %s
 start_initialization#:#Starten
 queue_reset_confirm#:#Die Queue wurde geleert.
+user_data#:#Benutzerdaten Auswahl
+user_fields#:#Benutzerdaten erfassen
+user_id#:#User ID
+login#:#Login
+firstname#:#Vorname
+lastname#:#Nachname
+title#:#Titel
+gender#:#Geschlecht
+email#:#E-Mail
+institution#:#Institution
+street#:#Strasse
+city#:#Stadt
+country#:#Land
+phone_office#:#Telefon (Büro)
+hobby#:#Hobby
+department#:#Abteilung
+phone_home#:#Telefon (Privat)
+phone_mobile#:#Telefon (Mobil)
+fax#:#Fax
+referral_comment#:#Empfehlungskommentar
+matriculation#:#Matrikelnummer
+active#:#Aktiv-Status
+approval_date#:#Bestätigt am
+agree_date#:#Zugestimmt am
+auth_mode#:#Authentifizierungsmethode
+ext_account#:#Externe Account ID
+birthday#:#Geburtstag
+import_id#:#Import ID
+udf_fields#:#UDF Felder
+object_data#:#Objektauswahl
+obj_select#:#Objekte erfassen
+obj_all#:#Alle Objekte
+obj_only_course#:#Nur Kurse
+saving_invoked#:#Speichern erfolgreich

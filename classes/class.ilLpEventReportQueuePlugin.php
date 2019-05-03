@@ -127,7 +127,9 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 	}
 
 	protected function afterActivation() {
-		// Do something
+		if ($this->settings->get('lerq_first_start', true) == true) {
+			$this->initSettings();
+		}
 	}
 
 	protected function afterDeactivation() {
@@ -139,10 +141,25 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 		global $DIC;
 
 		$db = $DIC->database();
-		$db->dropSequence('lerq_queue');
-		$db->dropTable('lerq_queue');
-		$db->dropSequence('lerq_provider_register');
-		$db->dropTable('lerq_provider_register');
+		if ($db->sequenceExists('lerq_queue')) {
+			$db->dropSequence('lerq_queue');
+		}
+		if ($db->tableExists('lerq_queue')) {
+			$db->dropTable('lerq_queue');
+		}
+		if ($db->sequenceExists('lerq_provider_register')) {
+			$db->dropSequence('lerq_provider_register');
+		}
+		if ($db->tableExists('lerq_provider_register')) {
+			$db->dropTable('lerq_provider_register');
+		}
+		if ($db->sequenceExists('lerq_settings')) {
+			$db->dropSequence('lerq_settings');
+		}
+		if ($db->tableExists('lerq_settings')) {
+			$db->dropTable('lerq_settings');
+		}
+		$this->settings->delete('lerq_first_start');
 
 		return true;
 	}
@@ -338,6 +355,44 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 		}
 
 		return true;
+	}
+
+	private function initSettings()
+	{
+		$pl_settings = new \QU\LERQ\Model\SettingsModel();
+
+		$pl_settings
+			->addItem('user_fields', true)
+			->addItem('user_id', true)
+			->addItem('login', true)
+			->addItem('firstname', true)
+			->addItem('lastname', true)
+			->addItem('title', true)
+			->addItem('gender', true)
+			->addItem('email', true)
+			->addItem('institution', true)
+			->addItem('street', true)
+			->addItem('city', true)
+			->addItem('country', true)
+			->addItem('phone_office', true)
+			->addItem('hobby', true)
+			->addItem('department', true)
+			->addItem('phone_home', true)
+			->addItem('phone_mobile', true)
+			->addItem('fax', true)
+			->addItem('referral_comment', true)
+			->addItem('matriculation', true)
+			->addItem('active', true)
+			->addItem('approval_date', true)
+			->addItem('agree_date', true)
+			->addItem('auth_mode', true)
+			->addItem('ext_account', true)
+			->addItem('birthday', true)
+			->addItem('import_id', true)
+			->addItem('udf_fields', true)
+			->addItem('obj_select', '*');
+
+		$this->settings->set('lerq_first_start', false);
 	}
 
 	private function debuglog($a_component, $a_event, $a_params)

@@ -52,6 +52,7 @@ interface DataCaptureRoutinesInterface
 	 *   auth_mode
 	 *   ext_account
 	 *   birthday
+	 *   import_id
 	 *
 	 * @param EventModel $event
 	 * @return array

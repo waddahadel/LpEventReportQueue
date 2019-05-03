@@ -61,6 +61,7 @@ class Routines implements DataCaptureRoutinesInterface
 			$data['auth_mode'] = $user->getAuthMode();
 			$data['ext_account'] = $user->getExternalAccount();
 			$data['birthday'] = $user->getBirthday();
+			$data['import_id'] = $user->getImportId();
 		}
 		return $data;
 	}
@@ -226,28 +227,31 @@ class Routines implements DataCaptureRoutinesInterface
 	 *         Returns 0 (zero) if no parent course could be found
 	 *         otherwise the ref_id of the course object
 	 */
-	protected function findParentCourse(int $ref_id)
+	protected function findParentCourse($ref_id)
 	{
-		global $DIC;
-		$tree = $DIC->repositoryTree();
-		// check if parent object is type course
-		$parent = $tree->checkForParentType($ref_id, 'crs');
+		if (isset($ref_id)) {
+			global $DIC;
+			$tree = $DIC->repositoryTree();
+			// check if parent object is type course
+			$parent = $tree->checkForParentType($ref_id, 'crs');
 
-		if ($parent === false || $parent === 0) {
-			// walk tree and check if parent object of any node is type course
-			$paths = $tree->getPathFull($ref_id);
-			foreach (array_reverse($paths) as $path) {
-				$parent = $tree->checkForParentType($path['id'], 'crs');
-				if ($parent !== false && $parent > 0) {
-					break;
+			if ($parent === false || $parent === 0) {
+				// walk tree and check if parent object of any node is type course
+				$paths = $tree->getPathFull($ref_id);
+				foreach (array_reverse($paths) as $path) {
+					$parent = $tree->checkForParentType($path['id'], 'crs');
+					if ($parent !== false && $parent > 0) {
+						break;
+					}
 				}
 			}
-		}
 
-		if ($parent === false || $parent === 0) {
-			return 0;
+			if ($parent === false || $parent === 0) {
+				return 0;
+			}
+			return $parent;
 		}
-		return $parent;
+		return 0;
 	}
 
 }

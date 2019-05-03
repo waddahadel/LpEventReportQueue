@@ -62,6 +62,8 @@ class UserModel
 	private $birthday;
 	/** @var array */
 	private $udf_data;
+	/** @var string */
+	private $import_id;
 
 	/**
 	 * @return int
@@ -514,6 +516,24 @@ class UserModel
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getImportId(): string
+	{
+		return (isset($this->import_id) ? $this->import_id : '');
+	}
+
+	/**
+	 * @param string $import_id
+	 * @return UserModel
+	 */
+	public function setImportId($import_id): UserModel
+	{
+		$this->import_id = $import_id;
+		return $this;
+	}
+
+	/**
 	 * @return array
 	 */
 	public function getUdfData(): array
@@ -562,6 +582,7 @@ class UserModel
 			'auth_mode' => $this->getAuthMode(),
 			'ext_account' => $this->getExtAccount(),
 			'birthday' => $this->getBirthday(),
+			'import_id' => $this->getImportId(),
 			'udf_data' => json_encode($this->getUdfData()),
 		]);
 	}

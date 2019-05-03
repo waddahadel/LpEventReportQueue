@@ -109,7 +109,8 @@ abstract class AbstractEvent implements EventInterface
 					->setAgreeDate($ud['agree_date'])
 					->setAuthMode($ud['auth_mode'])
 					->setExtAccount($ud['ext_account'])
-					->setBirthday($ud['birthday']);
+					->setBirthday($ud['birthday'])
+					->setImportId($ud['import_id']);
 				if (array_key_exists('udfdata', $data) && !empty($data['udfdata'])) {
 					$user->setUdfData($data['udfdata']);
 				}

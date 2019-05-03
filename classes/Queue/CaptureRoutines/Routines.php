@@ -206,10 +206,15 @@ class Routines implements DataCaptureRoutinesInterface
 				$crs_ref_id = $course->getRefId();
 			}
 
+			$link = '';
+			if ($ilObj->getRefId() !== null && $ilObj->getType() !== null) {
+				$link = \ilLink::_getStaticLink($ilObj->getRefId(), $ilObj->getType());
+			}
+
 			$data['id'] = $event->getObjId();
 			$data['title'] = $ilObj->getTitle();
 			$data['ref_id'] = $ilObj->getRefId();
-			$data['link'] = ''; // @ToDo how to create a goto link?
+			$data['link'] = $link;
 			$data['type'] = $ilObj->getType();
 			$data['course_title'] = $crs_title;
 			$data['course_id'] = $crs_id;

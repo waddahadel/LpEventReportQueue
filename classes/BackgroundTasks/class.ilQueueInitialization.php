@@ -5,6 +5,10 @@ use \ILIAS\BackgroundTasks\Implementation\Tasks\UserInteraction\UserInteractionO
 use \ILIAS\BackgroundTasks\Implementation\Values\ScalarValues\StringValue;
 use \ILIAS\BackgroundTasks\Types\SingleType;
 
+/**
+ * Class ilQueueInitialization
+ * @author Ralph Dittrich <dittrich@qualitus.de>
+ */
 class ilQueueInitialization extends AbstractUserInteraction
 {
 	const OPTION_START = 'startInitialization';

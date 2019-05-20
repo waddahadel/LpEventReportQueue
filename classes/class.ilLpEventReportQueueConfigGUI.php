@@ -9,6 +9,10 @@ use \ILIAS\BackgroundTasks\Implementation\Bucket\BasicBucket;
 use \QU\LERQ\BackgroundTasks\QueueInitializationJobDefinition;
 use \QU\LERQ\Events\AbstractEvent;
 
+/**
+ * Class ilLpEventReportQueueConfigGUI
+ * @author Ralph Dittrich <dittrich@qualitus.de>
+ */
 class ilLpEventReportQueueConfigGUI extends ilPluginConfigGUI
 {
 	/** @var ilLpEventReportQueuePlugin */
@@ -53,6 +57,10 @@ class ilLpEventReportQueueConfigGUI extends ilPluginConfigGUI
 		}
 	}
 
+	/**
+	 * @param $cmd
+	 * @return void
+	 */
 	function performCommand($cmd)
 	{
 		$this->construct();
@@ -162,6 +170,9 @@ class ilLpEventReportQueueConfigGUI extends ilPluginConfigGUI
 		$this->tpl->setContent($form->getHTML());
 	}
 
+	/**
+	 * @return ilPropertyFormGUI
+	 */
 	public function getConfigurationForm()
 	{
 		$form = new ilPropertyFormGUI();
@@ -306,6 +317,9 @@ class ilLpEventReportQueueConfigGUI extends ilPluginConfigGUI
 		return $form;
 	}
 
+	/**
+	 * @return void
+	 */
 	public function saveCmd()
 	{
 		// @Todo implement switches at AbstractEvent::save
@@ -333,6 +347,9 @@ class ilLpEventReportQueueConfigGUI extends ilPluginConfigGUI
 		}
 	}
 
+	/**
+	 * @return string
+	 */
 	public function startInitializationCmd(): string
 	{
 		global $DIC;
@@ -361,6 +378,9 @@ class ilLpEventReportQueueConfigGUI extends ilPluginConfigGUI
 
 	}
 
+	/**
+	 * @return void
+	 */
 	public function resetQueueCmd()
 	{
 		$this->plugin->deactivate();

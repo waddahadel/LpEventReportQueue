@@ -6,6 +6,11 @@ namespace QU\LERQ\Events;
 use QU\LERQ\Model\EventModel;
 use QU\LERQ\Queue\Processor;
 
+/**
+ * Class MemberEvent
+ * @package QU\LERQ\Events
+ * @author Ralph Dittrich <dittrich@qualitus.de>
+ */
 class MemberEvent extends AbstractEvent implements EventInterface
 {
 	/** @var \ilLog */

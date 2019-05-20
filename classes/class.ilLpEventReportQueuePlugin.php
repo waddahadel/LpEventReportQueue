@@ -61,6 +61,9 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 		$DIC['autoload.lc.lcautoloader']->addNamespace(self::PLUGIN_NS, realpath(dirname(__FILE__)));
 	}
 
+	/**
+	 * @return void
+	 */
 	public static function registerAPI()
 	{
 		global $DIC;
@@ -106,8 +109,6 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 	{
 		// get array with all jobs
 		$this->jobs = [];
-//		$job = new \QUALITUS\EMH\Jobs\ExportExerciseUserData();
-//		$this->jobs[$job->getId()] = $job;
 		return $this->jobs;
 	}
 
@@ -126,16 +127,25 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 		return [];
 	}
 
+	/**
+	 * @return void
+	 */
 	protected function afterActivation() {
 		if ($this->settings->get('lerq_first_start', true) == true) {
 			$this->initSettings();
 		}
 	}
 
+	/**
+	 * @return void
+	 */
 	protected function afterDeactivation() {
 		// Do something
 	}
 
+	/**
+	 * @return bool
+	 */
 	protected function beforeUninstall() {
 		// Do something
 		global $DIC;
@@ -357,6 +367,9 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 		return true;
 	}
 
+	/**
+	 * @return void
+	 */
 	private function initSettings()
 	{
 		$pl_settings = new \QU\LERQ\Model\SettingsModel();
@@ -395,6 +408,12 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 		$this->settings->set('lerq_first_start', false);
 	}
 
+	/**
+	 * @param $a_component
+	 * @param $a_event
+	 * @param $a_params
+	 * @return void
+	 */
 	private function debuglog($a_component, $a_event, $a_params)
 	{
 		global $DIC;

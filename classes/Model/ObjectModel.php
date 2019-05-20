@@ -124,7 +124,7 @@ class ObjectModel
 	 */
 	public function getTypeHr(): string
 	{
-		return (isset($this->type_hr) ? $this->type_hr : '');
+		return (isset($this->type_hr) ? $this->type_hr : $this->translateType());
 	}
 
 	/**
@@ -192,6 +192,93 @@ class ObjectModel
 	}
 
 	/**
+	 * @return string
+	 */
+	public function translateType(): string
+	{
+		if ($this->getType() !== '') {
+			switch ($this->getType()) {
+				case 'adm':
+					return 'SystemFolder';
+					break;
+				case 'assf':
+					return 'AssessentFolder';
+					break;
+				case 'bibl':
+					return 'Bibliographic';
+					break;
+				case 'blog':
+					return 'Blog';
+					break;
+				case 'book':
+					return 'BookingPool';
+					break;
+				case 'cat':
+					return 'Category';
+					break;
+				case 'catr':
+					return 'CategoryReference';
+					break;
+				case 'crs':
+					return 'Course';
+					break;
+				case 'crsr':
+					return 'CourseReference';
+					break;
+				case 'dcl':
+					return 'DataCollection';
+					break;
+				case 'exc':
+					return 'Excercise';
+					break;
+				case 'fold':
+					return 'Folder';
+					break;
+				case 'frm':
+					return 'Forum';
+					break;
+				case 'glo':
+					return 'Glossary';
+					break;
+				case 'grp':
+					return 'Group';
+					break;
+				case 'grpr':
+					return 'GroupReference';
+					break;
+				case 'iass':
+					return 'IndividualAssessment';
+					break;
+				case 'lm':
+					return 'LearningModule';
+					break;
+				case 'prg':
+					return 'StudyProgramme';
+					break;
+				case 'role':
+					return 'Role';
+					break;
+				case 'rolf':
+					return 'RoleFolder';
+					break;
+				case 'sahs':
+					return 'SAHSLearningModule';
+					break;
+				case 'trac':
+					return 'UserTracking';
+					break;
+				case 'tst':
+					return 'Test';
+					break;
+				case 'usr':
+					return 'User';
+					break;
+			}
+		}
+		return '';
+	}
+
+	/**
 	 * @return false|string
 	 */
 	public function __toString()
@@ -201,7 +288,8 @@ class ObjectModel
 			'title' => $this->getTitle(),
 			'ref_id' => $this->getRefId(),
 			'link' => $this->getLink(),
-			'type' => $this->getTypeHr(),
+			'type' => $this->getType(),
+			'type_hr' => $this->getTypeHr(),
 			'course_title' => $this->getCourseTitle(),
 			'course_id' => $this->getCourseId(),
 			'course_ref_id' => $this->getCourseRefId(),

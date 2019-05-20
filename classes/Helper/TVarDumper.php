@@ -58,6 +58,11 @@ class TVarDumper
 			return self::$_output;
 	}
 
+	/**
+	 * @param $var
+	 * @param $level
+	 * @return void
+	 */
 	private static function dumpInternal($var,$level)
 	{
 		switch(gettype($var))

@@ -97,7 +97,7 @@ class Routines implements DataCaptureRoutinesInterface
 	public function collectMemberData(EventModel $event): array
 	{
 		$data = [];
-		if ($event->getObjId() !== -1 && $event->getUsrId() !== -1) {
+		if (($event->getObjId() !== -1 || $event->getRefId() !== -1) && $event->getUsrId() !== -1) {
 			/** @var \ilObject $ilObj */
 			if($event->getRefId() !== -1){
 				$ilObj = \ilObjectFactory::getInstanceByRefId($event->getRefId());
@@ -143,7 +143,7 @@ class Routines implements DataCaptureRoutinesInterface
 	public function collectLpPeriod(EventModel $event): array
 	{
 		$data = [];
-		if ($event->getObjId() !== -1) {
+		if ($event->getObjId() !== -1 || $event->getRefId() !== -1) {
 			/** @var \ilObject $ilObj */
 			if($event->getRefId() !== -1){
 				$ilObj = \ilObjectFactory::getInstanceByRefId($event->getRefId());
@@ -177,13 +177,14 @@ class Routines implements DataCaptureRoutinesInterface
 	public function collectObjectData(EventModel $event): array
 	{
 		$data = [];
-		if ($event->getObjId() !== -1) {
+		if ($event->getObjId() !== -1 || $event->getRefId() !== -1) {
 			/** @var \ilObject $ilObj */
 			if($event->getRefId() !== -1){
 				$ilObj = \ilObjectFactory::getInstanceByRefId($event->getRefId());
 			} else {
 				$ilObj = \ilObjectFactory::getInstanceByObjId($event->getObjId());
 			}
+			global $DIC;
 			// check if object is type course
 			if ($ilObj->getType() === 'crs') {
 				/** @var \ilObject $course */
@@ -199,7 +200,7 @@ class Routines implements DataCaptureRoutinesInterface
 			$crs_title = NULL;
 			$crs_id = NULL;
 			$crs_ref_id = NULL;
-			if ($course !== false) {
+			if ($course_id !== false) {
 				/** @var \ilObjCourse $course */
 				$course = new \ilObjCourse($course_id, true);
 				$crs_title = $course->getTitle();
@@ -212,7 +213,7 @@ class Routines implements DataCaptureRoutinesInterface
 				$link = \ilLink::_getStaticLink($ilObj->getRefId(), $ilObj->getType());
 			}
 
-			$data['id'] = $event->getObjId();
+			$data['id'] = $ilObj->getId();
 			$data['title'] = $ilObj->getTitle();
 			$data['ref_id'] = $ilObj->getRefId();
 			$data['link'] = $link;
@@ -238,21 +239,23 @@ class Routines implements DataCaptureRoutinesInterface
 		if (isset($ref_id)) {
 			global $DIC;
 			$tree = $DIC->repositoryTree();
+			$parent = 0;
 			// check if parent object is type course
-			$parent = $tree->checkForParentType($ref_id, 'crs');
+			$parent_type = $tree->checkForParentType($ref_id, 'crs');
 
-			if ($parent === false || $parent === 0) {
+			if ($parent_type === false || $parent_type === 0) {
 				// walk tree and check if parent object of any node is type course
 				$paths = $tree->getPathFull($ref_id);
 				foreach (array_reverse($paths) as $path) {
-					$parent = $tree->checkForParentType($path['id'], 'crs');
-					if ($parent !== false && $parent > 0) {
+					$parent_type = $tree->checkForParentType($path['id'], 'crs');
+					if ($parent_type !== false && $parent_type > 0) {
+						$parent = $path['id'];
 						break;
 					}
 				}
 			}
 
-			if ($parent === false || $parent === 0) {
+			if ($parent_type === false || $parent_type === 0) {
 				return 0;
 			}
 			return $parent;

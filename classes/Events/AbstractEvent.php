@@ -55,68 +55,76 @@ abstract class AbstractEvent implements EventInterface
 				 * @var \ilDateTime[] $lpp
 				 */
 				$lpp = $data['lpperiod'];
-				$queue->setCourseStart($lpp['course_start']->getUnixTime());
-				$queue->setCourseEnd($lpp['course_end']->getUnixTime());
+				if ($lpp['course_start'] instanceof \ilDateTime) {
+					$queue->setCourseStart($lpp['course_start']->getUnixTime());
+				} else {
+					$queue->setCourseStart($lpp['course_start']);
+				}
+				if ($lpp['course_end'] instanceof \ilDateTime) {
+					$queue->setCourseEnd($lpp['course_end']->getUnixTime());
+				} else {
+					$queue->setCourseEnd($lpp['course_end']);
+				}
 			}
 
 			$user = new UserModel();
-			if ($settings->getItem('user_fields')) {
+			if ($settings->getItem('user_fields')->getValue()) {
 				if (array_key_exists('userdata', $data) && !empty($data['userdata'])) {
 					$ud = $data['userdata'];
-					if ($settings->getItem('user_id'))
+					if ($settings->getItem('user_id')->getValue())
 						$user->setUsrId($ud['user_id']);
-					if ($settings->getItem('login'))
+					if ($settings->getItem('login')->getValue())
 						$user->setLogin($ud['username']);
-					if ($settings->getItem('firstname'))
+					if ($settings->getItem('firstname')->getValue())
 						$user->setFirstname($ud['firstname']);
-					if ($settings->getItem('lastname'))
+					if ($settings->getItem('lastname')->getValue())
 						$user->setLastname($ud['lastname']);
-					if ($settings->getItem('title'))
+					if ($settings->getItem('title')->getValue())
 						$user->setTitle($ud['title']);
-					if ($settings->getItem('gender'))
+					if ($settings->getItem('gender')->getValue())
 						$user->setGender($ud['gender']);
-					if ($settings->getItem('email'))
+					if ($settings->getItem('email')->getValue())
 						$user->setEmail($ud['email']);
-					if ($settings->getItem('institution'))
+					if ($settings->getItem('institution')->getValue())
 						$user->setInstitution($ud['institution']);
-					if ($settings->getItem('street'))
+					if ($settings->getItem('street')->getValue())
 						$user->setStreet($ud['street']);
-					if ($settings->getItem('city'))
+					if ($settings->getItem('city')->getValue())
 						$user->setCity($ud['city']);
-					if ($settings->getItem('country'))
+					if ($settings->getItem('country')->getValue())
 						$user->setCountry($ud['country']);
-					if ($settings->getItem('phone_office'))
+					if ($settings->getItem('phone_office')->getValue())
 						$user->setPhoneOffice($ud['phone_office']);
-					if ($settings->getItem('hobby'))
+					if ($settings->getItem('hobby')->getValue())
 						$user->setHobby($ud['hobby']);
-					if ($settings->getItem('department'))
+					if ($settings->getItem('department')->getValue())
 						$user->setDepartment($ud['department']);
-					if ($settings->getItem('phone_home'))
+					if ($settings->getItem('phone_home')->getValue())
 						$user->setPhoneHome($ud['phone_home']);
-					if ($settings->getItem('phone_mobile'))
+					if ($settings->getItem('phone_mobile')->getValue())
 						$user->setPhoneMobile($ud['phone_mobile']);
-					if ($settings->getItem('phone_fax'))
+					if ($settings->getItem('fax')->getValue())
 						$user->setFax($ud['phone_fax']);
-					if ($settings->getItem('referral_comment'))
+					if ($settings->getItem('referral_comment')->getValue())
 						$user->setReferralComment($ud['referral_comment']);
-					if ($settings->getItem('matriculation'))
+					if ($settings->getItem('matriculation')->getValue())
 						$user->setMatriculation($ud['matriculation']);
-					if ($settings->getItem('active'))
+					if ($settings->getItem('active')->getValue())
 						$user->setActive($ud['active']);
-					if ($settings->getItem('approval_date'))
+					if ($settings->getItem('approval_date')->getValue())
 						$user->setApprovalDate($ud['approval_date']);
-					if ($settings->getItem('agree_date'))
+					if ($settings->getItem('agree_date')->getValue())
 						$user->setAgreeDate($ud['agree_date']);
-					if ($settings->getItem('auth_mode'))
+					if ($settings->getItem('auth_mode')->getValue())
 						$user->setAuthMode($ud['auth_mode']);
-					if ($settings->getItem('ext_account'))
+					if ($settings->getItem('ext_account')->getValue())
 						$user->setExtAccount($ud['ext_account']);
-					if ($settings->getItem('birthday'))
+					if ($settings->getItem('birthday')->getValue())
 						$user->setBirthday($ud['birthday']);
-					if ($settings->getItem('import_id'))
+					if ($settings->getItem('import_id')->getValue())
 						$user->setImportId($ud['import_id']);
 					if (array_key_exists('udfdata', $data) && !empty($data['udfdata'])) {
-						if ($settings->getItem('udf_fields')) {
+						if ($settings->getItem('udf_fields')->getValue()) {
 							$user->setUdfData($data['udfdata']);
 						}
 					}
@@ -127,10 +135,11 @@ abstract class AbstractEvent implements EventInterface
 			$object = new ObjectModel();
 			if (array_key_exists('objectdata', $data) && !empty($data['objectdata'])) {
 				if (
-					$settings->getItem('obj_select') === '*' ||
-					$settings->getItem('obj_select') == $data['objectdata']['type']
+					$settings->getItem('obj_select')->getValue() === '*' ||
+					$settings->getItem('obj_select')->getValue() == $data['objectdata']['type']
 				) {
 					$od = $data['objectdata'];
+
 					$object->setTitle($od['title'])
 						->setId($od['id'])
 						->setRefId($od['ref_id'])
@@ -139,9 +148,11 @@ abstract class AbstractEvent implements EventInterface
 						->setCourseTitle($od['course_title'])
 						->setCourseId($od['course_id'])
 						->setCourseRefId($od['course_ref_id']);
+
 				}
 			}
 			$queue->setObjData($object);
+
 
 			$member = new MemberModel();
 			if (array_key_exists('memberdata', $data) && !empty($data['memberdata'])) {

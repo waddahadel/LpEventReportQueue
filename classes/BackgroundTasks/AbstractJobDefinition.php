@@ -3,6 +3,11 @@
 
 namespace QU\LERQ\BackgroundTasks;
 
+/**
+ * Class AbstractJobDefinition
+ * @package QU\LERQ\BackgroundTasks
+ * @author Ralph Dittrich <dittrich@qualitus.de>
+ */
 class AbstractJobDefinition
 {
 	// task was not started yet

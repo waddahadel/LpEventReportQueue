@@ -1,14 +1,18 @@
 # LpEventReportQueue API
 
-1. [Init API](#init-api)
-2. [Register Provider](#register-provider)
-3. [Create Filter](#create-filter)
-4. [Query Data](#query-data)
-5. [Override Routines](#override-routines)
-6. [Troubleshooting](#trouble-shooting)
+**Table of Contents**
 
-<a name="init-api"></a>
-## 1. Init API
+* [Init API](#init-api)
+* [Usage](#usage)
+  * [Register Provider](#register-provider)
+  * [Create Filter](#create-filter)
+  * [Query Data](#query-data)
+  * [updateProvider](#update-provider)
+  * [unregisterProvider](#unregister-provider)
+  * [Override Routines](#override-routines)
+* [Troubleshooting](#trouble-shooting)
+
+## Init API
 To init the API you should first check if the plugin autoloader is available:
 ```php
 if(isset($DIC['autoload.lc.lcautoloader']))
@@ -23,7 +27,7 @@ ilPluginAdmin like this:
     "LpEventReportQueue"
 );
 ```
-At the plugins init function, the autoloader will be initialized and propagated 
+At the plugins init method, the autoloader will be initialized and propagated 
 to the DIC.
 
 When the autoloader is available, you should check if the API is available:
@@ -34,15 +38,18 @@ If the API is not available and you have not already tried to init the plugin
 (like in the last step), then you should try to init the plugin. If you already 
 tried this, take a look at the [Troubleshooting](#trouble-shooting).
 
-If the API is available, you may use it. Therefor, the API has three functions.
-You will see more information below. You also may click on a function to get
+If the API is available, you may use it. Therefor, the API has three methods.
+You will see more information below. You also may click on a method to get
 to its description part of the readme.
 * [registerProvider](#register-provider)
 * [createFilterObject](#create-filter)
 * [getCollection](#query-data)
+* [updateProvider](#update-provider)
+* [unregisterProvider](#unregister-provider)
 
-<a name="register-provider"></a>
-## 2. Register Provider
+## Usage
+
+### Register Provider
 Once the [API is initialized](#init-api) you may register your provider. To do
 this, you can simply call
 ```php
@@ -50,15 +57,14 @@ $DIC['qu.lerq.api']->registerProvider('MyProvider', '\My\Provider\Namespace', re
 ```
 *For the third parameter (path) you should propagate the realpath*
 
-The register function returns a boolean value. It is True if the provider was 
+The method returns a boolean value. It is True if the provider was 
 successful registered or if it is already registered. It returns False if there
 was a problem registering the provider. 
 
 For more information you should consult the Faceade Interface at: 
 ```Customizing/global/plugins/Services/Cron/CronHook/LpEventReportQueue/classes/API/Facade.php```
 
-<a name="create-filter"></a>
-## 3. Create Filter 
+### Create Filter 
 To use the filter, you have to create an FilterObject. To do this, the 
 [API must be initialized](#init-api).
 
@@ -66,10 +72,10 @@ Now you can create the filter in two steps. First create a new object:
 ```php
 $filter = $DIC['qu.lerq.api']->createFilterObject()
 ```
-This function does not take any parameters and returns a FilterObject instance.
+This method does not take any parameters and returns a FilterObject instance.
 
-At this object you have a bunch of functions to set your filters. All of these
-functions are chainable, so you may call it like:
+At this object you have a bunch of methods to set your filters. All of these
+methods are chainable, so you may call it like:
 ```php
 $filter->setPageStart(5)
     ->setPageLength(5)
@@ -81,22 +87,21 @@ is ready to be used to get the [queue data](#query-data).
 For more information you should consult the Faceade Interface at: 
 ```Customizing/global/plugins/Services/Cron/CronHook/LpEventReportQueue/classes/API/Facade.php```
 
-<a name="query-data"></a>
-## 4. Query Data
+### Query Data
 To query the queue, you need to [initialize the api](#init-api) and create an [FilterObject](#create-filter).
 If you have done these steps, you can query the queue data by passing your 
-FilterObject variable to the API's function "getCollection":
+FilterObject variable to the API's method "getCollection":
 ```php
 $data = $DIC['qu.lerq.api']->getCollection($filter, True|False)
 ``` 
 Within the FilterObject, every filter values are declared to get the collection.
 
-This function returns an iteratable QueueCollection object, that holds a an
+This method returns an iteratable QueueCollection object, that holds a an
 array of arrays (if the second parameter is True) or QueueModel objects. 
 
-The advantage of the QueueModels is the you may use it functions to get the
-data or you may call its __toString function, to get a JSON string of the data.
-If you use the __toString function, the sub objects (UserModel, ObjectModel, 
+The advantage of the QueueModels is the you may use it methods to get the
+data or you may call its __toString method, to get a JSON string of the data.
+If you use the __toString method, the sub objects (UserModel, ObjectModel, 
 MemberModel) will also be converted into json string.
 
 So you will get a JSON string like:
@@ -157,7 +162,7 @@ So you will get a JSON string like:
 }
 ```
 
-If you prefer to use the function calls of the QueueModel objects, you may 
+If you prefer to use the method calls of the QueueModel objects, you may 
 get the sub objects either as json string, like above, or as objects.
 
 For more information you should consult the Faceade Interface at:</br> 
@@ -165,12 +170,53 @@ For more information you should consult the Faceade Interface at:</br>
 <br/>or the models at:</br>
 ```Customizing/global/plugins/Services/Cron/CronHook/LpEventReportQueue/classes/Model```
 
-<a name="override-routines"></a>
-## 5. Override Routines
+### Update Provider
 
-Work In Progress
+Once your provider gets an update, you **should** call the updateProvider method.<br/>
+If this method gets called, the api checks for new overrides from the provider.
+```php
+$DIC['qu.lerq.api']->updateProvider('MyProvider', '\My\Provider\Namespace', realpath(dirname('MyProviderPlugin.php')), True|False)
+```
+*For the third parameter (path) you should propagate the realpath*
 
-<a name="trouble-shooting"></a>
-## 6. Troubleshooting
+You should keep in mind, that only the path (third parameter) and the hasOverrides (fourth parameter) can be updated.
 
-Work In Progress 
+The method returns a boolean value. It is True if the provider was 
+successful updated. It returns False if there was a problem updating 
+the provider. 
+
+For more information you should consult the Faceade Interface at: 
+```Customizing/global/plugins/Services/Cron/CronHook/LpEventReportQueue/classes/API/Facade.php```
+
+### Unregister Provider
+
+At the deinstallation of your provider, you **should** call the unregister method, 
+to prevent failures while the collection process.
+```php
+$DIC['qu.lerq.api']->unregisterProvider('MyProvider', '\My\Provider\Namespace')
+```
+
+The method returns a boolean value. It is True if the provider was 
+successful unregistered or if it is not already registered. It returns False if there
+was a problem unregistering the provider. 
+
+For more information you should consult the Faceade Interface at: 
+```Customizing/global/plugins/Services/Cron/CronHook/LpEventReportQueue/classes/API/Facade.php```
+
+
+## Override Routines
+
+To override collection routines, your provider **must** get a class *Routines* at the path<br/>
+```[Plugin Root]/classes/CaptureRoutines/Routines.php```
+
+This class **must** implement the interface: **\QU\LERQ\API\DataCaptureRoutinesInterface**.
+
+Inside this class, you may use the predefined methods to override the collection process. 
+Be careful, because you are not extending the routines. Instead you literally override them.
+
+For more information you should consult the DataCaptureRoutinesInterface Interface at: 
+```Customizing/global/plugins/Services/Cron/CronHook/LpEventReportQueue/classes/API/DataCaptureRoutinesInterface.php```
+
+## Troubleshooting
+
+-

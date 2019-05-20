@@ -3,6 +3,11 @@
 
 namespace QU\LERQ\Model;
 
+/**
+ * Class QueueModel
+ * @package QU\LERQ\Model
+ * @author Ralph Dittrich <dittrich@qualitus.de>
+ */
 class QueueModel
 {
 	/** @var int */

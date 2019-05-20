@@ -57,6 +57,10 @@ class ilLpEventReportQueueConfigGUI extends ilPluginConfigGUI
 		}
 	}
 
+	/**
+	 * @param $cmd
+	 * @return void
+	 */
 	function performCommand($cmd)
 	{
 		$this->construct();

@@ -3,6 +3,11 @@
 
 namespace QU\LERQ\Model;
 
+/**
+ * Class ProviderModel
+ * @package QU\LERQ\Model
+ * @author Ralph Dittrich <dittrich@qualitus.de>
+ */
 class ProviderModel
 {
 	/** @var string */

@@ -3,6 +3,11 @@
 
 namespace QU\LERQ\Model;
 
+/**
+ * Class RoutinesModel
+ * @package QU\LERQ\Model
+ * @author Ralph Dittrich <dittrich@qualitus.de>
+ */
 class RoutinesModel
 {
 	/** @var bool */

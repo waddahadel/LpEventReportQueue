@@ -6,9 +6,17 @@ namespace QU\LERQ\Queue\CaptureRoutines;
 use QU\LERQ\API\DataCaptureRoutinesInterface;
 use QU\LERQ\Model\EventModel;
 
+/**
+ * Class Routines
+ * @package QU\LERQ\Queue\CaptureRoutines
+ * @author Ralph Dittrich <dittrich@qualitus.de>
+ */
 class Routines implements DataCaptureRoutinesInterface
 {
 
+	/**
+	 * @return array
+	 */
 	public function getAvailableOverrrides(): array
 	{
 		return [

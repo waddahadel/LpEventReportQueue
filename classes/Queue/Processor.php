@@ -10,6 +10,11 @@ use QU\LERQ\API\Service\Registration;
 use QU\LERQ\Model\ProviderModel;
 use QU\LERQ\Model\RoutinesModel;
 
+/**
+ * Class Processor
+ * @package QU\LERQ\Queue
+ * @author Ralph Dittrich <dittrich@qualitus.de>
+ */
 class Processor
 {
 	/** @var \ilDBInterface  */
@@ -24,6 +29,9 @@ class Processor
 	/** @var array  */
 	private $routines;
 
+	/**
+	 * Processor constructor.
+	 */
 	public function __construct()
 	{
 		global $DIC;
@@ -35,6 +43,10 @@ class Processor
 		$this->routines = $this->getRoutines();
 	}
 
+	/**
+	 * @param EventModel $event
+	 * @return array
+	 */
 	public function capture(EventModel $event)
 	{
 		$this->logger->debug('Capture started');
@@ -75,6 +87,9 @@ class Processor
 		return $data;
 	}
 
+	/**
+	 * @return array
+	 */
 	private function getRoutines()
 	{
 		$providers = $this->registration->load();

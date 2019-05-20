@@ -3,6 +3,11 @@
 
 namespace QU\LERQ\BackgroundTasks;
 
+/**
+ * Class QueueInitializationJobDefinition
+ * @package QU\LERQ\BackgroundTasks
+ * @author Ralph Dittrich <dittrich@qualitus.de>
+ */
 class QueueInitializationJobDefinition extends AbstractJobDefinition
 {
 	// table name for Job

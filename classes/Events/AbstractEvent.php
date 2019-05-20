@@ -38,6 +38,10 @@ abstract class AbstractEvent implements EventInterface
 		$this->database = $DIC->database();
 	}
 
+	/**
+	 * @param array $data
+	 * @return bool
+	 */
 	protected function save(array $data)
 	{
 		try {
@@ -173,6 +177,10 @@ abstract class AbstractEvent implements EventInterface
 		}
 	}
 
+	/**
+	 * @param string $a_event
+	 * @return mixed
+	 */
 	protected function mapEventToType(string $a_event)
 	{
 		$map = [
@@ -199,6 +207,10 @@ abstract class AbstractEvent implements EventInterface
 		return $map[$a_event];
 	}
 
+	/**
+	 * @param QueueModel $queueModel
+	 * @return void
+	 */
 	private function _saveEventData(QueueModel $queueModel)
 	{
 		$insert = 'INSERT INTO `' . self::DB_TABLE . '` ';

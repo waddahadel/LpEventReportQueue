@@ -310,10 +310,11 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 					 * $a_event: delete
 					 * $a_params: ['obj_id', 'ref_id', 'type', 'old_parent_ref_id']
 					 */
-					case 'delete':
-						$handler = new \QU\LERQ\Events\ObjectEvent();
-						$handler->handle_event($a_event, $a_params);
-						break;
+					// data can not be captured on delete event
+//					case 'delete':
+//						$handler = new \QU\LERQ\Events\ObjectEvent();
+//						$handler->handle_event($a_event, $a_params);
+//						break;
 					/*
 					 * $a_event: update
 					 * $a_params: ['obj_id', 'obj_type', 'ref_id']

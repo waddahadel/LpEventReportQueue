@@ -196,3 +196,56 @@ if (!$ilDB->tableExists('lerq_settings')) {
 	$ilDB->createSequence('lerq_settings');
 }
 ?>
+<#4>
+<?php
+if ($ilDB->tableExists('lerq_settings')) {
+    $fields = [
+		'user_fields',
+		'user_id',
+		'login',
+		'firstname',
+		'lastname',
+		'title',
+		'gender',
+		'email',
+		'institution',
+		'street',
+		'city',
+		'country',
+		'phone_office',
+		'hobby',
+		'department',
+		'phone_home',
+		'phone_mobile',
+		'fax',
+		'referral_comment',
+		'matriculation',
+		'active',
+		'approval_date',
+		'agree_date',
+		'auth_mode',
+		'ext_account',
+		'birthday',
+		'import_id',
+		'udf_fields'
+    ];
+
+    $select = 'SELECT keyword from lerq_settings';
+    $res_select = $ilDB->query($select);
+    $existing_fields = $ilDB->fetchAll($res_select);
+
+    foreach ($existing_fields as $ef) {
+        if (($key = array_search($ef, $fields)) !== false) {
+            unset($fields[$key]);
+        }
+    }
+
+    foreach ($fields as $field) {
+		$ilDB->insert('lerq_settings', [
+			'keyword' => ['text', $field],
+			'value'   => ['text', 1 ],
+			'type'    => ['text', 'boolean']
+		]);
+    }
+}
+?>

@@ -72,7 +72,7 @@ abstract class AbstractEvent implements EventInterface
 			}
 
 			$user = new UserModel();
-			if ($settings->getItem('user_fields')->getValue()) {
+			if ($settings->getItem('user_fields') != false && $settings->getItem('user_fields')->getValue()) {
 				if (array_key_exists('userdata', $data) && !empty($data['userdata'])) {
 					$ud = $data['userdata'];
 					if ($settings->getItem('user_id')->getValue())

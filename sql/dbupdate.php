@@ -235,17 +235,19 @@ if ($ilDB->tableExists('lerq_settings')) {
     $existing_fields = $ilDB->fetchAll($res_select);
 
     foreach ($existing_fields as $ef) {
-        if (($key = array_search($ef, $fields)) !== false) {
+        if (($key = array_search($ef['keyword'], $fields)) !== false) {
             unset($fields[$key]);
         }
     }
 
-    foreach ($fields as $field) {
-		$ilDB->insert('lerq_settings', [
-			'keyword' => ['text', $field],
-			'value'   => ['text', 1 ],
-			'type'    => ['text', 'boolean']
-		]);
-    }
+    if (count($fields) > 0) {
+		foreach ($fields as $field) {
+			$ilDB->insert('lerq_settings', [
+				'keyword' => ['text', $field],
+				'value' => ['text', 1],
+				'type' => ['text', 'boolean']
+			]);
+		}
+	}
 }
 ?>

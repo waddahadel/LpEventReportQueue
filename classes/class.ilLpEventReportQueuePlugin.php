@@ -196,7 +196,7 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 						break;
 					/*
 					 * $a_event: deleteParticipant
-					 * $a_params: ['objid', 'usr_id']
+					 * $a_params: ['obj_id', 'usr_id']
 					 */
 					case 'deleteParticipant':
 						$handler = new \QU\LERQ\Events\MemberEvent();

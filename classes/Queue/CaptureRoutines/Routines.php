@@ -137,7 +137,35 @@ class Routines implements DataCaptureRoutinesInterface
 
 			}
 
-			$data['role'] = ($event->getRoleId() !== -1 ? $event->getRoleId() : NULL);
+			// bugfix mantis 6876
+			// if we got no role_id, we try to figure out the assignment role of user <-> course relation
+			$rol_id = $event->getRoleId();
+			if ($rol_id === -1) {
+
+				// if crs_ref_id is not known, we try to get it
+				if ($crs_ref_id === NULL) {
+					$set = $this->findFirstParentCourseByObjId($ilObj->getId());
+					if ($set['ref_id'] !== 0) {
+						// to get the correct role, we need the object ref_id
+						$ilObj->setRefId($set['ref_id']);
+
+						if ($set['course_ref_id'] !== 0) {
+							/** @var \ilObjCourse $course */
+							$course = new \ilObjCourse($set['course_ref_id'], true);
+							$crs_title = $course->getTitle();
+							$crs_id = $course->getId();
+							$crs_ref_id = $course->getRefId();
+						}
+					}
+				}
+
+				$rol_id = $this->getRoleAssignmentByUserIdAndCourseId($event->getUsrId(),
+					($event->getRefId() !== -1 ? $ilObj->getRefId() : $ilObj->getId()),
+					($event->getRefId() !== -1)
+				);
+			}
+
+			$data['role'] = ($rol_id !== -1 ? $rol_id : NULL);
 			$data['course_title'] = $crs_title;
 			$data['course_id'] = $crs_id;
 			$data['course_ref_id'] = $crs_ref_id;
@@ -317,7 +345,7 @@ class Routines implements DataCaptureRoutinesInterface
 		$result = $DIC->database()->query($sql);
 		$ref = $DIC->database()->fetchAll($result);
 
-		if (array_key_exists('ref_id', $ref[0])) {
+		if (!empty($ref) && array_key_exists('ref_id', $ref[0])) {
 			$set['ref_id'] = ($ref[0]['ref_id'] *1);
 		}
 		if (!$is_course) {
@@ -329,4 +357,40 @@ class Routines implements DataCaptureRoutinesInterface
 		return $set;
 	}
 
+
+	/**
+	 * Get role id of user and course relation
+	 *
+	 * @param int $user_id
+	 * @param int $course_id
+	 * @param bool $call_course_by_ref
+	 * @return int
+	 * 		-1 if no assignment can be found. Otherwise role_id
+	 */
+	protected function getRoleAssignmentByUserIdAndCourseId($user_id, $course_id, $call_course_by_ref = false)
+	{
+		global $DIC;
+		$select_assignments = 'SELECT rua.rol_id FROM object_reference oref ' .
+			'LEFT JOIN rbac_fa rfa ON rfa.parent = oref.ref_id ' .
+			'LEFT JOIN rbac_ua rua ON rua.rol_id = rfa.rol_id ' .
+			'WHERE rfa.assign = "y" ' .
+			'AND rua.rol_id IS NOT NULL ' .
+			'AND rua.usr_id = ' . $DIC->database()->quote($user_id, 'integer') . ' ';
+
+		if ($call_course_by_ref) {
+			$select_assignments .= 'AND oref.ref_id = ' . $DIC->database()->quote($course_id, 'integer') . ' ';
+		} else {
+			$select_assignments .= 'AND oref.obj_id = ' . $DIC->database()->quote($course_id, 'integer') . ' ';
+		}
+
+		$result = $DIC->database()->query($select_assignments);
+		$assignments = $DIC->database()->fetchAll($result);
+
+		if (!empty($assignments) && array_key_exists('rol_id', $assignments[0])) {
+			return $assignments[0]['rol_id'];
+		} else {
+			return -1;
+		}
+
+	}
 }

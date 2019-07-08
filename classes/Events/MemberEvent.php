@@ -35,8 +35,10 @@ class MemberEvent extends AbstractEvent implements EventInterface
 		$event->setObjId($a_params['obj_id'])
 			->setUsrId($a_params['usr_id'])
 			->setEventName($a_event);
-		if (isset($a_params['role_id'])) {
-			$event->setRoleId($a_params['role_id']);
+		if (substr($a_event, 0, 5) === 'init_') {
+			if (isset($a_params['role_id'])) {
+				$event->setRoleId($a_params['role_id']);
+			}
 		}
 		if (isset($a_params['ref_id'])) {
 			$event->setRefId($a_params['ref_id']);
@@ -46,7 +48,11 @@ class MemberEvent extends AbstractEvent implements EventInterface
 		$data['timestamp'] = time();
 		$data['event'] = $a_event;
 		$data['progress'] = NULL;
-		$data['assignment'] = (isset($a_params['role_id']) ? $this->mapAssignment($a_params['role_id']) : NULL);
+		$data['assignment'] = ($data['memberdata']['role'] !== NULL ? $this->mapAssignment($data['memberdata']['role']) : NULL);
+		/* DEBUG START */
+		global $DIC;
+		$DIC->logger()->root()->debug('!!! ' . var_export($data, true) . ' !!!');
+		/* DEBUG END */
 
 		return $this->save($data);
 	}
@@ -60,7 +66,26 @@ class MemberEvent extends AbstractEvent implements EventInterface
 		/** @var \ilObjRole $roleObj */
 		$roleObj = \ilObjectFactory::getInstanceByObjId($assignment_id);
 
-		return $roleObj->getTitle();
+		$found_num = preg_match('/(member|tutor|admin)/', $roleObj->getTitle(), $matches);
+		$role_title = '';
+		if ($found_num > 0) {
+			switch ($matches[0]) {
+				case 'member':
+					$role_title = 'member';
+					break;
+				case 'tutor':
+					$role_title = 'tutor';
+					break;
+				case 'admin':
+					$role_title = 'administrator';
+					break;
+				default:
+					$role_title = $roleObj->getTitle();
+					break;
+			}
+		}
+
+		return $role_title;
 	}
 
 }

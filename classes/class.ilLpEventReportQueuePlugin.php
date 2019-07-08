@@ -290,21 +290,22 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 					 * $a_params: ['obj_id', 'obj_type']
 					 */
 					case 'create':
-						if (array_key_exists('obj_type', $a_params) && in_array($a_params['obj_type'], ['role', 'wiki', 'mob', 'mobs'])) {
-							global $DIC;
-							$type = (
-								$a_params['obj_type'] === 'role' ? 'Role' : (
-									$a_params['obj_type'] === 'wiki' ? 'Wiki' : (
-										$a_params['obj_type'] === 'mob' || $a_params['obj_type'] === 'mobs' ? 'Media Object' :
-											'unknown'
-									)
-								)
-							);
-							$DIC->logger()->root()->info('Skipping event for ' . $type . ' object.');
-							break;
-						}
-						$handler = new \QU\LERQ\Events\ObjectEvent();
-						$handler->handle_event($a_event, $a_params);
+						// deactivated event for mantis #6878
+//						if (array_key_exists('obj_type', $a_params) && in_array($a_params['obj_type'], ['role', 'wiki', 'mob', 'mobs'])) {
+//							global $DIC;
+//							$type = (
+//								$a_params['obj_type'] === 'role' ? 'Role' : (
+//									$a_params['obj_type'] === 'wiki' ? 'Wiki' : (
+//										$a_params['obj_type'] === 'mob' || $a_params['obj_type'] === 'mobs' ? 'Media Object' :
+//											'unknown'
+//									)
+//								)
+//							);
+//							$DIC->logger()->root()->info('Skipping event for ' . $type . ' object.');
+//							break;
+//						}
+//						$handler = new \QU\LERQ\Events\ObjectEvent();
+//						$handler->handle_event($a_event, $a_params);
 						break;
 					/*
 					 * $a_event: delete
@@ -320,8 +321,9 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 					 * $a_params: ['obj_id', 'obj_type', 'ref_id']
 					 */
 					case 'update':
-						$handler = new \QU\LERQ\Events\ObjectEvent();
-						$handler->handle_event($a_event, $a_params);
+						// deactivated event for mantis #6878
+//						$handler = new \QU\LERQ\Events\ObjectEvent();
+//						$handler->handle_event($a_event, $a_params);
 						break;
 					/*
 					 * $a_event: toTrash

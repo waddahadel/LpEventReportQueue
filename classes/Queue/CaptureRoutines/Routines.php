@@ -192,6 +192,7 @@ class Routines implements DataCaptureRoutinesInterface
 			} else {
 				$ilObj = \ilObjectFactory::getInstanceByObjId($event->getObjId());
 			}
+
 			global $DIC;
 			// check if object is type course
 			if ($ilObj->getType() === 'crs') {
@@ -201,6 +202,20 @@ class Routines implements DataCaptureRoutinesInterface
 				$parent = $this->findParentCourse($ilObj->getRefId());
 				if ($parent !== 0) {
 					$course_id = $parent;
+				}
+			}
+
+			// bugfix mantis #6880
+			// if no course can be found because the event does not know the ref_id,
+			// search for any object matching the obj_id
+			if ($course_id == FALSE) {
+				$set = $this->findFirstParentCourseByObjId($event->getObjId(), ($ilObj->getType() === 'crs'));
+				if ($set['ref_id'] !== 0) {
+					$ilObj->setRefId($set['ref_id']);
+
+					if ($set['course_ref_id'] !== 0) {
+						$course_id = $set['course_ref_id'];
+					}
 				}
 			}
 
@@ -269,6 +284,49 @@ class Routines implements DataCaptureRoutinesInterface
 			return $parent;
 		}
 		return 0;
+	}
+
+	/**
+	 * Find first ref_id of object and parent course ref_id
+	 *
+	 * This function is returns "any" matching ref id of the object. It should only be called
+	 * if no course can be found because because the object has no ref id known to the event.
+	 * @bugfix mantis #6880
+	 *
+	 * @param int $obj_id
+	 * @param bool $is_course
+	 * @return array
+	 * 		[
+	 * 			'ref_id' => (int) object ref id | or zero if nothing is found
+	 * 			'course_ref_id' => (int) course ref id | or zero if nothing is found
+	 * 		]
+	 */
+	protected function findFirstParentCourseByObjId($obj_id, $is_course = false)
+	{
+		$set = [
+			'ref_id' => 0,
+			'course_ref_id' => 0,
+		];
+
+		global $DIC;
+
+		$sql = 'SELECT ref_id FROM object_reference WHERE obj_id = ' .
+			$DIC->database()->quote($obj_id, 'integer') .
+			' AND deleted IS NULL LIMIT 1;';
+
+		$result = $DIC->database()->query($sql);
+		$ref = $DIC->database()->fetchAll($result);
+
+		if (array_key_exists('ref_id', $ref[0])) {
+			$set['ref_id'] = ($ref[0]['ref_id'] *1);
+		}
+		if (!$is_course) {
+			$set['course_ref_id'] = $this->findParentCourse($set['ref_id']);
+		} else {
+			$set['course_ref_id'] = $set['ref_id'];
+		}
+
+		return $set;
 	}
 
 }

@@ -46,13 +46,9 @@ class MemberEvent extends AbstractEvent implements EventInterface
 
 		$data = $processor->capture($event);
 		$data['timestamp'] = time();
-		$data['event'] = $a_event;
+		$data['event'] = $this->mapInitEvent($a_event);
 		$data['progress'] = NULL;
 		$data['assignment'] = ($data['memberdata']['role'] !== NULL ? $this->mapAssignment($data['memberdata']['role']) : NULL);
-		/* DEBUG START */
-		global $DIC;
-		$DIC->logger()->root()->debug('!!! ' . var_export($data, true) . ' !!!');
-		/* DEBUG END */
 
 		return $this->save($data);
 	}

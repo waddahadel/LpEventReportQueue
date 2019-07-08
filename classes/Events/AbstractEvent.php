@@ -208,6 +208,23 @@ abstract class AbstractEvent implements EventInterface
 	}
 
 	/**
+	 * @param string $a_event
+	 * @return string
+	 */
+	protected function mapInitEvent(string $a_event)
+	{
+		switch ($a_event) {
+			case 'init_event_lp':
+				return 'updateStatus';
+				break;
+			case 'init_event_mem':
+				return 'addParticipant';
+				break;
+		}
+		return $a_event;
+	}
+
+	/**
 	 * @param QueueModel $queueModel
 	 * @return void
 	 */

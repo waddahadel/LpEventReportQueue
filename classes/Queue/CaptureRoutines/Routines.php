@@ -236,6 +236,7 @@ class Routines implements DataCaptureRoutinesInterface
 			// bugfix mantis #6880
 			// if no course can be found because the event does not know the ref_id,
 			// search for any object matching the obj_id
+			$ambiguous = '';
 			if ($course_id == FALSE) {
 				$set = $this->findFirstParentCourseByObjId($event->getObjId(), ($ilObj->getType() === 'crs'));
 				if ($set['ref_id'] !== 0) {
@@ -244,6 +245,7 @@ class Routines implements DataCaptureRoutinesInterface
 					if ($set['course_ref_id'] !== 0) {
 						$course_id = $set['course_ref_id'];
 					}
+					$ambiguous = '&ambiguous=true';
 				}
 			}
 
@@ -267,7 +269,7 @@ class Routines implements DataCaptureRoutinesInterface
 			$data['id'] = $ilObj->getId();
 			$data['title'] = $ilObj->getTitle();
 			$data['ref_id'] = $ilObj->getRefId();
-			$data['link'] = $link;
+			$data['link'] = $link . $ambiguous;
 			$data['type'] = $ilObj->getType();
 			$data['course_title'] = $crs_title;
 			$data['course_id'] = $crs_id;

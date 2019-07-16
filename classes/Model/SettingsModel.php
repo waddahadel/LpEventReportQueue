@@ -134,6 +134,7 @@ class SettingsModel
 			$values = [
 				$item->getKeyword(),
 				$item->getValue(),
+				'boolean',
 			];
 			if (!$this->_update($fields, $types, $values, $keyword)) {
 				$ret = false;

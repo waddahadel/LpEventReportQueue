@@ -196,7 +196,7 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 						break;
 					/*
 					 * $a_event: deleteParticipant
-					 * $a_params: ['objid', 'usr_id']
+					 * $a_params: ['obj_id', 'usr_id']
 					 */
 					case 'deleteParticipant':
 						$handler = new \QU\LERQ\Events\MemberEvent();
@@ -290,24 +290,40 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 					 * $a_params: ['obj_id', 'obj_type']
 					 */
 					case 'create':
-						$handler = new \QU\LERQ\Events\ObjectEvent();
-						$handler->handle_event($a_event, $a_params);
+						// deactivated event for mantis #6878
+//						if (array_key_exists('obj_type', $a_params) && in_array($a_params['obj_type'], ['role', 'wiki', 'mob', 'mobs'])) {
+//							global $DIC;
+//							$type = (
+//								$a_params['obj_type'] === 'role' ? 'Role' : (
+//									$a_params['obj_type'] === 'wiki' ? 'Wiki' : (
+//										$a_params['obj_type'] === 'mob' || $a_params['obj_type'] === 'mobs' ? 'Media Object' :
+//											'unknown'
+//									)
+//								)
+//							);
+//							$DIC->logger()->root()->info('Skipping event for ' . $type . ' object.');
+//							break;
+//						}
+//						$handler = new \QU\LERQ\Events\ObjectEvent();
+//						$handler->handle_event($a_event, $a_params);
 						break;
 					/*
 					 * $a_event: delete
 					 * $a_params: ['obj_id', 'ref_id', 'type', 'old_parent_ref_id']
 					 */
-					case 'delete':
-						$handler = new \QU\LERQ\Events\ObjectEvent();
-						$handler->handle_event($a_event, $a_params);
-						break;
+					// data can not be captured on delete event
+//					case 'delete':
+//						$handler = new \QU\LERQ\Events\ObjectEvent();
+//						$handler->handle_event($a_event, $a_params);
+//						break;
 					/*
 					 * $a_event: update
 					 * $a_params: ['obj_id', 'obj_type', 'ref_id']
 					 */
 					case 'update':
-						$handler = new \QU\LERQ\Events\ObjectEvent();
-						$handler->handle_event($a_event, $a_params);
+						// deactivated event for mantis #6878
+//						$handler = new \QU\LERQ\Events\ObjectEvent();
+//						$handler->handle_event($a_event, $a_params);
 						break;
 					/*
 					 * $a_event: toTrash

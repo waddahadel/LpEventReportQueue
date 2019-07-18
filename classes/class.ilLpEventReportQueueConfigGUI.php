@@ -350,7 +350,7 @@ class ilLpEventReportQueueConfigGUI extends ilPluginConfigGUI
 	/**
 	 * @return string
 	 */
-	public function startInitializationCmd(): string
+	public function startInitializationCmd()
 	{
 		global $DIC;
 

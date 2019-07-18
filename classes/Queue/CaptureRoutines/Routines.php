@@ -137,7 +137,35 @@ class Routines implements DataCaptureRoutinesInterface
 
 			}
 
-			$data['role'] = ($event->getRoleId() !== -1 ? $event->getRoleId() : NULL);
+			// bugfix mantis 6876
+			// if we got no role_id, we try to figure out the assignment role of user <-> course relation
+			$rol_id = $event->getRoleId();
+			if ($rol_id === -1) {
+
+				// if crs_ref_id is not known, we try to get it
+				if ($crs_ref_id === NULL) {
+					$set = $this->findFirstParentCourseByObjId($ilObj->getId());
+					if ($set['ref_id'] !== 0) {
+						// to get the correct role, we need the object ref_id
+						$ilObj->setRefId($set['ref_id']);
+
+						if ($set['course_ref_id'] !== 0) {
+							/** @var \ilObjCourse $course */
+							$course = new \ilObjCourse($set['course_ref_id'], true);
+							$crs_title = $course->getTitle();
+							$crs_id = $course->getId();
+							$crs_ref_id = $course->getRefId();
+						}
+					}
+				}
+
+				$rol_id = $this->getRoleAssignmentByUserIdAndCourseId($event->getUsrId(),
+					($event->getRefId() !== -1 ? $ilObj->getRefId() : $ilObj->getId()),
+					($event->getRefId() !== -1)
+				);
+			}
+
+			$data['role'] = ($rol_id !== -1 ? $rol_id : NULL);
 			$data['course_title'] = $crs_title;
 			$data['course_id'] = $crs_id;
 			$data['course_ref_id'] = $crs_ref_id;
@@ -192,6 +220,7 @@ class Routines implements DataCaptureRoutinesInterface
 			} else {
 				$ilObj = \ilObjectFactory::getInstanceByObjId($event->getObjId());
 			}
+
 			global $DIC;
 			// check if object is type course
 			if ($ilObj->getType() === 'crs') {
@@ -202,6 +231,24 @@ class Routines implements DataCaptureRoutinesInterface
 				if ($parent !== 0) {
 					$course_id = $parent;
 				}
+			}
+
+			// bugfix mantis #6880
+			// if no course can be found because the event does not know the ref_id,
+			// search for any object matching the obj_id
+			$ambiguous = '';
+			if ($course_id == FALSE) {
+				$set = $this->findFirstParentCourseByObjId($event->getObjId(), ($ilObj->getType() === 'crs'));
+				if ($set['ref_id'] !== 0) {
+					$ilObj->setRefId($set['ref_id']);
+
+					if ($set['course_ref_id'] !== 0) {
+						$course_id = $set['course_ref_id'];
+					}
+				}
+			}
+			if ($event->getRefId() == -1) {
+				$ambiguous = '&ambiguous=true';
 			}
 
 
@@ -224,7 +271,7 @@ class Routines implements DataCaptureRoutinesInterface
 			$data['id'] = $ilObj->getId();
 			$data['title'] = $ilObj->getTitle();
 			$data['ref_id'] = $ilObj->getRefId();
-			$data['link'] = $link;
+			$data['link'] = $link . $ambiguous;
 			$data['type'] = $ilObj->getType();
 			$data['course_title'] = $crs_title;
 			$data['course_id'] = $crs_id;
@@ -261,6 +308,8 @@ class Routines implements DataCaptureRoutinesInterface
 						break;
 					}
 				}
+			} else {
+				$parent = $parent_type;
 			}
 
 			if ($parent_type === false || $parent_type === 0) {
@@ -271,4 +320,83 @@ class Routines implements DataCaptureRoutinesInterface
 		return 0;
 	}
 
+	/**
+	 * Find first ref_id of object and parent course ref_id
+	 *
+	 * This function is returns "any" matching ref id of the object. It should only be called
+	 * if no course can be found because because the object has no ref id known to the event.
+	 * @bugfix mantis #6880
+	 *
+	 * @param int $obj_id
+	 * @param bool $is_course
+	 * @return array
+	 * 		[
+	 * 			'ref_id' => (int) object ref id | or zero if nothing is found
+	 * 			'course_ref_id' => (int) course ref id | or zero if nothing is found
+	 * 		]
+	 */
+	protected function findFirstParentCourseByObjId($obj_id, $is_course = false)
+	{
+		$set = [
+			'ref_id' => 0,
+			'course_ref_id' => 0,
+		];
+
+		global $DIC;
+
+		$sql = 'SELECT ref_id FROM object_reference WHERE obj_id = ' .
+			$DIC->database()->quote($obj_id, 'integer') .
+			' AND deleted IS NULL LIMIT 1;';
+
+		$result = $DIC->database()->query($sql);
+		$ref = $DIC->database()->fetchAll($result);
+
+		if (!empty($ref) && array_key_exists('ref_id', $ref[0])) {
+			$set['ref_id'] = ($ref[0]['ref_id'] *1);
+		}
+		if (!$is_course) {
+			$set['course_ref_id'] = $this->findParentCourse($set['ref_id']);
+		} else {
+			$set['course_ref_id'] = $set['ref_id'];
+		}
+
+		return $set;
+	}
+
+
+	/**
+	 * Get role id of user and course relation
+	 *
+	 * @param int $user_id
+	 * @param int $course_id
+	 * @param bool $call_course_by_ref
+	 * @return int
+	 * 		-1 if no assignment can be found. Otherwise role_id
+	 */
+	protected function getRoleAssignmentByUserIdAndCourseId($user_id, $course_id, $call_course_by_ref = false)
+	{
+		global $DIC;
+		$select_assignments = 'SELECT rua.rol_id FROM object_reference oref ' .
+			'LEFT JOIN rbac_fa rfa ON rfa.parent = oref.ref_id ' .
+			'LEFT JOIN rbac_ua rua ON rua.rol_id = rfa.rol_id ' .
+			'WHERE rfa.assign = "y" ' .
+			'AND rua.rol_id IS NOT NULL ' .
+			'AND rua.usr_id = ' . $DIC->database()->quote($user_id, 'integer') . ' ';
+
+		if ($call_course_by_ref) {
+			$select_assignments .= 'AND oref.ref_id = ' . $DIC->database()->quote($course_id, 'integer') . ' ';
+		} else {
+			$select_assignments .= 'AND oref.obj_id = ' . $DIC->database()->quote($course_id, 'integer') . ' ';
+		}
+
+		$result = $DIC->database()->query($select_assignments);
+		$assignments = $DIC->database()->fetchAll($result);
+
+		if (!empty($assignments) && array_key_exists('rol_id', $assignments[0])) {
+			return $assignments[0]['rol_id'];
+		} else {
+			return -1;
+		}
+
+	}
 }

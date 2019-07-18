@@ -115,8 +115,10 @@ class SettingsModel
 		$fields = [
 			'keyword',
 			'value',
+			'type'
 		];
 		$types = [
+			'text',
 			'text',
 			'text'
 		];
@@ -124,6 +126,7 @@ class SettingsModel
 			$values = [
 				$this->items[$keyword]->getKeyword(),
 				$this->items[$keyword]->getValue(),
+				'boolean'
 			];
 			return $this->_create($fields, $types, $values);
 		}
@@ -131,6 +134,7 @@ class SettingsModel
 			$values = [
 				$item->getKeyword(),
 				$item->getValue(),
+				'boolean',
 			];
 			if (!$this->_update($fields, $types, $values, $keyword)) {
 				$ret = false;

@@ -86,11 +86,14 @@ class ilQueueInitializationJob extends AbstractJob
 			// collect items to process
 			$this->logMessage('Start collecting data.');
 
-			$select_assignments = 'SELECT * FROM object_reference oref ' .
+			$select_assignments = 'SELECT rua.usr_id, oref.ref_id, oref.obj_id, rua.rol_id, ud.type ' .
+				'FROM object_reference oref ' .
 				'LEFT JOIN rbac_fa rfa ON rfa.parent = oref.ref_id ' .
 				'LEFT JOIN rbac_ua rua ON rua.rol_id = rfa.rol_id ' .
+				'LEFT JOIN object_data ud ON ud.obj_id = oref.obj_id ' .
 				'WHERE rfa.assign = "y" ' .
-				'AND rua.rol_id IS NOT NULL ';
+				'AND rua.rol_id IS NOT NULL ' .
+				'AND ud.type NOT IN ("rolf", "role") ';
 			$res = $this->db->query($select_assignments);
 			$assignments = [];
 			$count = 0;

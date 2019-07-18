@@ -583,7 +583,7 @@ class UserModel
 			'ext_account' => $this->getExtAccount(),
 			'birthday' => $this->getBirthday(),
 			'import_id' => $this->getImportId(),
-			'udf_data' => json_encode($this->getUdfData()),
+			'udf_data' => $this->getUdfData(),
 		]);
 	}
 }

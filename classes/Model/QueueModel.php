@@ -257,9 +257,9 @@ class QueueModel
 			'assignment' => $this->getAssignment(),
 			'course_start' => $this->getCourseStart(),
 			'course_end' => $this->getCourseEnd(),
-			'user_data' => $this->getUserData(),
-			'obj_data' => $this->getObjData(),
-			'mem_data' => $this->getMemData(),
+			'user_data' => json_decode($this->getUserData()),
+			'obj_data' => json_decode($this->getObjData()),
+			'mem_data' => json_decode($this->getMemData()),
 		]);
 	}
 

@@ -72,7 +72,7 @@ abstract class AbstractEvent implements EventInterface
 			}
 
 			$user = new UserModel();
-			if ($settings->getItem('user_fields')->getValue()) {
+			if ($settings->getItem('user_fields') != false && $settings->getItem('user_fields')->getValue()) {
 				if (array_key_exists('userdata', $data) && !empty($data['userdata'])) {
 					$ud = $data['userdata'];
 					if ($settings->getItem('user_id')->getValue())
@@ -205,6 +205,23 @@ abstract class AbstractEvent implements EventInterface
 			"putObjectInTree" => "object_event",
 		];
 		return $map[$a_event];
+	}
+
+	/**
+	 * @param string $a_event
+	 * @return string
+	 */
+	protected function mapInitEvent(string $a_event)
+	{
+		switch ($a_event) {
+			case 'init_event_lp':
+				return 'updateStatus';
+				break;
+			case 'init_event_mem':
+				return 'addParticipant';
+				break;
+		}
+		return $a_event;
 	}
 
 	/**

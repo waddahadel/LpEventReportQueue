@@ -245,8 +245,10 @@ class Routines implements DataCaptureRoutinesInterface
 					if ($set['course_ref_id'] !== 0) {
 						$course_id = $set['course_ref_id'];
 					}
-					$ambiguous = '&ambiguous=true';
 				}
+			}
+			if ($event->getRefId() == -1) {
+				$ambiguous = '&ambiguous=true';
 			}
 
 
@@ -306,6 +308,8 @@ class Routines implements DataCaptureRoutinesInterface
 						break;
 					}
 				}
+			} else {
+				$parent = $parent_type;
 			}
 
 			if ($parent_type === false || $parent_type === 0) {

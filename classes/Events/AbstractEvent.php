@@ -48,6 +48,16 @@ abstract class AbstractEvent implements EventInterface
 			$queue = new QueueModel();
 			$settings = new SettingsModel();
 
+			if (array_key_exists('objectdata', $data) && !empty($data['objectdata'])) {
+				if (
+					$settings->getItem('obj_select')->getValue() !== '*' &&
+					$settings->getItem('obj_select')->getValue() != $data['objectdata']['type']
+				) {
+					$this->logger->root()->debug('Skipped event because of configuration.');
+					return true;
+				}
+			}
+
 			$queue->setTimestamp($data['timestamp'])
 				->setEvent($data['event'])
 				->setEventType($this->mapEventToType($data['event']))
@@ -138,22 +148,17 @@ abstract class AbstractEvent implements EventInterface
 
 			$object = new ObjectModel();
 			if (array_key_exists('objectdata', $data) && !empty($data['objectdata'])) {
-				if (
-					$settings->getItem('obj_select')->getValue() === '*' ||
-					$settings->getItem('obj_select')->getValue() == $data['objectdata']['type']
-				) {
-					$od = $data['objectdata'];
+				$od = $data['objectdata'];
 
-					$object->setTitle($od['title'])
-						->setId($od['id'])
-						->setRefId($od['ref_id'])
-						->setLink($od['link'])
-						->setType($od['type'])
-						->setCourseTitle($od['course_title'])
-						->setCourseId($od['course_id'])
-						->setCourseRefId($od['course_ref_id']);
+				$object->setTitle($od['title'])
+					->setId($od['id'])
+					->setRefId($od['ref_id'])
+					->setLink($od['link'])
+					->setType($od['type'])
+					->setCourseTitle($od['course_title'])
+					->setCourseId($od['course_id'])
+					->setCourseRefId($od['course_ref_id']);
 
-				}
 			}
 			$queue->setObjData($object);
 

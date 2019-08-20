@@ -8,6 +8,9 @@ use \ILIAS\BackgroundTasks\Observer;
 use \ILIAS\BackgroundTasks\Types\SingleType;
 use \QU\LERQ\BackgroundTasks\QueueInitializationJobDefinition;
 use \QU\LERQ\Events\AbstractEvent;
+use \QU\LERQ\BackgroundTasks\AssignmentCollector;
+use \QU\LERQ\Events\LearningProgressEvent;
+use \QU\LERQ\Events\MemberEvent;
 
 /**
  * Class ilQueueInitializationJob
@@ -24,6 +27,9 @@ class ilQueueInitializationJob extends AbstractJob
 	/** @var \ilDB */
 	protected $db;
 
+	/** @var AssignmentCollector */
+	protected $collector;
+
 	/**
 	 * @param array $input
 	 * @param Observer $observer
@@ -34,6 +40,13 @@ class ilQueueInitializationJob extends AbstractJob
 	{
 		global $DIC;
 
+		\ilPluginAdmin::getPluginObject(
+			"Services",
+			"Cron",
+			"crnhk",
+			"LpEventReportQueue"
+		);
+
 		$this->logMessage('Start initial queue collection.');
 
 		$this->db = $DIC->database();
@@ -42,6 +55,7 @@ class ilQueueInitializationJob extends AbstractJob
 
 		$output = new IntegerValue();
 
+		/* check if task can run */
 		$task_info = $this->getTaskInformations();
 		if(empty($task_info)) {
 			$this->initTask();
@@ -74,143 +88,144 @@ class ilQueueInitializationJob extends AbstractJob
 			return $output;
 		}
 
+		/* start task */
 		$this->updateTask([
 			'lock' => true,
 			'state' => $this->definitions::JOB_STATE_RUNNING,
 		]);
 		$observer->notifyState(State::RUNNING);
-
-		$found_items = 0;
 		$observer->notifyPercentage($this, 0);
+
 		try {
 			// collect items to process
 			$this->logMessage('Start collecting data.');
 
-			$select_assignments = 'SELECT rua.usr_id, oref.ref_id, oref.obj_id, rua.rol_id, ud.type ' .
-				'FROM object_reference oref ' .
-				'LEFT JOIN rbac_fa rfa ON rfa.parent = oref.ref_id ' .
-				'LEFT JOIN rbac_ua rua ON rua.rol_id = rfa.rol_id ' .
-				'LEFT JOIN object_data ud ON ud.obj_id = oref.obj_id ' .
-				'WHERE rfa.assign = "y" ' .
-				'AND rua.rol_id IS NOT NULL ' .
-				'AND ud.type NOT IN ("rolf", "role") ';
-			$res = $this->db->query($select_assignments);
-			$assignments = [];
-			$count = 0;
-			while ($data = $this->db->fetchAssoc($res))
-			{
-				if ($data['usr_id'] == 6) {
-					continue;
-				}
-				if (!array_key_exists($data['ref_id'], $assignments)) {
-					$assignments[$data['ref_id']] = [];
-				}
-				$assignments[$data['ref_id']][$data['usr_id']] = [
-					'obj_id' => $data['obj_id'],
-					'rol_id' => $data['rol_id'],
-				];
-				$found_items++;
-				$count++;
-				if ($count > 100) {
-					$observer->heartbeat();
-					$count = 0;
-				}
-			}
-
-
+			/* prepare to get data */
+			$this->collector = new AssignmentCollector($this->db);
+			$found_items = $this->collector->getCountOfAllAssignments();
 			$this->updateTask(['found_items' => $found_items]);
 			$this->logMessage('Found overall ' . $found_items . ' items.', 'debug');
-			$this->logMessage('Finished collecting data.');
+			if ($found_items < 1) {
+				$this->updateTask([
+					'lock' => false,
+					'state' => $this->definitions::JOB_STATE_FINISHED,
+				]);
+				$output->setValue($this->definitions::JOB_RETURN_SUCCESS);
+				return $output;
+			}
+
+			/* prepare vars */
+			$limit_per_run = 1000;
+			$start_ref_id = 0;
+			$processed_items = 0;
+			$run = 1;
+			$assignments = [];
+
+			/* collect and process items */
+			while ($processed_items < $found_items) {
+				/* collect */
+				$assignments = $this->collectData($limit_per_run, $start_ref_id);
+				$this->logMessage('Prepared ' . $this->collector->countAssignmentItems($assignments) . ' items for run #' . $run . '.', 'debug');
+				if (($processed_items + count($assignments)) == $found_items) {
+					$this->logMessage('Finished collecting data.');
+				}
+
+				/* process */
+				$processed = $this->processData($observer, $assignments);
+				$processed_items += $processed['processed'];
+				$start_ref_id = ($processed['last_ref'] + 1);
+				$this->logMessage('Processed ' . $processed['processed'] . ' items for run #' . $run . '.', 'debug');
+				unset($processed);
+
+				/* update task informations */
+				$this->updateTask([
+					'progress' => $this->measureProgress($found_items, $processed_items),
+				]);
+				$observer->notifyPercentage($this, (int)$this->measureProgress($found_items, $processed_items));
+			}
+			$this->logMessage('Finished processing data.');
 
 		} catch (\Exception $e) {
 			$this->logMessage($e->getMessage(), 'error');
 			$this->updateTask([
 				'lock' => false,
-				'found_items' => $found_items,
 				'state' => $this->definitions::JOB_STATE_FAILED,
 			]);
 			$output->setValue((int)$e->getCode());
 			return $output;
 		}
+
+
 		$observer->heartbeat();
-
-		// if we get no items, the task is finished
-		if ($found_items < 1) {
-			$this->updateTask([
-				'lock' => false,
-				'state' => $this->definitions::JOB_STATE_FINISHED,
-			]);
-			$output->setValue($this->definitions::JOB_RETURN_SUCCESS);
-			return $output;
-		}
-
-		try {
-			// process items
-			$this->logMessage('Start processing data.');
-
-			$lp_handler = new \QU\LERQ\Events\LearningProgressEvent();
-			$mem_handler = new \QU\LERQ\Events\MemberEvent();
-			$processed_items = 0;
-
-			foreach ($assignments as $ref_id => $odata) {
-				$observer->heartbeat();
-
-				foreach ($odata as $user_id => $udata) {
-					$this->logMessage($ref_id . '(ref) => ' . $user_id . '(usr) => ' . var_export($udata, true));
-
-					$mem_handler->handle_event('init_event_mem', [
-						'obj_id' => $udata['obj_id'],
-						'usr_id' => $user_id,
-						'role_id' => $udata['rol_id'],
-						'ref_id' => $ref_id
-					]);
-
-					$status = \ilLPStatus::_lookupStatus($udata['obj_id'], $user_id, false);
-					if (isset($status)) {
-						$lp_handler->handle_event('init_event_lp', [
-							'obj_id' => $udata['obj_id'],
-							'usr_id' => $user_id,
-							'status' => $status,
-							'percentage' => \ilLPStatus::_lookupPercentage($udata['obj_id'], $user_id),
-							'ref_id' => $ref_id
-						]);
-					}
-					$processed_items++;
-				}
-
-				$this->updateTask([
-					'processed_items' => $processed_items,
-					'progress' => $this->measureProgress($found_items, $processed_items),
-				]);
-				$observer->notifyPercentage($this, (int)$this->measureProgress($found_items, $processed_items));
-			}
-
-			$this->logMessage('Processed ' . $processed_items . ' items.', 'debug');
-			$this->logMessage('Finished processing data.');
-
-
-		} catch (\Exception $e) {
-			$this->logMessage($e->getMessage(), 'error');
-			$this->updateTask([
-				'lock' => false,
-				'found_items' => $found_items,
-				'processed_items' => $processed_items,
-				'progress' => $this->measureProgress($found_items, $processed_items),
-				'state' => $this->definitions::JOB_STATE_FAILED,
-			]);
-			$output->setValue($this->definitions::JOB_RETURN_FAILED);
-			return $output;
-		}
-
 		$this->updateTask([
 			'lock' => false,
 			'state' => $this->definitions::JOB_STATE_FINISHED,
-			'progress' => $this->measureProgress($found_items, $processed_items),
+//			'progress' => 100,
 			'finished_ts' => strtotime('now'),
 		]);
 		$this->logMessage('Finished initial queue collection.');
+		$observer->notifyPercentage($this, 100);
+		$observer->notifyState(State::FINISHED);
+
 		$output->setValue($this->definitions::JOB_RETURN_SUCCESS);
 		return $output;
+	}
+
+	/**
+	 * @param int $limit
+	 * @param int $start_ref
+	 * @return array
+	 */
+	protected function collectData(int $limit = 1000, int $start_ref = 0): array
+	{
+		return $this->collector->getAssignments($limit, $start_ref);
+	}
+
+	/**
+	 * @param Observer $observer
+	 * @param array $assignments
+	 * @return array
+	 */
+	protected function processData(Observer $observer, array $assignments): array
+	{
+
+		$lp_handler = new LearningProgressEvent();
+		$mem_handler = new MemberEvent();
+		$processed_items = ($this->getTaskInformations()['processed_items'] * 1);
+
+		foreach ($assignments as $ref_id => $odata) {
+			$observer->heartbeat();
+
+			foreach ($odata as $user_id => $udata) {
+				$this->logMessage($ref_id . '(ref) => ' . $user_id . '(usr) => ' . var_export($udata, true));
+
+				$mem_handler->handle_event('init_event_mem', [
+					'obj_id' => $udata['obj_id'],
+					'usr_id' => $user_id,
+					'role_id' => $udata['rol_id'],
+					'ref_id' => $ref_id
+				]);
+
+				$status = \ilLPStatus::_lookupStatus($udata['obj_id'], $user_id, false);
+				if (isset($status)) {
+					$lp_handler->handle_event('init_event_lp', [
+						'obj_id' => $udata['obj_id'],
+						'usr_id' => $user_id,
+						'status' => $status,
+						'percentage' => \ilLPStatus::_lookupPercentage($udata['obj_id'], $user_id),
+						'ref_id' => $ref_id
+					]);
+				}
+				$processed_items++;
+			}
+			$last_ref = $ref_id;
+			$this->updateTask([
+				'processed_items' => $processed_items,
+				'last_item' => $last_ref,
+			]);
+		}
+
+		return ['processed' => $processed_items, 'last_ref' => $last_ref];
 	}
 
 	/**
@@ -280,6 +295,7 @@ class ilQueueInitializationJob extends AbstractJob
 			'progress' => 0,
 			'started_ts' => strtotime('now'),
 			'finished_ts' => null,
+			'last_item' => 0,
 		];
 
 		$settings->set($this->db_table, json_encode($task_info));
@@ -318,6 +334,9 @@ class ilQueueInitializationJob extends AbstractJob
 				$data['finished_ts'] = strtotime($data['finished_ts']);
 			}
 			$task_info['finished_ts'] = $data['finished_ts'];
+		}
+		if(array_key_exists('last_item', $data)) {
+			$task_info['last_item'] = $data['last_item'];
 		}
 
 

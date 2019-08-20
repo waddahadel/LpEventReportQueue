@@ -403,7 +403,7 @@ class ilLpEventReportQueueConfigGUI extends ilPluginConfigGUI
 	public function wasInitializationStarted($task_info = []): bool
 	{
 		return (
-			!empty($task_info) &&
+			!empty($task_info) ||
 			$task_info['state'] !== QueueInitializationJobDefinition::JOB_STATE_INIT
 		);
 	}

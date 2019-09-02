@@ -246,6 +246,7 @@ class Collector
 				->setAuthMode($item_ud['auth_mode'])
 				->setExtAccount($item_ud['ext_account'])
 				->setBirthday($item_ud['birthday'])
+				->setImportId($item_ud['import_id'])
 				->setUdfData($item_ud['udf_data']);
 			$qm->setUserData($um);
 			unset($item_ud);

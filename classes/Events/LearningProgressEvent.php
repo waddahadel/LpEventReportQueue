@@ -46,7 +46,7 @@ class LearningProgressEvent extends AbstractEvent implements EventInterface
 		$data['timestamp'] = time();
 		$data['event'] = $this->mapInitEvent($a_event);
 		$data['progress'] = $this->mapLpStatus($a_params['status']);
-		$data['assignment'] = NULL;
+		$data['assignment'] = \ilObjUser::_lookupLogin($event->getUsrId());
 
 		return $this->save($data);
 	}

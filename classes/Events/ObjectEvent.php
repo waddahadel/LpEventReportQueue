@@ -3,6 +3,7 @@
 
 namespace QU\LERQ\Events;
 
+use QU\LERQ\Helper\EventDataAggregationHelper;
 use QU\LERQ\Model\EventModel;
 use QU\LERQ\Queue\Processor;
 
@@ -47,12 +48,22 @@ class ObjectEvent extends AbstractEvent implements EventInterface
 		} else if (isset($a_params['parent_ref_id'])) {
 			$event->setParentRefId($a_params['parent_ref_id']);
 		}
+		// do we have a change to get the user id from the akteur?
 
 		$data = $processor->capture($event);
 		$data['timestamp'] = time();
 		$data['event'] = $this->mapInitEvent($a_event);
 		$data['progress'] = NULL;
+
+		$eventDataAggregator = EventDataAggregationHelper::singleton();
 		$data['assignment'] = NULL;
+		if ($event->getRefId() > 0) {
+			$assignment = $eventDataAggregator->getParentContainerAssignmentRoleForObjectByRefIdAndUserId(
+				$event->getRefId(),
+				$event->getUsrId()
+			);
+			$data['assignment'] = $eventDataAggregator->getRoleTitleByRoleId($assignment);
+		}
 
 		return $this->save($data);
 	}

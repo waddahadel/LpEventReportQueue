@@ -4,6 +4,7 @@ namespace QU\LERQ\Events;
 
 include_once './Services/Tracking/classes/class.ilLPStatus.php';
 
+use QU\LERQ\Helper\EventDataAggregationHelper;
 use QU\LERQ\Model\EventModel;
 use QU\LERQ\Queue\Processor;
 
@@ -45,34 +46,19 @@ class LearningProgressEvent extends AbstractEvent implements EventInterface
 		$data = $processor->capture($event);
 		$data['timestamp'] = time();
 		$data['event'] = $this->mapInitEvent($a_event);
-		$data['progress'] = $this->mapLpStatus($a_params['status']);
-		$data['assignment'] = \ilObjUser::_lookupLogin($event->getUsrId());
+
+		$eventDataAggregator = EventDataAggregationHelper::singleton();
+		$data['progress'] = $eventDataAggregator->getLpStatusRepresentation($a_params['status']);
+		$data['assignment'] = NULL;
+		if ($event->getRefId() > 0) {
+			$assignment = $eventDataAggregator->getParentContainerAssignmentRoleForObjectByRefIdAndUserId(
+				$event->getRefId(),
+				$event->getUsrId()
+			);
+			$data['assignment'] = $eventDataAggregator->getRoleTitleByRoleId($assignment);
+		}
 
 		return $this->save($data);
-	}
-
-	/**
-	 * @param int $status
-	 * @return string
-	 */
-	private function mapLpStatus(int $status): string
-	{
-		$lpStatus = '';
-		switch ($status) {
-			case \ilLPStatus::LP_STATUS_NOT_ATTEMPTED_NUM:
-				$lpStatus = 'no_attempted';
-				break;
-			case \ilLPStatus::LP_STATUS_IN_PROGRESS_NUM:
-				$lpStatus = 'in_progress';
-				break;
-			case \ilLPStatus::LP_STATUS_COMPLETED_NUM:
-				$lpStatus = 'completed';
-				break;
-			case \ilLPStatus::LP_STATUS_FAILED_NUM:
-				$lpStatus = 'failed';
-				break;
-		}
-		return $lpStatus;
 	}
 
 }

@@ -12,6 +12,18 @@ class EventDataAggregationHelper
 	/** @var EventDataAggregationHelper */
 	protected static $instance;
 
+	/** @var \ilLogger  */
+	protected $logger;
+
+	/**
+	 * EventDataAggregationHelper constructor.
+	 */
+	public function __construct()
+	{
+		global $DIC;
+		$this->logger = $DIC->logger()->root();
+	}
+
 	/**
 	 * Get singleton
 	 *
@@ -100,6 +112,12 @@ class EventDataAggregationHelper
 		global $DIC;
 		$cont_ref_id = $this->getContainerRefIdByObjectRefIdAndTypes($ref_id);
 
+		$this->logger->debug(sprintf('called "%s" with ref_id "%s" and user_id "%s"',
+			'getParentContainerAssignmentRoleForObjectByRefIdAndUserId',
+			$ref_id,
+			$user_id
+		));
+
 		$select_assignments = 'SELECT rua.rol_id FROM object_reference oref ' .
 			'LEFT JOIN rbac_fa rfa ON rfa.parent = oref.ref_id ' .
 			'LEFT JOIN rbac_ua rua ON rua.rol_id = rfa.rol_id ' .
@@ -113,8 +131,10 @@ class EventDataAggregationHelper
 		$assignments = $DIC->database()->fetchAll($result);
 
 		if (!empty($assignments) && array_key_exists('rol_id', $assignments[0])) {
+			$this->logger->debug(sprintf('role_id %s found', $assignments[0]['rol_id']));
 			return $assignments[0]['rol_id'];
 		} else {
+			$this->logger->debug(sprintf('no role found'));
 			return -1;
 		}
 
@@ -132,6 +152,11 @@ class EventDataAggregationHelper
 		if (!isset($type) || empty($type)) {
 			$types = ['crs', 'grp', 'prg'];
 		}
+		$this->logger->debug(sprintf('called %s with ref_id %s and types: [%s]',
+			'getContainerRefIdByObjectRefIdAndTypes',
+			$ref_id,
+			implode(',', $types)
+		));
 
 		$cont_ref_id = $this->searchFirstParentRefIdByTypes($ref_id, $types);
 		if ($cont_ref_id === false || $cont_ref_id === 0) {
@@ -139,19 +164,23 @@ class EventDataAggregationHelper
 			$tree = $DIC->repositoryTree();
 
 			$paths = $tree->getPathFull($ref_id);
+			$this->logger->debug(sprintf('searching in path %s', $paths));
 			foreach (array_reverse($paths) as $path) {
+				$this->logger->debug(sprintf('checking path item %s', $path['id']));
 				$cont_ref_id = $this->searchFirstParentRefIdByTypes($path['id'], $types);
 
-				if ($cont_ref_id !== false || $cont_ref_id > 0) {
+				if ($cont_ref_id !== false && $cont_ref_id > 0) {
 					break;
 				}
 			}
 		}
 		// return -1 if no container was found
 		if ($cont_ref_id === false || $cont_ref_id === 0) {
+			$this->logger->debug(sprintf('no container ref_id found'));
 			return -1;
 		}
 
+		$this->logger->debug(sprintf('container ref_id %s found', $cont_ref_id));
 		return $cont_ref_id;
 	}
 
@@ -166,6 +195,11 @@ class EventDataAggregationHelper
 	{
 		global $DIC;
 		$tree = $DIC->repositoryTree();
+		$this->logger->debug(sprintf('calles %s with ref_id %s and types: [%s]',
+			'searchFirstParentRefIdByTypes',
+			$ref_id,
+			$types
+		));
 
 		foreach ($types as $type) {
 			$parent_type = $tree->checkForParentType($ref_id, $type);

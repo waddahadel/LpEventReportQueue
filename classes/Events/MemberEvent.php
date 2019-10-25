@@ -51,13 +51,22 @@ class MemberEvent extends AbstractEvent implements EventInterface
 		$data['progress'] = NULL;
 
 		$eventDataAggregator = EventDataAggregationHelper::singleton();
-		$data['assignment'] = NULL;
-		if ($event->getRefId() > 0) {
-			$assignment = $eventDataAggregator->getParentContainerAssignmentRoleForObjectByRefIdAndUserId(
-				$event->getRefId(),
-				$event->getUsrId()
-			);
-			$data['assignment'] = $eventDataAggregator->getRoleTitleByRoleId($assignment);
+		$data['assignment'] = '-';
+		if ($data['memberdata']['role'] !== NULL) {
+			$eventDataAggregator->getRoleTitleByRoleId($data['memberdata']['role']);
+		} else {
+			$ref_id = ($event->getRefId() > 0 ? $event->getRefId() : (
+				$data['memberdata']['course_ref_id'] > 0 ? $data['memberdata']['course_ref_id'] : 0
+			));
+			if ($ref_id) {
+				$assignment = $eventDataAggregator->getParentContainerAssignmentRoleForObjectByRefIdAndUserId(
+					$ref_id,
+					$event->getUsrId()
+				);
+				if ($assignment != -1) {
+					$data['assignment'] = $eventDataAggregator->getRoleTitleByRoleId($assignment);
+				}
+			}
 		}
 
 		return $this->save($data);

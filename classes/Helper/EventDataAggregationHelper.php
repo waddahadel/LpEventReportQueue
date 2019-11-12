@@ -104,7 +104,7 @@ class EventDataAggregationHelper
 	 * @param int $user_id
 	 * @return int
 	 */
-	public function getParentContainerAssignmentRoleForObjectByRefIdAndUserId(?int $ref_id, int $user_id): int
+	public function getParentContainerAssignmentRoleForObjectByRefIdAndUserId(int $ref_id = null, int $user_id = -1): int
 	{
 		if (!isset($ref_id)) {
 			return -1;

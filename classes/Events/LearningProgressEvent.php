@@ -51,12 +51,12 @@ class LearningProgressEvent extends AbstractEvent implements EventInterface
 		$data['progress'] = $eventDataAggregator->getLpStatusRepresentation($a_params['status']);
 		$data['assignment'] = '-';
 		if ($data['memberdata']['role'] !== NULL) {
-			$eventDataAggregator->getRoleTitleByRoleId($data['memberdata']['role']);
+			$data['assignment'] = $eventDataAggregator->getRoleTitleByRoleId($data['memberdata']['role']);
 		} else {
 			$ref_id = ($event->getRefId() > 0 ? $event->getRefId() : (
 				$data['memberdata']['course_ref_id'] > 0 ? $data['memberdata']['course_ref_id'] : 0
 			));
-			if ($ref_id) {
+			if ($ref_id > 0) {
 				$assignment = $eventDataAggregator->getParentContainerAssignmentRoleForObjectByRefIdAndUserId(
 					$ref_id,
 					$event->getUsrId()

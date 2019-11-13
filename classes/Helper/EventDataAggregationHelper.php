@@ -158,19 +158,25 @@ class EventDataAggregationHelper
 			implode(',', $types)
 		));
 
-		$cont_ref_id = $this->searchFirstParentRefIdByTypes($ref_id, $types);
-		if ($cont_ref_id === false || $cont_ref_id === 0) {
-			global $DIC;
-			$tree = $DIC->repositoryTree();
+		$refObj = \ilObjectFactory::getInstanceByRefId($ref_id);
+		if ($refObj instanceof \ilObject && in_array($refObj->getType(), $types)) {
+			$cont_ref_id = $ref_id;
 
-			$paths = $tree->getPathFull($ref_id);
-			$this->logger->debug(sprintf('searching in path %s', $paths));
-			foreach (array_reverse($paths) as $path) {
-				$this->logger->debug(sprintf('checking path item %s', $path['id']));
-				$cont_ref_id = $this->searchFirstParentRefIdByTypes($path['id'], $types);
+		} else {
+			$cont_ref_id = $this->searchFirstParentRefIdByTypes($ref_id, $types);
+			if ($cont_ref_id === false || $cont_ref_id === 0) {
+				global $DIC;
+				$tree = $DIC->repositoryTree();
 
-				if ($cont_ref_id !== false && $cont_ref_id > 0) {
-					break;
+				$paths = $tree->getPathFull($ref_id);
+				$this->logger->debug(sprintf('searching in path %s', $paths));
+				foreach (array_reverse($paths) as $path) {
+					$this->logger->debug(sprintf('checking path item %s', $path['id']));
+					$cont_ref_id = $this->searchFirstParentRefIdByTypes($path['id'], $types);
+
+					if ($cont_ref_id !== false && $cont_ref_id > 0) {
+						break;
+					}
 				}
 			}
 		}
@@ -195,7 +201,7 @@ class EventDataAggregationHelper
 	{
 		global $DIC;
 		$tree = $DIC->repositoryTree();
-		$this->logger->debug(sprintf('calles %s with ref_id %s and types: [%s]',
+		$this->logger->debug(sprintf('called %s with ref_id %s and types: [%s]',
 			'searchFirstParentRefIdByTypes',
 			$ref_id,
 			$types

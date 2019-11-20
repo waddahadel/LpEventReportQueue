@@ -136,10 +136,6 @@ class Collector
 		if ($this->filter->getProgress() !== '*') {
 			$where .= '' . $db->quoteIdentifier('event_type') . ' = ' .
 				$db->quote("lp_event", 'text') . ' AND ';
-		} else if ($this->filter->getAssignment() !== '*') {
-
-			$where .= '' . $db->quoteIdentifier('event_type') . ' = ' .
-				$db->quote("member_event", 'text') . ' AND ';
 		} else if ($this->filter->getEventType() !== '*') {
 
 			$where .= '' . $db->quoteIdentifier('event_type') . ' = ' .

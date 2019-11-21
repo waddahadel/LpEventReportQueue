@@ -131,13 +131,7 @@ class Collector
 		}
 
 		/* Event type filter */
-		// progress filter is only available for lp events
-		// assignment filter is only available for member events
-		if ($this->filter->getProgress() !== '*') {
-			$where .= '' . $db->quoteIdentifier('event_type') . ' = ' .
-				$db->quote("lp_event", 'text') . ' AND ';
-		} else if ($this->filter->getEventType() !== '*') {
-
+		if ($this->filter->getEventType() !== '*') {
 			$where .= '' . $db->quoteIdentifier('event_type') . ' = ' .
 				$db->quote($this->filter->getEventType(), 'text') . ' AND ';
 		}

@@ -212,7 +212,7 @@ class Collector
 
 			$item_ud = json_decode($item['user_data'], true);
 			$um = new UserModel();
-			$um->setUsrId($item_ud['user_id'])
+			$um->setUsrId($item_ud['usr_id'])
 				->setLogin($item_ud['username'])
 				->setFirstname($item_ud['firstname'])
 				->setLastname($item_ud['lastname'])

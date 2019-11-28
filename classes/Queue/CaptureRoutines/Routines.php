@@ -354,8 +354,9 @@ class Routines implements DataCaptureRoutinesInterface
 		if (!empty($ref) && array_key_exists('ref_id', $ref[0])) {
 			$set['ref_id'] = ($ref[0]['ref_id'] *1);
 		}
+
 		if (!$is_course) {
-			$set['course_ref_id'] = $this->findParentCourse($set['ref_id']);
+			$set['course_ref_id'] = $this->findParentCourse(($set['ref_id'] === 0 ? null : $set['ref_id']));
 		} else {
 			$set['course_ref_id'] = $set['ref_id'];
 		}

@@ -105,6 +105,7 @@ class API implements Facade
 			'user_data.auth_mode' => 'string',
 			'user_data.ext_account' => 'string',
 			'user_data.birthday' => 'timestamp',
+			'user_data.import_id' => 'string',
 			'user_data.udf_data' => 'list',
 			'obj_data' => 'object',
 			'obj_data.obj_data.id' => 'integer',

@@ -131,17 +131,7 @@ class Collector
 		}
 
 		/* Event type filter */
-		// progress filter is only available for lp events
-		// assignment filter is only available for member events
-		if ($this->filter->getProgress() !== '*') {
-			$where .= '' . $db->quoteIdentifier('event_type') . ' = ' .
-				$db->quote("lp_event", 'text') . ' AND ';
-		} else if ($this->filter->getAssignment() !== '*') {
-
-			$where .= '' . $db->quoteIdentifier('event_type') . ' = ' .
-				$db->quote("member_event", 'text') . ' AND ';
-		} else if ($this->filter->getEventType() !== '*') {
-
+		if ($this->filter->getEventType() !== '*') {
 			$where .= '' . $db->quoteIdentifier('event_type') . ' = ' .
 				$db->quote($this->filter->getEventType(), 'text') . ' AND ';
 		}
@@ -222,7 +212,7 @@ class Collector
 
 			$item_ud = json_decode($item['user_data'], true);
 			$um = new UserModel();
-			$um->setUsrId($item_ud['user_id'])
+			$um->setUsrId($item_ud['usr_id'])
 				->setLogin($item_ud['username'])
 				->setFirstname($item_ud['firstname'])
 				->setLastname($item_ud['lastname'])
@@ -246,6 +236,7 @@ class Collector
 				->setAuthMode($item_ud['auth_mode'])
 				->setExtAccount($item_ud['ext_account'])
 				->setBirthday($item_ud['birthday'])
+				->setImportId($item_ud['import_id'])
 				->setUdfData($item_ud['udf_data']);
 			$qm->setUserData($um);
 			unset($item_ud);

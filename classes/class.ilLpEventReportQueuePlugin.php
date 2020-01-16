@@ -170,7 +170,8 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 			$db->dropTable('lerq_settings');
 		}
 		$this->settings->delete('lerq_first_start');
-		$DIC->settings()->delete(\QU\LERQ\BackgroundTasks\QueueInitializationJobDefinition::JOB_TABLE);
+		$this->settings->delete('lerq_bgtask_init');
+		$DIC->settings()->delete('lerq_bgtask_init');
 
 		return true;
 	}

@@ -55,21 +55,35 @@ class QueueModel
 	 * @param bool $iso		Get as ISO 8601 timestamp
 	 * @return string|int|null
 	 */
-	public function getTimestamp($iso = false)
+	public function getTimestamp($iso = false, $timezone = 'UTC')
 	{
 		if ($iso) {
-			return (isset($this->timestamp) ? date('c', $this->timestamp) : '');
+			if ($timestamp = (isset($this->timestamp) ? $this->timestamp : false)) {
+				$dt = new \DateTime();
+				if (is_numeric($timestamp)) {
+					$dt->setTimestamp($timestamp * 1);
+				} else {
+					$dt->setTimestamp(strtotime($timestamp));
+				}
+				$dt->setTimezone(new \DateTimeZone($timezone));
+				return $dt->format('c');
+			}
+			return '';
 		}
 		return (isset($this->timestamp) ? $this->timestamp : NULL);
 	}
 
 	/**
-	 * @param string $timestamp
+	 * @param int|string $timestamp
 	 * @return QueueModel
 	 */
 	public function setTimestamp($timestamp): QueueModel
 	{
-		$this->timestamp = $timestamp;
+		if (is_numeric($timestamp)) {
+			$this->timestamp = $timestamp*1;
+		} else {
+			$this->timestamp = strtotime($timestamp);
+		}
 		return $this;
 	}
 

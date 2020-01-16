@@ -48,10 +48,12 @@ class MemberEvent extends AbstractEvent implements EventInterface
 		$data = $processor->capture($event);
 		$data['timestamp'] = time();
 		$data['event'] = $this->mapInitEvent($a_event);
-		$data['progress'] = NULL;
 
-		$eventDataAggregator = EventDataAggregationHelper::singleton();
-		$data['assignment'] = '-';
+        $eventDataAggregator = EventDataAggregationHelper::singleton();
+        $data['progress'] = $eventDataAggregator->getLpStatusRepresentation(
+             $eventDataAggregator->getLpStatusByUsrAndObjId($a_params['usr_id'], $a_params['obj_id'])
+        );
+        $data['assignment'] = '-';
 		if ($data['memberdata']['role'] !== NULL) {
 			$data['assignment'] = $eventDataAggregator->getRoleTitleByRoleId($data['memberdata']['role']);
 		} else {

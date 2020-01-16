@@ -44,7 +44,7 @@ class EventDataAggregationHelper
 	 * @param int $status
 	 * @return string
 	 */
-	public function getLpStatusRepresentation(int $status = Null): string
+	public function getLpStatusRepresentation(int $status = 0): string
 	{
 		$lpStatus = '';
 		switch ($status) {
@@ -63,6 +63,38 @@ class EventDataAggregationHelper
 		}
 		return $lpStatus;
 	}
+
+	public function getLpStatusByUsrAndObjId(int $user_id, int $obj_id): int
+    {
+
+        if (!isset($user_id) || !isset($obj_id)) {
+            return 0;
+        }
+        global $DIC;
+
+        $this->logger->debug(sprintf('called "%s" with obj_id "%s" and user_id "%s"',
+            'getLpStatusByUsrAndObjId',
+            $obj_id,
+            $user_id
+        ));
+
+        $query_status = 'SELECT status FROM ut_lp_marks ulm ' .
+            'WHERE ulm.obj_id = ' . $DIC->database()->quote($obj_id, 'integer') . ' ' .
+            'AND ulm.usr_id = ' . $DIC->database()->quote($user_id, 'integer') . ' ';
+
+
+        $result = $DIC->database()->query($query_status);
+        $lp_status = $DIC->database()->fetchAll($result);
+
+        if (!empty($lp_status) && array_key_exists('status', $lp_status[0])) {
+            $this->logger->debug(sprintf('lp_status %s found', $lp_status[0]['status']));
+            return $lp_status[0]['status'];
+        } else {
+            $this->logger->debug(sprintf('no lp_status found'));
+            return 0;
+        }
+
+    }
 
 	/**
 	 * Get readable role title by role_id

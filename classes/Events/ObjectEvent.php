@@ -33,7 +33,10 @@ class ObjectEvent extends AbstractEvent implements EventInterface
 		$processor = new Processor();
 		$event = new EventModel();
 
+		global $DIC;
+
 		$event->setObjId($a_params['obj_id'])
+            ->setUsrId($DIC->user()->getId())
 			->setEventName($a_event);
 		if (isset($a_params['ref_id'])) {
 			$event->setRefId($a_params['ref_id']);
@@ -53,9 +56,9 @@ class ObjectEvent extends AbstractEvent implements EventInterface
 		$data = $processor->capture($event);
 		$data['timestamp'] = time();
 		$data['event'] = $this->mapInitEvent($a_event);
-		$data['progress'] = NULL;
 
 		$eventDataAggregator = EventDataAggregationHelper::singleton();
+        $data['progress'] = $eventDataAggregator->getLpStatusRepresentation();
 		$data['assignment'] = '-';
 		if ($data['memberdata']['role'] !== NULL) {
 			$data['assignment'] = $eventDataAggregator->getRoleTitleByRoleId($data['memberdata']['role']);

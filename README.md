@@ -7,7 +7,7 @@
 ![PHP Version](https://img.shields.io/badge/PHP-%3E%3D7.0-blue)
 ![Plugin Slot](https://img.shields.io/badge/Slot-CronHook-blue)
 
-![Plugin Version](https://img.shields.io/badge/plugin_version-1.3.0-blue)
+![Plugin Version](https://img.shields.io/badge/plugin_version-1.3.1-blue)
 
 
 **Table of Contents**

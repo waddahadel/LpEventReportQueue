@@ -202,14 +202,16 @@ class EventDataAggregationHelper
 
 				$paths = $tree->getPathFull($ref_id);
 				$this->logger->debug(sprintf('searching in path %s', $paths));
-				foreach (array_reverse($paths) as $path) {
-					$this->logger->debug(sprintf('checking path item %s', $path['id']));
-					$cont_ref_id = $this->searchFirstParentRefIdByTypes($path['id'], $types);
+                if (is_array($paths) && count($paths) > 0) {
+                    foreach (array_reverse($paths) as $path) {
+                        $this->logger->debug(sprintf('checking path item %s', $path['id']));
+                        $cont_ref_id = $this->searchFirstParentRefIdByTypes($path['id'], $types);
 
-					if ($cont_ref_id !== false && $cont_ref_id > 0) {
-						break;
-					}
-				}
+                        if ($cont_ref_id !== false && $cont_ref_id > 0) {
+                            break;
+                        }
+                    }
+                }
 			}
 		}
 		// return -1 if no container was found

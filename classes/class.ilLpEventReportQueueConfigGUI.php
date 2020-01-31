@@ -162,7 +162,13 @@ class ilLpEventReportQueueConfigGUI extends ilPluginConfigGUI
 			$ne->setInfo(sprintf($this->plugin->txt('show_initialization_status_info'), $task_info['state']));
 			$form->addItem($ne);
 
-		}
+		} else if ($this->isInitializationRunning($task_info)) {
+            // initialization is currently running
+            $ne = new \ilNonEditableValueGUI('', 'show_initialization_running');
+            $ne->setValue($this->plugin->txt('show_initialization_running'));
+            $ne->setInfo(sprintf($this->plugin->txt('show_initialization_running_info'), $task_info['state']));
+            $form->addItem($ne);
+        }
 
         if($this->hasInitializationFailed($task_info) || $this->hasInitializationFinished($task_info)) {
             global $DIC;
@@ -436,6 +442,18 @@ class ilLpEventReportQueueConfigGUI extends ilPluginConfigGUI
 				QueueInitializationJobDefinition::JOB_STATE_RUNNING,
 				QueueInitializationJobDefinition::JOB_STATE_STARTED
 			]));
+	}
+
+	/**
+	 * @param array $task_info
+	 * @return bool
+	 */
+	public function isInitializationRunning($task_info = []): bool
+	{
+		return (
+			!empty($task_info) &&
+            $task_info['state'] !== QueueInitializationJobDefinition::JOB_STATE_RUNNING
+        );
 	}
 
 	/**

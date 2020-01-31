@@ -382,7 +382,6 @@ class ilQueueInitializationJob extends AbstractJob
 				$logger->notice($m_prefix . $message);
 				break;
 			case 'info':
-            case 'debug':
 				$logger->info($m_prefix . $message);
 				break;
 			case 'debug':

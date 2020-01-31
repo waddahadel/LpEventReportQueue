@@ -301,13 +301,15 @@ class Routines implements DataCaptureRoutinesInterface
 			if ($parent_type === false || $parent_type === 0) {
 				// walk tree and check if parent object of any node is type course
 				$paths = $tree->getPathFull($ref_id);
-				foreach (array_reverse($paths) as $path) {
-					$parent_type = $tree->checkForParentType($path['id'], 'crs');
-					if ($parent_type !== false && $parent_type > 0) {
-						$parent = $path['id'];
-						break;
-					}
-				}
+				if (is_array($paths) && count($paths) > 0) {
+                    foreach (array_reverse($paths) as $path) {
+                        $parent_type = $tree->checkForParentType($path['id'], 'crs');
+                        if ($parent_type !== false && $parent_type > 0) {
+                            $parent = $path['id'];
+                            break;
+                        }
+                    }
+                }
 			} else {
 				$parent = $parent_type;
 			}

@@ -170,7 +170,9 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 			$db->dropTable('lerq_settings');
 		}
 		$this->settings->delete('lerq_first_start');
-		$DIC->settings()->delete(\QU\LERQ\BackgroundTasks\QueueInitializationJobDefinition::JOB_TABLE);
+        $DIC->settings()->delete('lerq_first_start');
+        $this->settings->delete('lerq_bgtask_init');
+        $DIC->settings()->delete('lerq_bgtask_init');
 
 		return true;
 	}
@@ -389,6 +391,7 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 	 */
 	private function initSettings()
 	{
+	    global $DIC;
 		$pl_settings = new \QU\LERQ\Model\SettingsModel();
 
 		$pl_settings
@@ -422,7 +425,19 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 			->addItem('udf_fields', true)
 			->addItem('obj_select', '*');
 
-		$this->settings->set('lerq_first_start', false);
+		$this->settings->set('lerq_first_start', (int) false);
+
+        $task_info = [
+            'lock' => false,
+            'state' => 'not started',
+            'found_items' => 0,
+            'processed_items' => 0,
+            'progress' => 0,
+            'started_ts' => strtotime('now'),
+            'finished_ts' => null,
+            'last_item' => 0,
+        ];
+		$DIC->settings()->set('lerq_bgtask_init', json_encode($task_info));
 	}
 
 	/**

@@ -69,7 +69,8 @@ class ObjectEvent extends AbstractEvent implements EventInterface
 			if ($ref_id > 0) {
 				$assignment = $eventDataAggregator->getParentContainerAssignmentRoleForObjectByRefIdAndUserId(
 					$ref_id,
-					$event->getUsrId()
+					$event->getUsrId(),
+                    $a_event
 				);
 				if ($assignment != -1) {
 					$data['assignment'] = $eventDataAggregator->getRoleTitleByRoleId($assignment);

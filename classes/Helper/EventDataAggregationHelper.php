@@ -136,13 +136,13 @@ class EventDataAggregationHelper
 	 * @param int $user_id
 	 * @return int
 	 */
-	public function getParentContainerAssignmentRoleForObjectByRefIdAndUserId(int $ref_id = null, int $user_id = -1): int
+	public function getParentContainerAssignmentRoleForObjectByRefIdAndUserId(int $ref_id = null, int $user_id = -1, $eventtype = null): int
 	{
 		if (!isset($ref_id)) {
 			return -1;
 		}
 		global $DIC;
-		$cont_ref_id = $this->getContainerRefIdByObjectRefIdAndTypes($ref_id);
+		$cont_ref_id = $this->getContainerRefIdByObjectRefIdAndTypes($ref_id, [], $eventtype);
 
 		$this->logger->debug(sprintf('called "%s" with ref_id "%s" and user_id "%s"',
 			'getParentContainerAssignmentRoleForObjectByRefIdAndUserId',
@@ -179,7 +179,7 @@ class EventDataAggregationHelper
 	 * @param array $types
 	 * @return int
 	 */
-	public function getContainerRefIdByObjectRefIdAndTypes(int $ref_id, array $types = []): int
+	public function getContainerRefIdByObjectRefIdAndTypes(int $ref_id, array $types = [], $eventtype = null): int
 	{
 		if (!isset($type) || empty($type)) {
 			$types = ['crs', 'grp', 'prg'];
@@ -197,18 +197,20 @@ class EventDataAggregationHelper
 		} else {
 			$cont_ref_id = $this->searchFirstParentRefIdByTypes($ref_id, $types);
 			if ($cont_ref_id === false || $cont_ref_id === 0) {
-				global $DIC;
-				$tree = $DIC->repositoryTree();
+			    if (!isset($eventtype) || $eventtype != 'toTrash') {
+                    global $DIC;
+                    $tree = $DIC->repositoryTree();
 
-				$paths = $tree->getPathFull($ref_id);
-				$this->logger->debug(sprintf('searching in path %s', $paths));
-                if (is_array($paths) && count($paths) > 0) {
-                    foreach (array_reverse($paths) as $path) {
-                        $this->logger->debug(sprintf('checking path item %s', $path['id']));
-                        $cont_ref_id = $this->searchFirstParentRefIdByTypes($path['id'], $types);
+                    $paths = $tree->getPathFull($ref_id);
+                    $this->logger->debug(sprintf('searching in path %s', $paths));
+                    if (is_array($paths) && count($paths) > 0) {
+                        foreach (array_reverse($paths) as $path) {
+                            $this->logger->debug(sprintf('checking path item %s', $path['id']));
+                            $cont_ref_id = $this->searchFirstParentRefIdByTypes($path['id'], $types);
 
-                        if ($cont_ref_id !== false && $cont_ref_id > 0) {
-                            break;
+                            if ($cont_ref_id !== false && $cont_ref_id > 0) {
+                                break;
+                            }
                         }
                     }
                 }

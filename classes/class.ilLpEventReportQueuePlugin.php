@@ -185,6 +185,13 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 	 */
 	public function handleEvent($a_component, $a_event, $a_params)
 	{
+	    if (!$this->isActive()) {
+	        return true;
+        }
+        $pl_settings = new \QU\LERQ\Model\SettingsModel();
+	    if ( "1" != $pl_settings->getItem('user_fields')->getValue() ) {
+	        return true;
+        }
 		switch($a_component)
 		{
 			case "Modules/Course":
@@ -398,31 +405,31 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 			->addItem('user_fields', true)
 			->addItem('user_id', true)
 			->addItem('login', true)
-			->addItem('firstname', true)
-			->addItem('lastname', true)
-			->addItem('title', true)
-			->addItem('gender', true)
+			->addItem('firstname', false)
+			->addItem('lastname', false)
+			->addItem('title', false)
+			->addItem('gender', false)
 			->addItem('email', true)
-			->addItem('institution', true)
-			->addItem('street', true)
-			->addItem('city', true)
-			->addItem('country', true)
-			->addItem('phone_office', true)
-			->addItem('hobby', true)
-			->addItem('department', true)
-			->addItem('phone_home', true)
-			->addItem('phone_mobile', true)
-			->addItem('fax', true)
-			->addItem('referral_comment', true)
-			->addItem('matriculation', true)
-			->addItem('active', true)
-			->addItem('approval_date', true)
-			->addItem('agree_date', true)
-			->addItem('auth_mode', true)
+			->addItem('institution', false)
+			->addItem('street', false)
+			->addItem('city', false)
+			->addItem('country', false)
+			->addItem('phone_office', false)
+			->addItem('hobby', false)
+			->addItem('department', false)
+			->addItem('phone_home', false)
+			->addItem('phone_mobile', false)
+			->addItem('fax', false)
+			->addItem('referral_comment', false)
+			->addItem('matriculation', false)
+			->addItem('active', false)
+			->addItem('approval_date', false)
+			->addItem('agree_date', false)
+			->addItem('auth_mode', false)
 			->addItem('ext_account', true)
-			->addItem('birthday', true)
+			->addItem('birthday', false)
 			->addItem('import_id', true)
-			->addItem('udf_fields', true)
+			->addItem('udf_fields', false)
 			->addItem('obj_select', '*');
 
 		$this->settings->set('lerq_first_start', (int) false);

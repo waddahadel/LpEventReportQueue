@@ -264,7 +264,7 @@ class QueueModel
 	{
 		return json_encode([
 			'id' => $this->getId(),
-			'timestamp' => $this->getTimestamp(),
+			'timestamp' => $this->getTimestamp(true),
 			'event' => $this->getEvent(),
 			'event_type' => $this->getEventType(),
 			'progress' => $this->getProgress(),

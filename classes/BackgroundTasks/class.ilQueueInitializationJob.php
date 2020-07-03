@@ -47,7 +47,34 @@ class ilQueueInitializationJob extends AbstractJob
 			"LpEventReportQueue"
 		);
 
+        $this->definitions = new QueueInitializationJobDefinition();
+        $this->db_table = $this->definitions::JOB_TABLE;
+
+        $output = new IntegerValue();
+
+        $this->logMessage('Start initial queue collection (new behavior).');
+        $observer->notifyState(State::RUNNING);
+        $observer->notifyPercentage($this, 0);
+
+        $collector = new \QU\LERQ\Helper\InitialQueueCollector();
+
+        $processing = $collector->collectDataAndTriggerEvents();
+        $this->logMessage('Processed ' .
+            count($processing['addParticipant']) . ' membership events and ' .
+            count($processing['updateStatus']) . ' progress events.'
+        );
+
+        $this->logMessage('Finished initial queue collection (new behavior).');
+        $observer->notifyPercentage($this, 100);
+        $observer->notifyState(State::FINISHED);
+
+        $output->setValue($this->definitions::JOB_RETURN_SUCCESS);
+        return $output;
+
 		$this->logMessage('Start initial queue collection.');
+
+
+
 
 		$this->db = $DIC->database();
 		$this->definitions = new QueueInitializationJobDefinition();

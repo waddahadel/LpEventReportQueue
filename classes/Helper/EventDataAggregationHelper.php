@@ -44,13 +44,10 @@ class EventDataAggregationHelper
 	 * @param int $status
 	 * @return string
 	 */
-	public function getLpStatusRepresentation(int $status = 0): string
+	public function getLpStatusRepresentation($status = 0): string
 	{
 		$lpStatus = '';
 		switch ($status) {
-			case \ilLPStatus::LP_STATUS_NOT_ATTEMPTED_NUM:
-				$lpStatus = 'no_attempted';
-				break;
 			case \ilLPStatus::LP_STATUS_IN_PROGRESS_NUM:
 				$lpStatus = 'in_progress';
 				break;
@@ -60,6 +57,10 @@ class EventDataAggregationHelper
 			case \ilLPStatus::LP_STATUS_FAILED_NUM:
 				$lpStatus = 'failed';
 				break;
+            case \ilLPStatus::LP_STATUS_NOT_ATTEMPTED_NUM:
+            default:
+                $lpStatus = 'no_attempted';
+                break;
 		}
 		return $lpStatus;
 	}

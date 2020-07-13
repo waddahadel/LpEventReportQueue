@@ -238,7 +238,7 @@ abstract class AbstractEvent implements EventInterface
 	{
 		$insert = 'INSERT INTO `' . self::DB_TABLE . '` ';
 		$insert .= '(`id`, `timestamp`, `event`, `event_type`, `progress`, `assignment`, ';
-		$insert .= '`course_start`, `course_end`, `user_data`, `obj_data`, `mem_data`, `progress_changes`) ';
+		$insert .= '`course_start`, `course_end`, `user_data`, `obj_data`, `mem_data`, `progress_changed`) ';
 		$insert .= 'VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s); ';
 
 		$types = [

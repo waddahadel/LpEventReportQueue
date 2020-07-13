@@ -45,6 +45,7 @@ class LearningProgressEvent extends AbstractEvent implements EventInterface
 
 		$data = $processor->capture($event);
 		$data['timestamp'] = time();
+		$data['progress_changed'] = time();
 		$data['event'] = $this->mapInitEvent($a_event);
 
 		$eventDataAggregator = EventDataAggregationHelper::singleton();

@@ -21,6 +21,8 @@ class QueueModel
 	/** @var string */
 	private $progress;
 	/** @var string */
+	private $progress_changed;
+	/** @var string */
 	private $assignment;
 	/** @var string */
 	private $course_start;
@@ -140,6 +142,27 @@ class QueueModel
 		$this->progress = $progress;
 		return $this;
 	}
+
+    /**
+     * @return string|int|null
+     */
+    public function getProgressChanged($iso = false)
+    {
+        if ($iso) {
+            return (isset($this->progress_changed) ? date('c', $this->progress_changed) : '');
+        }
+        return (isset($this->progress_changed) ? $this->progress_changed : NULL);
+    }
+
+    /**
+     * @param string $progress_changed
+     * @return QueueModel
+     */
+    public function setProgressChanged($progress_changed): QueueModel
+    {
+        $this->progress_changed = $progress_changed;
+        return $this;
+    }
 
 	/**
 	 * @return string
@@ -268,6 +291,7 @@ class QueueModel
 			'event' => $this->getEvent(),
 			'event_type' => $this->getEventType(),
 			'progress' => $this->getProgress(),
+			'progress_changed' => $this->getProgressChanged(),
 			'assignment' => $this->getAssignment(),
 			'course_start' => $this->getCourseStart(),
 			'course_end' => $this->getCourseEnd(),

@@ -104,6 +104,45 @@ class EventDataAggregationHelper
     }
 
     /**
+     * Get LP status data
+     *
+     * @param int $user_id
+     * @param int $obj_id
+     * @return int
+     */
+	public function getLpStatusInfoByUsrAndObjId(int $user_id, int $obj_id): int
+    {
+
+        if (!isset($user_id) || !isset($obj_id)) {
+            return 0;
+        }
+        global $DIC;
+
+        $this->logger->debug(sprintf('called "%s" with obj_id "%s" and user_id "%s"',
+            'getLpStatusByUsrAndObjId',
+            $obj_id,
+            $user_id
+        ));
+
+        $query_status = 'SELECT * FROM ut_lp_marks ulm ' .
+            'WHERE ulm.obj_id = ' . $DIC->database()->quote($obj_id, 'integer') . ' ' .
+            'AND ulm.usr_id = ' . $DIC->database()->quote($user_id, 'integer') . ' ';
+
+
+        $result = $DIC->database()->query($query_status);
+        $lp_status = $DIC->database()->fetchAll($result);
+
+        if (!empty($lp_status) && array_key_exists('status', $lp_status[0])) {
+            $this->logger->debug('lp_status data found');
+            return $lp_status[0];
+        } else {
+            $this->logger->debug(sprintf('no lp_status data found'));
+            return 0;
+        }
+
+    }
+
+    /**
      * Get LP status last change time
      *
      * @param int $user_id

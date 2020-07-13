@@ -59,6 +59,7 @@ class ObjectEvent extends AbstractEvent implements EventInterface
 
 		$eventDataAggregator = EventDataAggregationHelper::singleton();
         $data['progress'] = $eventDataAggregator->getLpStatusRepresentation();
+        $data['progress_changed'] = '';
 		$data['assignment'] = '-';
 		if ($data['memberdata']['role'] !== NULL) {
 			$data['assignment'] = $eventDataAggregator->getRoleTitleByRoleId($data['memberdata']['role']);

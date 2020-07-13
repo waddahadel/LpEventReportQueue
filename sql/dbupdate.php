@@ -251,3 +251,13 @@ if ($ilDB->tableExists('lerq_settings')) {
 	}
 }
 ?>
+<#4>
+<?php
+if($ilDB->tableExists('lerq_queue')) {
+    $ilDB->addTableColumn('lerq_queue', 'progress_changed', [
+        'type'     => 'integer',
+        'length'   => 4,
+        'notnull'  => false,
+    ]);
+}
+?>

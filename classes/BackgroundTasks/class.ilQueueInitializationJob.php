@@ -23,19 +23,23 @@ use \QU\LERQ\Model\UserModel;
  */
 class ilQueueInitializationJob extends AbstractJob
 {
-    // todo: last test: 08:32:29 - 10:19:04 (01:36:35 h)
-    // todo: found data: 83595
-    // todo: captured data: 167190
-    // todo: progress: 100%
-    // todo: udf data: complete
-    // todo: types: only courses
+    /*
+     * info: last test: 08:32:29 - 10:19:04 (01:36:35 h)
+     * info: found data: 83595
+     * info: captured data: 167190
+     * info: progress: 100%
+     * info: udf data: complete
+     * info: types: only courses
+     */
 
-    // todo: last test: 15:51:50 - 18:27:55 (03:36:05)
-    // todo: found data: 120216
-    // todo: captured data: 240432
-    // todo: progress: 100%
-    // todo: udf data: complete
-    // todo: types: crs, sess, frm, grp
+    /*
+     * info: last test: 15:51:50 - 18:27:55 (03:36:05)
+     * info: found data: 120216
+     * info: captured data: 240432
+     * info: progress: 100%
+     * info: udf data: complete
+     * info: types: crs, sess, frm, grp
+     */
 
 	/** @var string */
 	protected $db_table;
@@ -154,7 +158,7 @@ class ilQueueInitializationJob extends AbstractJob
                 $ud = $user_data[$bd['usr_id']];
                 $aggregated = [
                     'progress' => $eventDataAggregator->getLpStatusRepresentation($bd['status']),
-                    'progress_changed' => $bd['status_changed'], // todo: new parameter
+                    'progress_changed' => $bd['status_changed'],
                     'assignment' => $eventDataAggregator->getRoleTitleByRoleId($bd['rol_id']),
                     'lpperiod' => [
                         'course_start' => new \ilDate($course_data['crs_start'], IL_CAL_UNIX),
@@ -288,6 +292,7 @@ class ilQueueInitializationJob extends AbstractJob
 
             $queue->setTimestamp(time())
                 ->setProgress($data['progress'])
+                ->setProgressChanged($data['progress_changed'])
                 ->setAssignment($data['assignment']);
 
             // Set learning period data
@@ -407,8 +412,8 @@ class ilQueueInitializationJob extends AbstractJob
             foreach (['addParticipant', 'updateStatus'] as $event) {
                 $insert .= 'INSERT INTO `' . AbstractEvent::DB_TABLE . '` 
                 (`id`, `timestamp`, `event`, `event_type`, `progress`, `assignment`, 
-                `course_start`, `course_end`, `user_data`, `obj_data`, `mem_data`) 
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s); 
+                `course_start`, `course_end`, `user_data`, `obj_data`, `mem_data`, `progress_changed`) 
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s); 
                 ';
 
                 $types = [
@@ -423,6 +428,7 @@ class ilQueueInitializationJob extends AbstractJob
                     'text',
                     'text',
                     'text',
+                    'integer',
                 ];
 
                 $values = [
@@ -437,6 +443,7 @@ class ilQueueInitializationJob extends AbstractJob
                     $queue->getUserData()->__toString(),
                     $queue->getObjData()->__toString(),
                     $queue->getMemData()->__toString(),
+                    $queue->getProgressChanged(false),
                 ];
 
                 $quoted_values = array();

@@ -235,7 +235,7 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 				 */
 				break;
 			case "Modules/Excercise":
-				$this->debuglog($a_component, $a_event, $a_params);
+//				$this->debuglog($a_component, $a_event, $a_params);
 //				switch ($a_event) {
 //					case 'createAssignment':
 //						$handler = new \QU\LERQ\Events\MemberEvent();
@@ -268,7 +268,7 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 				 */
 				break;
 			case "Modules/StudyProgramme":
-				$this->debuglog($a_component, $a_event, $a_params);
+//				$this->debuglog($a_component, $a_event, $a_params);
 //				switch ($a_event) {
 //					case 'userAssigned':
 //						$handler = new \QU\LERQ\Events\MemberEvent();

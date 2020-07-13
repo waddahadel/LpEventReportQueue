@@ -60,7 +60,7 @@ class Collector
 	{
 		$select = 'SELECT ';
 		$select .= '`id`, `timestamp`, `event`, `event_type`, `progress`, `assignment`, ';
-		$select .= '`course_start`, `course_end`, `user_data`, `obj_data`, `mem_data` ';
+		$select .= '`course_start`, `course_end`, `user_data`, `obj_data`, `mem_data`, `progress_changed` ';
 		$select .= 'FROM `lerq_queue` ';
 
 		return $select;
@@ -117,6 +117,16 @@ class Collector
 			$where .= '' . $db->quoteIdentifier('timestamp') . ' >= ' .
 				$db->quote($this->filter->getEventHappenedEnd(), 'timestamp') . ' AND ';
 		}
+        if ($this->filter->getProgressChanged() !== false) {
+            if ($this->filter->getProgressChangedDirection() === $this->filter::TIME_BEFORE) {
+                $where .= '' . $db->quoteIdentifier('progress_changed') . ' <= ' .
+                    $db->quote($this->filter->getProgressChanged(), 'timestamp');
+            } else {
+                $where .= '' . $db->quoteIdentifier('progress_changed') . ' >= ' .
+                    $db->quote($this->filter->getProgressChanged(), 'timestamp');
+            }
+            $where .= ' AND ';
+        }
 
 		/* Event related filter */
 		if ($this->filter->getProgress() !== '*') {

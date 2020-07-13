@@ -76,6 +76,7 @@ class API implements Facade
 			'event' => 'string',
 			'event_type' => 'string',
 			'progress' => 'string',
+			'progress_changed' => 'timestamp',
 			'assignment' => 'string',
 			'course_start' => 'timestamp',
 			'course_end' => 'timestamp',

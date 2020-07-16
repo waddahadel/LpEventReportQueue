@@ -137,13 +137,6 @@ class ilLpEventReportQueuePlugin extends \ilCronHookPlugin
 	}
 
 	/**
-	 * @return void
-	 */
-	protected function afterDeactivation() {
-		// Do something
-	}
-
-	/**
 	 * @return bool
 	 */
 	protected function beforeUninstall() {

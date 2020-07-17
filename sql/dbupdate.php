@@ -249,6 +249,12 @@ if ($ilDB->tableExists('lerq_settings')) {
 			]);
 		}
 	}
+
+    $ilDB->insert('lerq_settings', [
+        'keyword' => ['text', 'obj_select'],
+        'value' => ['text', '*'],
+        'type' => ['text', 'text']
+    ]);
 }
 ?>
 <#5>
@@ -260,10 +266,5 @@ if($ilDB->tableExists('lerq_queue')) {
         'notnull'  => false,
     ]);
 
-    $ilDB->insert('lerq_settings', [
-        'keyword' => ['text', 'obj_select'],
-        'value' => ['text', '*'],
-        'type' => ['text', 'text']
-    ]);
 }
 ?>

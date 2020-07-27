@@ -290,7 +290,7 @@ class ilQueueInitializationJob extends AbstractJob
                 }
             }
 
-            $queue->setTimestamp(time())
+            $queue->setTimestamp($data['progress_changed'])
                 ->setProgress($data['progress'])
                 ->setProgressChanged($data['progress_changed'])
                 ->setAssignment($data['assignment']);

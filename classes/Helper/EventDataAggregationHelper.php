@@ -109,9 +109,9 @@ class EventDataAggregationHelper
      *
      * @param int $user_id
      * @param int $obj_id
-     * @return int
+     * @return int|array
      */
-	public function getLpStatusInfoByUsrAndObjId(int $user_id, int $obj_id): int
+	public function getLpStatusInfoByUsrAndObjId(int $user_id, int $obj_id)
     {
 
         if (!isset($user_id) || !isset($obj_id)) {

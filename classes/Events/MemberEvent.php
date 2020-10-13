@@ -51,8 +51,10 @@ class MemberEvent extends AbstractEvent implements EventInterface
 
         $eventDataAggregator = EventDataAggregationHelper::singleton();
         $lp_data = $eventDataAggregator->getLpStatusInfoByUsrAndObjId($a_params['usr_id'], $a_params['obj_id']);
-        $data['progress'] = $eventDataAggregator->getLpStatusRepresentation($lp_data['status']);
-        $data['progress_changed'] = $lp_data['status_changed'];
+        $data['progress'] = $eventDataAggregator->getLpStatusRepresentation(isset($lp_data['status']) ? $lp_data['status'] : 0);
+        if (is_array($lp_data)) {
+            $data['progress_changed'] = $lp_data['status_changed'];
+        }
         $data['assignment'] = '-';
 		if ($data['memberdata']['role'] !== NULL) {
 			$data['assignment'] = $eventDataAggregator->getRoleTitleByRoleId($data['memberdata']['role']);

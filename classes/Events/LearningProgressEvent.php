@@ -45,10 +45,15 @@ class LearningProgressEvent extends AbstractEvent implements EventInterface
 
 		$data = $processor->capture($event);
 		$data['timestamp'] = time();
+		$data['progress_changed'] = time();
 		$data['event'] = $this->mapInitEvent($a_event);
 
 		$eventDataAggregator = EventDataAggregationHelper::singleton();
 		$data['progress'] = $eventDataAggregator->getLpStatusRepresentation($a_params['status']);
+        if (substr($a_event, 0, 5) === 'init_') {
+            $td = $eventDataAggregator->getLpStatusChangedByUsrAndObjId($a_params['usr_id'], $a_params['obj_id']);
+            $data['timestamp'] = ($td > 0 ? $td : $data['timestamp']);
+        }
 		$data['assignment'] = '-';
 		if ($data['memberdata']['role'] !== NULL) {
 			$data['assignment'] = $eventDataAggregator->getRoleTitleByRoleId($data['memberdata']['role']);

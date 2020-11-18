@@ -44,13 +44,10 @@ class EventDataAggregationHelper
 	 * @param int $status
 	 * @return string
 	 */
-	public function getLpStatusRepresentation(int $status = 0): string
+	public function getLpStatusRepresentation($status = 0): string
 	{
 		$lpStatus = '';
 		switch ($status) {
-			case \ilLPStatus::LP_STATUS_NOT_ATTEMPTED_NUM:
-				$lpStatus = 'no_attempted';
-				break;
 			case \ilLPStatus::LP_STATUS_IN_PROGRESS_NUM:
 				$lpStatus = 'in_progress';
 				break;
@@ -60,10 +57,21 @@ class EventDataAggregationHelper
 			case \ilLPStatus::LP_STATUS_FAILED_NUM:
 				$lpStatus = 'failed';
 				break;
+            case \ilLPStatus::LP_STATUS_NOT_ATTEMPTED_NUM:
+            default:
+                $lpStatus = 'no_attempted';
+                break;
 		}
 		return $lpStatus;
 	}
 
+    /**
+     * Get numeric LP status
+     *
+     * @param int $user_id
+     * @param int $obj_id
+     * @return int
+     */
 	public function getLpStatusByUsrAndObjId(int $user_id, int $obj_id): int
     {
 
@@ -91,6 +99,85 @@ class EventDataAggregationHelper
             return $lp_status[0]['status'];
         } else {
             $this->logger->debug(sprintf('no lp_status found'));
+            return 0;
+        }
+
+    }
+
+    /**
+     * Get LP status data
+     *
+     * @param int $user_id
+     * @param int $obj_id
+     * @return int|array
+     */
+	public function getLpStatusInfoByUsrAndObjId(int $user_id, int $obj_id)
+    {
+
+        if (!isset($user_id) || !isset($obj_id)) {
+            return 0;
+        }
+        global $DIC;
+
+        $this->logger->debug(sprintf('called "%s" with obj_id "%s" and user_id "%s"',
+            'getLpStatusByUsrAndObjId',
+            $obj_id,
+            $user_id
+        ));
+
+        $query_status = 'SELECT * FROM ut_lp_marks ulm ' .
+            'WHERE ulm.obj_id = ' . $DIC->database()->quote($obj_id, 'integer') . ' ' .
+            'AND ulm.usr_id = ' . $DIC->database()->quote($user_id, 'integer') . ' ';
+
+
+        $result = $DIC->database()->query($query_status);
+        $lp_status = $DIC->database()->fetchAll($result);
+
+        if (!empty($lp_status) && array_key_exists('status', $lp_status[0])) {
+            $this->logger->debug('lp_status data found');
+            return $lp_status[0];
+        } else {
+            $this->logger->debug(sprintf('no lp_status data found'));
+            return 0;
+        }
+
+    }
+
+    /**
+     * Get LP status last change time
+     *
+     * @param int $user_id
+     * @param int $obj_id
+     * @return int
+     */
+	public function getLpStatusChangedByUsrAndObjId(int $user_id, int $obj_id): int
+    {
+
+        if (!isset($user_id) || !isset($obj_id)) {
+            return 0;
+        }
+        global $DIC;
+
+        $this->logger->debug(sprintf('called "%s" with obj_id "%s" and user_id "%s"',
+            'getLpStatusChangedByUsrAndObjId',
+            $obj_id,
+            $user_id
+        ));
+
+        $query_status = 'SELECT status_changed FROM ut_lp_marks ulm ' .
+            'WHERE ulm.obj_id = ' . $DIC->database()->quote($obj_id, 'integer') . ' ' .
+            'AND ulm.usr_id = ' . $DIC->database()->quote($user_id, 'integer') . ' ';
+
+
+        $result = $DIC->database()->query($query_status);
+        $lp_status = $DIC->database()->fetchAll($result);
+
+        if (!empty($lp_status) && array_key_exists('status_changed', $lp_status[0])) {
+            $lp_status_changed = (string) $lp_status[0]['status_changed'];
+            $this->logger->debug(sprintf('lp_status_changed %s found for (usr, obj) %s, %s (DEBUG: timestamp) %s', $lp_status_changed, $user_id, $obj_id, strtotime($lp_status_changed)));
+            return strtotime($lp_status_changed);
+        } else {
+            $this->logger->debug(sprintf('no lp_status_changed found'));
             return 0;
         }
 
